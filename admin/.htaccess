@@ -1,0 +1,4 @@
+# Prevent directory listing of the admin folder (Apache hosting only).
+# Real protection comes from Firebase Authentication in admin/index.html —
+# this is just a small extra layer for Apache-based hosts.
+Options -Indexes

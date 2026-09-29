@@ -1,0 +1,3120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Billing | Hari Crackers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-white: #ffffff;
+            --bg-elevated: #faf5ff;
+            --card: #6a1b9a;
+            --border: rgba(106, 27, 154, 0.12);
+            --border-strong: rgba(106, 27, 154, 0.30);
+            --yellow: #ffc107;
+            --yellow-bright: #ffd54f;
+            --text: #1f1f1f;
+            --text-muted: #555555;
+            --text-dim: #888888;
+            --radius: 14px;
+            --radius-sm: 8px;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #faf5ff;
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #1a0033 0%, #2d0050 45%, #4a148c 100%);
+            color: #f5e6ff;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid rgba(255, 193, 7, 0.30);
+            flex-shrink: 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(45, 0, 80, 0.3);
+        }
+
+        .sidebar-brand {
+            padding: 24px 22px 20px;
+            border-bottom: 1px solid rgba(255, 193, 7, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .sidebar-brand .brand-icon {
+            width: 90px;
+            height: 90px;
+            min-width: 90px;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.4);
+        }
+
+        .sidebar-brand .brand-icon img {
+            width: 78px;
+            height: 78px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .sidebar-brand .brand-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .sidebar-brand .brand-text span {
+            color: var(--yellow);
+        }
+
+        .sidebar-brand .brand-sub {
+            font-size: 0.6rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 18px 14px;
+        }
+
+        .sidebar-nav .nav-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: white;
+            padding: 8px 12px 12px;
+            font-weight: 600;
+        }
+
+        .sidebar-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar-nav .nav-item i {
+            width: 20px;
+            font-size: 1rem;
+            color: white;
+            transition: color 0.2s;
+        }
+
+        .sidebar-nav .nav-item:hover {
+            background: rgba(255, 193, 7, 0.15);
+            color: #fff;
+        }
+
+        .sidebar-nav .nav-item:hover i {
+            color: var(--yellow);
+        }
+
+        .sidebar-nav .nav-item.active {
+            background: rgba(255, 193, 7, 0.20);
+            color: var(--yellow);
+            border-right: 3px solid var(--yellow);
+        }
+
+        .sidebar-nav .nav-item.active i {
+            color: var(--yellow);
+        }
+
+        .sidebar-nav .nav-item .badge {
+            margin-left: auto;
+            background: var(--yellow);
+            color: #2d0050;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px 24px;
+            border-top: 1px solid rgba(255, 193, 7, 0.15);
+        }
+
+        .sidebar-footer .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-footer .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--yellow), var(--yellow-bright));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #2d0050;
+        }
+
+        .sidebar-footer .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .sidebar-footer .user-email {
+            font-size: 0.7rem;
+            color: #d0c0e0;
+        }
+
+        .sidebar-footer .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(106, 27, 154, 0.15));
+            border: 2px solid rgba(255, 193, 7, 0.4);
+            color: #ffc107;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .sidebar-footer .logout-btn i {
+            font-size: 1rem;
+            color: #ffc107;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-footer .logout-btn:hover {
+            background: linear-gradient(135deg, #ffc107, #e6a800);
+            border-color: #ffc107;
+            color: #2d0050;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 193, 7, 0.4);
+        }
+
+        .sidebar-footer .logout-btn:hover i {
+            color: #2d0050;
+            transform: translateX(3px);
+        }
+
+        .sidebar-footer .logout-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .main-content {
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            height: var(--header-height);
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-header .page-title h2 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--text);
+        }
+
+        .top-header .page-title h2 span {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        .hamburger-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-white);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(45, 0, 80, 0.4);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .page-content {
+            padding: 28px 30px 40px;
+            flex: 1;
+        }
+
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 24px;
+        }
+
+        .panel {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+        }
+
+        .panel h3 {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            color: var(--card);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+        }
+
+        .product-table-wrap {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            max-height: 640px;
+            overflow-y: auto;
+        }
+
+        .product-pick-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .product-pick-table thead th {
+            text-align: left;
+            padding: 10px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: var(--card);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .product-pick-table thead th.num {
+            text-align: right;
+        }
+
+        .product-pick-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.12s ease;
+        }
+
+        .product-pick-table tbody tr:nth-child(even) {
+            background: #fbf7ff;
+        }
+
+        .product-pick-table tbody tr:hover {
+            background: #f2e6ff;
+        }
+
+        .product-pick-table tbody tr.out-row {
+            opacity: 0.5;
+        }
+
+        .product-pick-table tbody tr.in-cart-row {
+            background: #f5e6ff;
+        }
+
+        .product-pick-table td {
+            padding: 9px 10px;
+            vertical-align: middle;
+        }
+
+        .product-pick-table td.num {
+            text-align: right;
+        }
+
+        .pp-name {
+            font-weight: 600;
+        }
+
+        .pp-img {
+            width: 46px;
+            height: 46px;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #fff;
+            cursor: zoom-in;
+            vertical-align: middle;
+            flex-shrink: 0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pp-img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(106, 27, 154, 0.3);
+        }
+
+        .pp-product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pp-stock {
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .pp-stock.in {
+            background: #2ecc71;
+        }
+
+        .pp-stock.out {
+            background: #e74c3c;
+        }
+
+        .pp-qty-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: var(--yellow);
+            color: #2d0050;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-right: 8px;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .pp-qty-badge:hover {
+            background: #ff5252;
+            color: #fff;
+        }
+
+        .pp-add-btn {
+            border: none;
+            background: var(--card);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .pp-add-btn:hover {
+            background: #7b1fa2;
+        }
+
+        .pp-add-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .empty-hint {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        .cart-table-wrap {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-height: 320px;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .cart-table thead th {
+            text-align: left;
+            padding: 12px 10px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: var(--card);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .cart-table thead th.num {
+            text-align: right;
+        }
+
+        .cart-table tbody tr {
+            background: var(--bg-white);
+            transition: background 0.12s ease;
+        }
+
+        .cart-table tbody tr:nth-child(even) {
+            background: #fbf7ff;
+        }
+
+        .cart-table tbody tr.row-excluded {
+            opacity: 0.45;
+        }
+
+        .cart-table tbody tr:hover {
+            background: #f2e6ff;
+        }
+
+        .cart-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .cart-table td.num {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .cart-table .row-check {
+            width: 17px;
+            height: 17px;
+            accent-color: var(--card);
+            cursor: pointer;
+        }
+
+        .cart-table .qty-input {
+            width: 34px;
+            padding: 4px 0;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .qty-stepper {
+            display: inline-flex;
+            align-items: center;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-strong);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .qty-stepper button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: var(--card);
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .qty-stepper button:hover {
+            background: #7b1fa2;
+        }
+
+        .cart-table .rate-input {
+            width: 70px;
+            padding: 6px;
+            text-align: right;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .cart-table .remove-row {
+            color: #e74c3c;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .add-item-btn {
+            background: none;
+            border: 1px dashed var(--border-strong);
+            color: var(--card);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-item-btn:hover {
+            background: var(--bg-elevated);
+        }
+
+        .add-item-row td {
+            background: var(--bg-elevated) !important;
+        }
+
+        .add-item-row input {
+            width: 100%;
+            padding: 7px 9px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.82rem;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-dim);
+        }
+
+        .customer-fields {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .customer-fields input,
+        .customer-fields select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .customer-fields input:focus,
+        .customer-fields select:focus {
+            border-color: var(--yellow);
+        }
+
+        #customerHistoryBox {
+            border: 1px solid var(--border-strong);
+            background: var(--bg-elevated);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        #customerHistoryBox .hist-title {
+            font-weight: 700;
+            color: var(--card);
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #customerHistoryBox .hist-empty {
+            color: var(--text-dim);
+        }
+
+        #customerHistoryBox .hist-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        #customerHistoryBox .hist-row:last-child {
+            border-bottom: none;
+        }
+
+        #customerHistoryBox .hist-meta {
+            color: var(--text-dim);
+            font-size: 0.72rem;
+        }
+
+        #customerHistoryBox .hist-amt {
+            font-weight: 700;
+        }
+
+        .totals-box {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .totals-row.grand {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--card);
+            border-top: 1px dashed var(--border-strong);
+            padding-top: 10px;
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            padding: 12px 20px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--yellow), var(--yellow-bright));
+            color: #2d0050;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-secondary {
+            padding: 12px 20px;
+            border-radius: 999px;
+            background: var(--bg-elevated);
+            color: var(--card);
+            font-weight: 600;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #f0e0ff;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: #333;
+            color: #fff;
+            font-size: 0.9rem;
+            z-index: 99999;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast.show {
+            display: block !important;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: #2ecc71;
+        }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        .toast.info {
+            background: #6a1b9a;
+        }
+
+        @media (max-width: 900px) {
+            .billing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .hamburger-menu {
+                display: flex !important;
+            }
+
+            .top-header {
+                padding: 0 16px;
+            }
+
+            .page-content {
+                padding: 20px 16px;
+            }
+        }
+
+        /* ============================================================
+           LIGHTBOX — PRODUCT IMAGE PREVIEW
+           ============================================================ */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 0, 51, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 999999;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            cursor: zoom-out;
+            animation: lbFadeIn 0.3s ease;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+        }
+
+        @keyframes lbFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 85vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 30px 80px rgba(45, 0, 80, 0.6);
+            cursor: default;
+            animation: lbZoomIn 0.35s ease;
+            background: #ffffff;
+            padding: 10px;
+        }
+
+        @keyframes lbZoomIn {
+            from {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #ffc107;
+            background: rgba(45, 0, 80, 0.8);
+            color: #ffc107;
+            font-size: 1.6rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+            z-index: 1000000;
+        }
+
+        .lightbox-close:hover {
+            background: #ffc107;
+            color: #2d0050;
+            transform: rotate(90deg);
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(45, 0, 80, 0.9);
+            border: 1px solid rgba(255, 193, 7, 0.4);
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .lightbox-caption i {
+            color: #ffc107;
+            margin-right: 6px;
+        }
+
+        /* ============================================================
+           CONFIRM REMOVE OVERLAY
+           ============================================================ */
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(45, 0, 80, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .confirm-overlay.active {
+            display: flex;
+        }
+
+        .confirm-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px 32px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(45, 0, 80, 0.45);
+            border: 2px solid rgba(106, 27, 154, 0.15);
+            animation: confirmIn 0.3s ease;
+        }
+
+        @keyframes confirmIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .confirm-box .confirm-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 8px 24px rgba(231, 76, 60, 0.35);
+        }
+
+        .confirm-box h3 {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.2rem;
+            color: #6a1b9a;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .confirm-box p {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .confirm-box p strong {
+            color: #2d0050;
+            font-weight: 700;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .confirm-actions button {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+
+        .confirm-actions .btn-cancel {
+            background: #f5e6ff;
+            color: #6a1b9a;
+            border: 1px solid rgba(106, 27, 154, 0.20);
+        }
+
+        .confirm-actions .btn-cancel:hover {
+            background: #e8d5ff;
+        }
+
+        .confirm-actions .btn-remove {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(231, 76, 60, 0.35);
+        }
+
+        .confirm-actions .btn-remove:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(231, 76, 60, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            .lightbox-close {
+                top: 12px;
+                right: 14px;
+                width: 42px;
+                height: 42px;
+                font-size: 1.3rem;
+            }
+
+            .lightbox-caption {
+                bottom: 16px;
+                font-size: 0.8rem;
+                padding: 10px 20px;
+            }
+
+            .lightbox-overlay img {
+                padding: 6px;
+                border-radius: 12px;
+            }
+        }
+
+        /* ============================================================
+   LOW STOCK WARNING BANNER
+   ============================================================ */
+        .low-stock-warning-banner {
+            background: linear-gradient(135deg, #fff3cd, #ffe69c);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            box-shadow: 0 4px 16px rgba(255, 193, 7, 0.25);
+            animation: warningPulse 2s infinite;
+            position: relative;
+        }
+
+        @keyframes warningPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 16px rgba(255, 193, 7, 0.25);
+            }
+
+            50% {
+                box-shadow: 0 4px 24px rgba(255, 193, 7, 0.5);
+            }
+        }
+
+        .low-stock-warning-banner .warning-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6a00, #ffb238);
+            color: #ffffff;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35);
+            animation: warningIconShake 1s infinite;
+        }
+
+        @keyframes warningIconShake {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-8deg);
+            }
+
+            75% {
+                transform: rotate(8deg);
+            }
+        }
+
+        .low-stock-warning-banner .warning-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .low-stock-warning-banner .warning-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #8a6d00;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .low-stock-warning-banner .warning-title strong {
+            color: #c0392b;
+            font-weight: 800;
+        }
+
+        .low-stock-warning-banner .warning-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .low-stock-warning-banner .warning-item {
+            background: #ffffff;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 999px;
+            padding: 5px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #c0392b;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .low-stock-warning-banner .warning-item:hover {
+            border-color: #e74c3c;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+        }
+
+        .low-stock-warning-banner .warning-item .qty-badge {
+            background: #e74c3c;
+            color: #ffffff;
+            padding: 1px 8px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .low-stock-warning-banner .warning-item.out-of-stock .qty-badge {
+            background: #7f0000;
+        }
+
+        .low-stock-warning-banner .warning-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            border: none;
+            color: #8a6d00;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .low-stock-warning-banner .warning-close:hover {
+            background: #e74c3c;
+            color: #ffffff;
+            transform: rotate(90deg);
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .low-stock-warning-banner {
+                padding: 12px 14px;
+                gap: 10px;
+            }
+
+            .low-stock-warning-banner .warning-icon {
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+                font-size: 1.2rem;
+            }
+
+            .low-stock-warning-banner .warning-title {
+                font-size: 0.82rem;
+            }
+
+            .low-stock-warning-banner .warning-item {
+                font-size: 0.7rem;
+                padding: 4px 10px;
+            }
+        }
+
+        /* ============================================================
+   ⌨️ KEYBOARD NAVIGATION — HIGHLIGHTED ROW
+   ============================================================ */
+        .product-pick-table tbody tr.kb-highlight {
+            background: linear-gradient(90deg, #fff3cd, #fff8e1) !important;
+            border-left: 4px solid #ffc107;
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+            transition: all 0.15s ease;
+        }
+
+        .product-pick-table tbody tr.kb-highlight .pp-add-btn {
+            background: #ffc107;
+            color: #2d0050;
+            transform: scale(1.05);
+        }
+
+        /* Search box-ku focus ring வலுப்படுத்து */
+        .search-box input:focus {
+            border-color: #ffc107 !important;
+            box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.25) !important;
+            background: #fffef5;
+        }
+
+        /* Customer fields focus highlight */
+        .customer-fields input:focus,
+        .customer-fields select:focus {
+            border-color: #ffc107 !important;
+            box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.25) !important;
+            background: #fffef5;
+        }
+
+        /* Save button focus highlight */
+        .btn-primary:focus {
+            outline: 3px solid #ffc107;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <img src="../pictures/logo-removebg-preview.png" alt="Hari Crackers Logo">
+            </div>
+            <div>
+                <div class="brand-text">Hari <span>Crackers</span></div>
+                <span class="brand-sub">Staff Panel</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-label">Staff Menu</div>
+
+            <a href="billing.html" class="nav-item active">
+                <i class="fas fa-cog"></i> Billing
+            </a>
+            <a href="bills-history.html" class="nav-item">
+                <i class="fas fa-file-invoice"></i> Billing History
+            </a>
+
+            <div class="nav-label" style="margin-top:20px;">Inventory</div>
+
+            <a href="stock-management.html" class="nav-item">
+                <i class="fas fa-warehouse"></i> Stock Management
+                <span class="badge" id="stockAlertBadge" style="background:#e74c3c;display:none;">0</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">S</div> <!-- ← "A" illa -->
+                <div>
+                    <div class="user-name">Staff</div> <!-- ← "Admin" illa -->
+                    <div class="user-email">staffharicrackers@gmail.com</div>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+                <div class="page-title">
+                    <h2>Direct Billing <span>— walk-in / shop counter customers</span></h2>
+                </div>
+            </div>
+        </header>
+
+        <!-- ============================================================
+     LOW STOCK WARNING BANNER
+============================================================ -->
+        <div class="low-stock-warning-banner" id="lowStockWarningBanner" style="display: none;">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="warning-content">
+                <div class="warning-title">
+                    ⚠️ <strong>Stock குறைவா இருக்கு!</strong> — <span id="lowStockCount">0</span> product(s) கவனிக்கவும்
+                </div>
+                <div class="warning-list" id="lowStockWarningList"></div>
+            </div>
+            <button class="warning-close"
+                onclick="document.getElementById('lowStockWarningBanner').style.display='none'">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="page-content">
+            <div class="billing-grid">
+
+
+                <div>
+                    <div class="panel">
+                        <h3><i class="fas fa-boxes"></i> All Products — Click "Add" to Include in Bill</h3>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="productSearch" placeholder="Filter products by name (optional)...">
+                        </div>
+                        <div id="productSuggestions">
+                            <div class="empty-hint">Loading products...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="align-self:start;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                        <h3 style="margin-bottom:0;"><i class="fas fa-shopping-basket"></i> Bill Items (<span
+                                id="itemCount">0</span>)</h3>
+                        <button class="add-item-btn" id="addItemBtn"><i class="fas fa-plus"></i> Add Item</button>
+                    </div>
+                    <div id="cartTableWrap" style="margin-bottom:20px;">
+                        <p class="cart-empty" id="cartEmptyMsg">No items added yet. Click products on the left to add.
+                        </p>
+                        <div class="cart-table-wrap" id="cartTableOuter" style="display:none;">
+                            <table class="cart-table" id="cartTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:36px;"></th>
+                                        <th>Item</th>
+                                        <th class="num">Rate</th>
+                                        <th class="num">Qty</th>
+                                        <th class="num">Total</th>
+                                        <th style="width:36px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cartTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h3><i class="fas fa-user"></i> Customer Details</h3>
+                    <div class="customer-fields">
+                        <div>
+                            <label
+                                style="display:block;font-size:0.75rem;font-weight:600;color:#6a1b9a;margin-bottom:4px;text-transform:uppercase;">
+                                Customer Name
+                            </label>
+                            <input type="text" id="custName" placeholder="Enter customer name">
+                        </div>
+                        <div>
+                            <label
+                                style="display:block;font-size:0.75rem;font-weight:600;color:#6a1b9a;margin-bottom:4px;text-transform:uppercase;">
+                                Phone Number
+                            </label>
+                            <div style="display:flex;gap:8px;">
+                                <input type="tel" id="custPhone" placeholder="10-digit mobile number" maxlength="10"
+                                    inputmode="numeric" style="flex:1;"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                                <button class="add-item-btn" id="historyLookupBtn" style="white-space:nowrap;">
+                                    <i class="fas fa-history"></i> History
+                                </button>
+                            </div>
+                        </div>
+                        <div id="customerHistoryBox" style="display:none;"></div>
+                        <select id="payMethod">
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Card">Card</option>
+                        </select>
+                    </div>
+
+                    <div class="totals-box">
+                        <div class="totals-row"><span>Total Items</span><strong id="sumItems">0</strong></div>
+                        <div class="totals-row"><span>MRP Total</span><strong id="sumMrp">₹0</strong></div>
+                        <div class="totals-row"><span>Discount</span><strong id="sumDiscount">₹0</strong></div>
+                        <div class="totals-row grand"><span>Grand Total</span><strong id="sumTotal">₹0</strong></div>
+                    </div>
+
+                    <button class="btn-primary" id="saveAndDownloadBtn" disabled>
+                        <i class="fas fa-check-circle"></i> Save & Download Bill
+                    </button>
+                    <button class="btn-secondary" id="clearBillBtn" style="margin-top:10px;">
+                        <i class="fas fa-trash-alt"></i> Clear Bill
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================================
+         LIGHTBOX — PRODUCT IMAGE PREVIEW
+    ============================================================ -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="lightboxImage" src="" alt="Product Image">
+        <div class="lightbox-caption" id="lightboxCaption">
+            <i class="fas fa-image"></i> <span id="lightboxCaptionText">Product</span>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         CONFIRM REMOVE OVERLAY
+    ============================================================ -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-box">
+            <div class="confirm-icon">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3>Remove Item?</h3>
+            <p id="confirmMessage">Are you sure you want to remove <strong>this item</strong> from the bill?</p>
+            <div class="confirm-actions">
+                <button class="btn-cancel" id="confirmCancelBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn-remove" id="confirmRemoveBtn">
+                    <i class="fas fa-trash-alt"></i> Remove
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="importmap">
+{
+    "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js"
+    }
+}
+</script>
+
+    <script type="module">
+
+        import { initializeApp } from "firebase/app";
+        import {
+            getFirestore, collection, onSnapshot, query, orderBy,
+            addDoc, doc, getDoc, setDoc, serverTimestamp,
+            where, limit, getDocs,
+            writeBatch,
+            enableIndexedDbPersistence  // ✅ NEW
+        } from "firebase/firestore";
+        import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
+            authDomain: "hari-crackers.firebaseapp.com",
+            projectId: "hari-crackers",
+            storageBucket: "hari-crackers.firebasestorage.app",
+            messagingSenderId: "510011644696",
+            appId: "1:510011644696:web:b32ce0844e59b774a2dc6d",
+            measurementId: "G-F0M9590T8V"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);   // ✅ INTHA LINE ADD PANNUNGA
+
+        // ✅ OFFLINE PERSISTENCE ENABLE
+        enableIndexedDbPersistence(db).catch((err) => {
+            if (err.code === 'failed-precondition') {
+                // Multiple tabs open — offline only in one tab
+                console.warn('⚠️ Offline: only works in single tab');
+            } else if (err.code === 'unimplemented') {
+                console.warn('⚠️ Browser does not support offline');
+            } else {
+                console.error('Offline persistence error:', err);
+            }
+        });
+
+
+
+        let allProducts = [];
+        let billItems = [];
+
+        const searchInput = document.getElementById('productSearch');
+        const suggestionsBox = document.getElementById('productSuggestions');
+        const cartTbody = document.getElementById('cartTbody');
+        const cartTableOuter = document.getElementById('cartTableOuter');
+        const cartEmptyMsg = document.getElementById('cartEmptyMsg');
+        const itemCountEl = document.getElementById('itemCount');
+        // ✅ NEW button
+        const saveAndDownloadBtn = document.getElementById('saveAndDownloadBtn');
+        const addItemBtn = document.getElementById('addItemBtn');
+        const historyLookupBtn = document.getElementById('historyLookupBtn');
+        const custPhoneInput = document.getElementById('custPhone');
+        const custNameInput = document.getElementById('custName');
+        const customerHistoryBox = document.getElementById('customerHistoryBox');
+        let addItemRowOpen = false;
+
+        // ============================================================
+        // LOCALSTORAGE — BILL + CUSTOMER PERSISTENCE
+        // ============================================================
+        const BILL_STORAGE_KEY = 'haricrackers_billing_draft_v1';
+        const CUSTOMER_STORAGE_KEY = 'haricrackers_billing_customer_v1';
+
+        function saveBillToLocalStorage() {
+            try {
+                localStorage.setItem(BILL_STORAGE_KEY, JSON.stringify(billItems));
+            } catch (e) {
+                console.warn('Could not save bill to localStorage:', e);
+            }
+        }
+
+        function loadBillFromLocalStorage() {
+            try {
+                const raw = localStorage.getItem(BILL_STORAGE_KEY);
+                if (!raw) return [];
+                const parsed = JSON.parse(raw);
+                if (!Array.isArray(parsed)) return [];
+                return parsed
+                    .filter(i => i && i.id && typeof i.qty === 'number')
+                    .map(i => ({
+                        id: i.id,
+                        name: i.name || 'Unnamed',
+                        price: Number(i.price) || 0,
+                        oldPrice: Number(i.oldPrice) || Number(i.price) || 0,
+                        qty: Math.max(1, parseInt(i.qty, 10) || 1),
+                        included: i.included !== false,
+                        manual: !!i.manual
+                    }));
+            } catch (e) {
+                console.warn('Could not load bill from localStorage:', e);
+                return [];
+            }
+        }
+
+        function clearBillFromLocalStorage() {
+            try {
+                localStorage.removeItem(BILL_STORAGE_KEY);
+            } catch (e) { }
+        }
+
+        function saveCustomerToLocalStorage() {
+            try {
+                localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify({
+                    name: custNameInput.value,
+                    phone: custPhoneInput.value,
+                    payMethod: document.getElementById('payMethod').value
+                }));
+            } catch (e) { }
+        }
+
+        function loadCustomerFromLocalStorage() {
+            try {
+                const raw = localStorage.getItem(CUSTOMER_STORAGE_KEY);
+                if (!raw) return;
+                const c = JSON.parse(raw);
+                if (c.name) custNameInput.value = c.name;
+                if (c.phone) custPhoneInput.value = c.phone;
+                if (c.payMethod) document.getElementById('payMethod').value = c.payMethod;
+            } catch (e) { }
+        }
+
+        function clearCustomerFromLocalStorage() {
+            try {
+                localStorage.removeItem(CUSTOMER_STORAGE_KEY);
+            } catch (e) { }
+        }
+
+        custNameInput.addEventListener('input', saveCustomerToLocalStorage);
+        custPhoneInput.addEventListener('input', saveCustomerToLocalStorage);
+        document.getElementById('payMethod').addEventListener('change', saveCustomerToLocalStorage);
+
+        // ============================================================
+        // LIGHTBOX — PRODUCT IMAGE PREVIEW
+        // ============================================================
+        const lightboxOverlay = document.getElementById('lightboxOverlay');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxCaptionText = document.getElementById('lightboxCaptionText');
+        const lightboxClose = document.getElementById('lightboxClose');
+
+        function openLightbox(imageUrl, productName) {
+            if (!imageUrl) return;
+            lightboxImage.src = imageUrl;
+            lightboxCaptionText.textContent = productName || 'Product Image';
+            lightboxOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightboxOverlay.classList.remove('active');
+            lightboxImage.src = '';
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeLightbox();
+        });
+
+        lightboxOverlay.addEventListener('click', (e) => {
+            if (e.target === lightboxOverlay) closeLightbox();
+        });
+
+        // ============================================================
+        // ⌨️ ARROW KEY NAVIGATION — CUSTOMER FIELDS
+        // ============================================================
+        // ↓ Arrow Down → Next field-ku move
+        // ↑ Arrow Up   → Previous field-ku move
+        // ============================================================
+
+        const customerFieldOrder = [custNameInput, custPhoneInput, payMethodSelect, saveAndDownloadBtn];
+
+        document.addEventListener('keydown', (e) => {
+            const tag = (e.target.tagName || '').toLowerCase();
+            const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select';
+
+            // ✅ CUSTOMER FIELDS la mattum arrow nav work aagum
+            const currentIdx = customerFieldOrder.indexOf(e.target);
+            if (currentIdx === -1) return;  // customer fields illena skip
+
+            // ✅ ↓ ARROW DOWN → next field
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                // Search box la illa, so product selection-ku interfere aagadhu
+                // Adhanaal direct-ah next customer field-ku move
+                const nextIdx = Math.min(currentIdx + 1, customerFieldOrder.length - 1);
+                const nextField = customerFieldOrder[nextIdx];
+
+                if (nextField === saveAndDownloadBtn && saveAndDownloadBtn.disabled) {
+                    showToast('⚠️ Add items first', 'info');
+                    return;
+                }
+
+                nextField.focus();
+                if (nextField.select) nextField.select();  // input field-na select pannu
+                return;
+            }
+
+            // ✅ ↑ ARROW UP → previous field
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevIdx = Math.max(currentIdx - 1, 0);
+                const prevField = customerFieldOrder[prevIdx];
+
+                prevField.focus();
+                if (prevField.select) prevField.select();
+                return;
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+
+        // ============================================================
+        // CUSTOMER HISTORY LOOKUP BY NAME OR MOBILE
+        // ============================================================
+        async function lookupCustomerHistory(phone, name) {
+            customerHistoryBox.style.display = 'block';
+            customerHistoryBox.innerHTML = '<div class="hist-empty">Searching...</div>';
+
+            try {
+                let orders = [];
+
+                if (phone && phone.length >= 10) {
+                    const q1 = query(collection(db, 'orders'), where('customerPhone', '==', phone), limit(25));
+                    const snap1 = await getDocs(q1);
+                    orders = snap1.docs.map(d => d.data());
+                }
+
+                if (orders.length === 0 && name && name.trim() && name.trim() !== 'Walk-in Customer') {
+                    const allSnap = await getDocs(query(collection(db, 'orders'), limit(200)));
+                    const nameLower = name.trim().toLowerCase();
+                    orders = allSnap.docs
+                        .map(d => d.data())
+                        .filter(o => (o.customerName || '').toLowerCase().includes(nameLower));
+                }
+
+                orders.sort((a, b) => new Date(b.orderDate || 0) - new Date(a.orderDate || 0));
+                renderCustomerHistory(orders, phone, name);
+
+            } catch (err) {
+                console.error(err);
+                customerHistoryBox.innerHTML = '<div class="hist-empty">⚠️ Search error: ' + err.message + '</div>';
+            }
+        }
+
+        function renderCustomerHistory(orders, phone, name) {
+            if (orders.length === 0) {
+                customerHistoryBox.innerHTML = `
+                    <div class="hist-title">Bill History</div>
+                    <div class="hist-empty">
+                        No previous billing history found for this number (${phone}). Welcome as a new customer.
+                    </div>`;
+                return;
+            }
+
+            const latestName = orders[0].customerName;
+            if (latestName && (custNameInput.value.trim() === '' || custNameInput.value.trim() === 'Walk-in Customer')) {
+                custNameInput.value = latestName;
+                saveCustomerToLocalStorage();
+            }
+
+            const totalSpent = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+
+            customerHistoryBox.innerHTML = `
+                <div class="hist-title">Bill History — ${orders.length} bills, ₹${totalSpent.toLocaleString('en-IN')} total</div>
+                ${orders.map(o => {
+                const d = o.orderDate ? new Date(o.orderDate) : null;
+                const dateStr = d ? d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+                const itemNames = (o.items || []).map(i => i.name).join(', ');
+                return `
+                    <div class="hist-row" title="${escapeHtmlAttr(itemNames)}">
+                        <span>${o.orderId || '-'} <span class="hist-meta">· ${dateStr} · ${o.totalItems || 0} items</span></span>
+                        <span class="hist-amt">₹${(o.totalAmount || 0).toLocaleString('en-IN')}</span>
+                    </div>`;
+            }).join('')}
+            `;
+        }
+
+        historyLookupBtn.addEventListener('click', () => {
+            const phone = custPhoneInput.value.trim();
+            const name = custNameInput.value.trim();
+            if (!phone && (!name || name === 'Walk-in Customer')) {
+                showToast('Customer Name or Phone number', 'error');
+                return;
+            }
+            lookupCustomerHistory(phone, name);
+        });
+
+        custPhoneInput.addEventListener('input', () => {
+            if (custPhoneInput.value.trim().length === 10) {
+                lookupCustomerHistory(custPhoneInput.value.trim(), custNameInput.value.trim());
+            } else if (custPhoneInput.value.trim().length === 0) {
+                customerHistoryBox.style.display = 'none';
+                customerHistoryBox.innerHTML = '';
+            }
+        });
+
+        custNameInput.addEventListener('blur', () => {
+            const name = custNameInput.value.trim();
+            if (name && name !== 'Walk-in Customer' && name.length >= 3) {
+                lookupCustomerHistory(custPhoneInput.value.trim(), name);
+            }
+        });
+
+        function escapeHtmlAttr(str) {
+            return String(str || '').replace(/[&<>"']/g, s => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[s]));
+        }
+
+        // ============================================================
+        // LOAD PRODUCTS
+        // ============================================================
+        function listenToProducts() {
+            const q = query(collection(db, 'products'), orderBy('orderIndex', 'asc'));
+            onSnapshot(q, (snapshot) => {
+                allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderProductGrid();
+                renderLowStockWarningBanner();   // ✅ Ithu irukku
+            }, (err) => {
+                console.error('Error loading products:', err);
+                showToast('⚠️ Error loading products', 'error');
+            });
+        }
+        // ============================================================
+        // PRODUCT PICK TABLE
+        // ============================================================
+        function renderProductGrid() {
+            const term = searchInput.value.trim().toLowerCase();
+            const list = term
+                ? allProducts.filter(p => (p.name || '').toLowerCase().includes(term))
+                : allProducts;
+
+            if (list.length === 0) {
+                suggestionsBox.innerHTML = '<div class="empty-hint">No products found</div>';
+                return;
+            }
+
+            suggestionsBox.innerHTML = `
+                <div class="product-table-wrap">
+                <table class="product-pick-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th class="num">Price</th>
+                            <th class="num">Stock</th>
+                            <th class="num">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${list.map(p => {
+                const inStock = p.inStock !== false;
+                const inCart = billItems.find(i => i.id === p.id);
+                const qty = inCart ? inCart.qty : 0;
+                const img = p.imageUrl || '../pictures/logo-removebg-preview.png';
+                const safeName = escapeHtmlAttr(p.name);
+                return `
+                            <tr class="${!inStock ? 'out-row' : ''} ${qty > 0 ? 'in-cart-row' : ''}" data-id="${p.id}">
+                                <td class="pp-name">
+                                    <div class="pp-product-cell">
+                                        <img class="pp-img"
+                                             src="${img}"
+                                             alt="${safeName}"
+                                             title="Click to view"
+                                             data-name="${safeName}"
+                                             onclick="event.stopPropagation(); window.openLightbox(this.src, this.dataset.name)"
+                                             onerror="this.src='../pictures/logo-removebg-preview.png'">
+                                        <span>${p.name || 'Unnamed'}</span>
+                                    </div>
+                                </td>
+                                <td class="num">₹${p.price || 0}</td>
+                                <td class="num"><span class="pp-stock ${inStock ? 'in' : 'out'}">${inStock ? 'In Stock' : 'Out of Stock'}</span></td>
+                                <td class="num">
+                                    ${qty > 0 ? `<span class="pp-qty-badge" data-id="${p.id}" title="Click to reduce">${qty}</span>` : ''}
+                                    <button type="button" class="pp-add-btn" data-id="${p.id}" ${!inStock ? 'disabled' : ''}>
+                                        <i class="fas fa-plus"></i> Add
+                                    </button>
+                                </td>
+                            </tr>`;
+            }).join('')}
+                    </tbody>
+                </table>
+                </div>
+            `;
+        }
+
+        searchInput.addEventListener('input', renderProductGrid);
+
+        // ============================================================
+        // PRODUCT PICK TABLE — CLICK HANDLERS
+        // ============================================================
+        suggestionsBox.addEventListener('click', (e) => {
+            // 1. Yellow qty badge → reduce quantity by 1
+            const qtyBadge = e.target.closest('.pp-qty-badge');
+            if (qtyBadge) {
+                e.stopPropagation();
+                decreaseFromBill(qtyBadge.dataset.id);
+                return;
+            }
+
+            // 2. ONLY "Add" button click → add to bill
+            const addBtn = e.target.closest('.pp-add-btn');
+            if (addBtn && !addBtn.disabled) {
+                e.stopPropagation();
+                const product = allProducts.find(p => p.id === addBtn.dataset.id);
+                if (!product) return;
+                addToBill(product);
+                return;
+            }
+
+            // 3. Image click → open lightbox
+            const img = e.target.closest('.pp-img');
+            if (img) {
+                e.stopPropagation();
+                openLightbox(img.src, img.dataset.name || 'Product');
+                return;
+            }
+
+            // 4. Row click → DO NOTHING
+        });
+
+        // ============================================================
+        // BILL / CART LOGIC
+        // ============================================================
+        function addToBill(product) {
+            const existing = billItems.find(i => i.id === product.id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                billItems.push({
+                    id: product.id,
+                    name: product.name || 'Unnamed',
+                    price: product.price || 0,
+                    oldPrice: product.oldPrice || product.price || 0,
+                    qty: 1,
+                    included: true
+                });
+            }
+            renderCart();
+        }
+
+        function addManualItem(name, rate, qty) {
+            billItems.push({
+                id: 'manual-' + Date.now(),
+                name: name || 'Item',
+                price: rate || 0,
+                oldPrice: rate || 0,
+                qty: qty || 1,
+                included: true,
+                manual: true
+            });
+            renderCart();
+        }
+
+        function decreaseFromBill(productId) {
+            const idx = billItems.findIndex(i => i.id === productId);
+            if (idx === -1) return;
+
+            const item = billItems[idx];
+
+            if (item.qty <= 1) {
+                askRemoveConfirm(item, idx);
+                return;
+            }
+
+            item.qty -= 1;
+            renderCart();
+        }
+
+        // ============================================================
+        // CONFIRMATION OVERLAY — Remove Item
+        // ============================================================
+        let pendingRemoveIdx = null;
+
+        function askRemoveConfirm(item, idx) {
+            pendingRemoveIdx = idx;
+
+            const overlay = document.getElementById('confirmOverlay');
+            const msg = document.getElementById('confirmMessage');
+
+            msg.innerHTML = `Are you sure you want to remove <strong>${escapeHtmlAttr(item.name)}</strong> from the bill?`;
+
+            overlay.classList.add('active');
+        }
+
+        document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+            document.getElementById('confirmOverlay').classList.remove('active');
+            pendingRemoveIdx = null;
+        });
+
+        document.getElementById('confirmRemoveBtn').addEventListener('click', () => {
+            if (pendingRemoveIdx !== null && billItems[pendingRemoveIdx]) {
+                billItems.splice(pendingRemoveIdx, 1);
+                pendingRemoveIdx = null;
+                renderCart();
+                showToast('🗑️ Item removed from bill', 'info');
+            }
+            document.getElementById('confirmOverlay').classList.remove('active');
+        });
+
+        document.getElementById('confirmOverlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                pendingRemoveIdx = null;
+            }
+        });
+
+        // ============================================================
+        // ADD ITEM ROW
+        // ============================================================
+        function addItemRowHtml() {
+            if (!addItemRowOpen) return '';
+            return `
+                <tr class="add-item-row">
+                    <td></td>
+                    <td><input type="text" id="newItemName" placeholder="Item name"></td>
+                    <td><input type="number" id="newItemRate" placeholder="₹" min="0" style="text-align:right;"></td>
+                    <td><input type="number" id="newItemQty" placeholder="Qty" min="1" value="1" style="text-align:right;"></td>
+                    <td colspan="2" style="display:flex;gap:6px;">
+                        <button class="add-item-btn" id="confirmAddItem" style="border-style:solid;"><i class="fas fa-check"></i></button>
+                        <button class="add-item-btn" id="cancelAddItem"><i class="fas fa-times"></i></button>
+                    </td>
+                </tr>`;
+        }
+
+        function renderCart() {
+            if (billItems.length === 0 && !addItemRowOpen) {
+                cartTableOuter.style.display = 'none';
+                cartEmptyMsg.style.display = 'block';
+                itemCountEl.textContent = '0';
+                saveAndDownloadBtn.disabled = true;
+                updateTotals();
+                renderProductGrid();
+                saveBillToLocalStorage();
+                return;
+            }
+
+            cartTableOuter.style.display = 'block';
+
+            cartEmptyMsg.style.display = 'none';
+            saveAndDownloadBtn.disabled = billItems.filter(i => i.included !== false).length === 0;
+
+            cartTbody.innerHTML = billItems.map((item, index) => {
+                const included = item.included !== false;
+                return `
+                <tr data-index="${index}" class="${included ? '' : 'row-excluded'}">
+                    <td><input type="checkbox" class="row-check" data-index="${index}" ${included ? 'checked' : ''} title="Include in bill"></td>
+                    <td>${item.name}${item.manual ? ' <span style="color:var(--text-dim);font-size:0.7rem;">(manual)</span>' : ''}</td>
+                    <td class="num"><input type="number" class="rate-input" min="0" value="${item.price}" data-index="${index}"></td>
+                    <td class="num">
+                        <div class="qty-stepper" data-index="${index}">
+                            <button type="button" class="qty-minus">−</button>
+                            <input type="number" class="qty-input" min="1" value="${item.qty}" data-index="${index}">
+                            <button type="button" class="qty-plus">+</button>
+                        </div>
+                    </td>
+                    <td class="num">₹${(item.price * item.qty).toLocaleString('en-IN')}</td>
+                    <td><button class="remove-row" data-index="${index}"><i class="fas fa-times"></i></button></td>
+                </tr>`;
+            }).join('') + addItemRowHtml();
+
+            itemCountEl.textContent = billItems.reduce((sum, i) => sum + (i.included !== false ? i.qty : 0), 0);
+            updateTotals();
+            renderProductGrid();
+            saveBillToLocalStorage();
+
+            if (addItemRowOpen) {
+                document.getElementById('newItemName')?.focus();
+                document.getElementById('confirmAddItem')?.addEventListener('click', () => {
+                    const name = document.getElementById('newItemName').value.trim();
+                    const rate = parseFloat(document.getElementById('newItemRate').value) || 0;
+                    const qty = parseInt(document.getElementById('newItemQty').value, 10) || 1;
+                    if (!name) { showToast('Please enter item name', 'error'); return; }
+                    addManualItem(name, rate, qty);
+                    addItemRowOpen = false;
+                    renderCart();
+                });
+                document.getElementById('cancelAddItem')?.addEventListener('click', () => {
+                    addItemRowOpen = false;
+                    renderCart();
+                });
+            }
+        }
+
+        addItemBtn.addEventListener('click', () => {
+            addItemRowOpen = true;
+            renderCart();
+        });
+
+        cartTbody.addEventListener('input', (e) => {
+            const qtyInput = e.target.closest('.qty-input');
+            const rateInput = e.target.closest('.rate-input');
+            if (qtyInput) {
+                const idx = parseInt(qtyInput.dataset.index, 10);
+                let qty = parseInt(qtyInput.value, 10) || 1;
+                if (qty < 1) qty = 1;
+                billItems[idx].qty = qty;
+                renderCart();
+                return;
+            }
+            if (rateInput) {
+                const idx = parseInt(rateInput.dataset.index, 10);
+                let rate = parseFloat(rateInput.value);
+                if (isNaN(rate) || rate < 0) rate = 0;
+                billItems[idx].price = rate;
+                renderCart();
+            }
+        });
+
+        cartTbody.addEventListener('keydown', (e) => {
+            const currentRow = e.target.closest('tr');
+
+            // ✅ LEFT ARROW → Search box-ku back
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                focusProductPane();
+                return;
+            }
+
+            // ✅ RIGHT ARROW → Customer Details-ku move
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                focusCustomerPane();
+                return;
+            }
+
+            // ✅ DOWN ARROW → next row-ku move
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextRow = currentRow?.nextElementSibling;
+                const nextInput = nextRow?.querySelector('.qty-input')
+                    || nextRow?.querySelector('.rate-input');
+                if (nextInput) {
+                    nextInput.focus();
+                    nextInput.select();
+                } else {
+                    // ✅ Last row → Customer Name field-ku move
+                    focusCustomerPane();
+                }
+                return;
+            }
+
+            // ✅ UP ARROW → previous row-ku move
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevRow = currentRow?.previousElementSibling;
+                const prevInput = prevRow?.querySelector('.qty-input')
+                    || prevRow?.querySelector('.rate-input');
+                if (prevInput) {
+                    prevInput.focus();
+                    prevInput.select();
+                } else {
+                    // ✅ First row → Search box-ku back
+                    focusProductPane();
+                }
+                return;
+            }
+        });
+
+        function focusCustomerPane() {
+            // Customer Name field-ku focus
+            custNameInput.focus();
+            custNameInput.select();
+            custNameInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+
+        cartTbody.addEventListener('change', (e) => {
+            const check = e.target.closest('.row-check');
+            if (!check) return;
+            const idx = parseInt(check.dataset.index, 10);
+            billItems[idx].included = check.checked;
+            renderCart();
+        });
+
+        cartTbody.addEventListener('click', (e) => {
+            const minusBtn = e.target.closest('.qty-minus');
+            const plusBtn = e.target.closest('.qty-plus');
+
+            if (minusBtn) {
+                const idx = parseInt(minusBtn.closest('.qty-stepper').dataset.index, 10);
+                const item = billItems[idx];
+
+                if (item.qty <= 1) {
+                    askRemoveConfirm(item, idx);
+                    return;
+                }
+
+                billItems[idx].qty = Math.max(1, billItems[idx].qty - 1);
+                renderCart();
+                return;
+            }
+
+            if (plusBtn) {
+                const idx = parseInt(plusBtn.closest('.qty-stepper').dataset.index, 10);
+                billItems[idx].qty += 1;
+                renderCart();
+                return;
+            }
+
+            const btn = e.target.closest('.remove-row');
+            if (!btn) return;
+            const idx = parseInt(btn.dataset.index, 10);
+            askRemoveConfirm(billItems[idx], idx);
+        });
+
+        function updateTotals() {
+            const activeItems = billItems.filter(i => i.included !== false);
+            const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
+            const mrpTotal = activeItems.reduce((sum, i) => sum + (i.oldPrice * i.qty), 0);
+            const grandTotal = activeItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            const discount = mrpTotal - grandTotal;
+
+            document.getElementById('sumItems').textContent = totalItems;
+            document.getElementById('sumMrp').textContent = '₹' + mrpTotal.toLocaleString('en-IN');
+            document.getElementById('sumDiscount').textContent = '₹' + discount.toLocaleString('en-IN');
+            document.getElementById('sumTotal').textContent = '₹' + grandTotal.toLocaleString('en-IN');
+        }
+
+        document.getElementById('clearBillBtn').addEventListener('click', () => {
+            if (billItems.length && !confirm('Clear the current bill?')) return;
+            billItems = [];
+            addItemRowOpen = false;
+            custNameInput.value = 'Walk-in Customer';
+            custPhoneInput.value = '';
+            document.getElementById('payMethod').value = 'Cash';
+            customerHistoryBox.style.display = 'none';
+            customerHistoryBox.innerHTML = '';
+            clearBillFromLocalStorage();
+            clearCustomerFromLocalStorage();
+            renderCart();
+        });
+
+        async function saveBillToFirebase() {
+            const activeItems = billItems.filter(i => i.included !== false);
+            const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
+            const totalAmount = activeItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            // ✅ STOCK VALIDATION
+            const stockErrors = [];
+            for (const item of activeItems) {
+                if (item.manual) continue;
+
+                const product = allProducts.find(p => p.id === item.id);
+                if (product && typeof product.stockQty === 'number') {
+                    if (product.stockQty < item.qty) {
+                        stockErrors.push(`${product.name}: ${product.stockQty} in stock, ${item.qty} requested`);
+                    }
+                }
+            }
+
+            if (stockErrors.length > 0) {
+                throw new Error('Stock insufficient:\n' + stockErrors.join('\n'));
+            }
+
+            // Order number generate
+            let orderNumber = 1;
+            try {
+                const counterRef = doc(db, 'settings', 'orderCounter');
+                const counterSnap = await getDoc(counterRef);
+                if (counterSnap.exists()) {
+                    orderNumber = (counterSnap.data().lastOrderNumber || 0) + 1;
+                }
+                await setDoc(counterRef, { lastOrderNumber: orderNumber }, { merge: true });
+            } catch (e) {
+                orderNumber = Math.floor(Date.now() / 1000) % 100000;
+            }
+
+            const orderId = 'HC' + String(orderNumber).padStart(3, '0');
+
+            const orderData = {
+                orderId,
+                orderNumber,
+                customerName: custNameInput.value.trim() || 'Walk-in Customer',
+                customerPhone: custPhoneInput.value.trim() || '',
+                paymentMethod: document.getElementById('payMethod').value,
+                items: activeItems.map(i => ({
+                    productId: i.id,
+                    name: i.name,
+                    qty: i.qty,
+                    price: i.price,
+                    amount: i.price * i.qty,
+                    isManual: !!i.manual
+                })),
+                totalItems,
+                totalAmount,
+                orderDate: new Date().toISOString(),
+                createdAt: serverTimestamp(),
+                timestamp: serverTimestamp(),
+                status: 'completed',
+                source: 'walk-in',
+                createdBy: auth.currentUser?.email || 'unknown',
+                stockDeducted: true
+            };
+
+            // ✅ BATCH WRITE — Order + Stock deduction
+            const batch = writeBatch(db);
+            const orderRef = doc(collection(db, 'orders'));
+            batch.set(orderRef, orderData);
+
+            // Stock deduct for each product
+            for (const item of activeItems) {
+                if (item.manual) continue;
+
+                const product = allProducts.find(p => p.id === item.id);
+                if (!product) continue;
+
+                const currentStock = typeof product.stockQty === 'number' ? product.stockQty : 0;
+                const newStock = Math.max(0, currentStock - item.qty);
+
+                const productRef = doc(db, 'products', item.id);
+                batch.update(productRef, {
+                    stockQty: newStock,
+                    inStock: newStock > 0,
+                    updatedAt: new Date().toISOString(),
+                    lastSoldAt: new Date().toISOString()
+                });
+
+                // Low stock alert
+                if (newStock <= (product.lowStockThreshold || 5)) {
+                    const alertRef = doc(collection(db, 'stockAlerts'));
+                    batch.set(alertRef, {
+                        productId: item.id,
+                        productName: item.name,
+                        currentStock: newStock,
+                        threshold: product.lowStockThreshold || 5,
+                        type: newStock <= 0 ? 'out_of_stock' : 'low_stock',
+                        message: newStock <= 0
+                            ? `❌ OUT OF STOCK: ${item.name}`
+                            : `⚠️ LOW STOCK: ${item.name} — Only ${newStock} left`,
+                        status: 'unread',
+                        createdAt: serverTimestamp()
+                    });
+                }
+            }
+
+            await batch.commit();
+            return orderId;
+        }
+
+
+        // ============================================================
+        // ✅ SAVE & DOWNLOAD BILL — Rendu action oru button la
+        // ============================================================
+        saveAndDownloadBtn.addEventListener('click', async () => {
+            const activeItems = billItems.filter(i => i.included !== false);
+            if (activeItems.length === 0) {
+                showToast('⚠️ No items in bill', 'error');
+                return;
+            }
+
+            // ✅ CONFIRM DIALOG
+            const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
+            const totalAmount = activeItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            const customerName = custNameInput.value.trim() || 'Walk-in Customer';
+
+            const confirmMsg =
+                `💾 Save & Download Bill?\n\n` +
+                `Customer: ${customerName}\n` +
+                `Items: ${totalItems}\n` +
+                `Total: ₹${totalAmount.toLocaleString('en-IN')}\n\n` +
+                `✅ Bill will be saved to history\n` +
+                `✅ Stock will be deducted\n` +
+                `✅ PDF will be downloaded`;
+
+            if (!confirm(confirmMsg)) return;
+
+            saveAndDownloadBtn.disabled = true;
+
+            try {
+                // ✅ STEP 1: SAVE TO FIREBASE (with stock deduction)
+                const orderId = await saveBillToFirebase();
+
+                // ✅ STEP 2: BUILD INVOICE HTML
+                const dateTimeStr = new Date().toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', hour12: true
+                });
+
+                const html = buildInvoiceHtml({
+                    orderId,                    // ✅ Real order ID (HC007 etc.)
+                    customerName: customerName,
+                    customerPhone: custPhoneInput.value.trim(),
+                    payMethod: document.getElementById('payMethod').value,
+                    items: activeItems,
+                    totalItems,
+                    subtotal: totalAmount,
+                    grandTotal: totalAmount,
+                    dateTimeStr,
+                    orderStatus: 'Completed'
+                });
+
+                // ✅ STEP 3: OPEN INVOICE + PRINT
+                openInvoiceAndPrint(html);
+
+                // ✅ SUCCESS TOAST
+                showToast(`✅ Bill ${orderId} saved & downloading...`, 'success');
+
+                // ✅ STEP 4: CLEAR BILL DATA
+                billItems = [];
+                addItemRowOpen = false;
+                custNameInput.value = 'Walk-in Customer';
+                custPhoneInput.value = '';
+                customerHistoryBox.style.display = 'none';
+                customerHistoryBox.innerHTML = '';
+                clearBillFromLocalStorage();
+                clearCustomerFromLocalStorage();
+                renderCart();
+
+                // ✅ STEP 5: AUTO REFRESH (2 seconds la)
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+
+            } catch (err) {
+                console.error('Save & Download error:', err);
+                showToast('❌ Error: ' + err.message, 'error');
+                saveAndDownloadBtn.disabled = false;
+            }
+        });
+
+        // ============================================================
+        // ⌨️ CUSTOMER DETAILS — KEYBOARD FLOW
+        // ============================================================
+        // Name → Phone → Payment → Save button (Enter vachu move)
+        // ============================================================
+
+        var payMethodSelect = document.getElementById('payMethod');
+        // ----------------- CUSTOMER NAME -----------------
+        custNameInput.addEventListener('keydown', (e) => {
+            // ✅ ENTER → Phone field-ku move
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                custPhoneInput.focus();
+                custPhoneInput.select();
+                return;
+            }
+
+            // ✅ SHIFT + ENTER → Search box-ku back
+            if (e.key === 'Enter' && e.shiftKey) {
+                e.preventDefault();
+                searchInput.focus();
+                return;
+            }
+
+            // ✅ BACKSPACE (empty name) → Search box-ku back
+            if (e.key === 'Backspace' && custNameInput.value === '') {
+                e.preventDefault();
+                searchInput.focus();
+                return;
+            }
+        });
+
+        // ----------------- PHONE NUMBER -----------------
+        custPhoneInput.addEventListener('keydown', (e) => {
+            // ✅ ENTER → Payment dropdown-ku move
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                payMethodSelect.focus();
+                return;
+            }
+
+            // ✅ SHIFT + ENTER → Name field-ku back
+            if (e.key === 'Enter' && e.shiftKey) {
+                e.preventDefault();
+                custNameInput.focus();
+                return;
+            }
+
+            // ✅ BACKSPACE (empty phone) → Name field-ku back
+            if (e.key === 'Backspace' && custPhoneInput.value === '') {
+                e.preventDefault();
+                custNameInput.focus();
+                return;
+            }
+        });
+
+        // ----------------- PAYMENT METHOD -----------------
+        payMethodSelect.addEventListener('keydown', (e) => {
+            // ✅ ENTER → Save & Download button-ku move
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!saveAndDownloadBtn.disabled) {
+                    saveAndDownloadBtn.focus();
+                } else {
+                    showToast('⚠️ Add items first', 'error');
+                }
+                return;
+            }
+
+            // ✅ SHIFT + ENTER → Phone field-ku back
+            if (e.key === 'Enter' && e.shiftKey) {
+                e.preventDefault();
+                custPhoneInput.focus();
+                return;
+            }
+
+            // ✅ BACKSPACE → Phone field-ku back
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+                custPhoneInput.focus();
+                return;
+            }
+        });
+
+        // ----------------- SAVE BUTTON -----------------
+        saveAndDownloadBtn.addEventListener('keydown', (e) => {
+            // ✅ ENTER → save trigger
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveAndDownloadBtn.click();
+                return;
+            }
+
+            // ✅ BACKSPACE → Payment dropdown-ku back
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+                payMethodSelect.focus();
+                return;
+            }
+        });
+
+        // ============================================================
+        // INVOICE HTML — Orders Page Theme
+        // ============================================================
+        function buildInvoiceHtml({
+            orderId,
+            customerName,
+            customerPhone,
+            payMethod,
+            items,
+            totalItems,
+            subtotal,
+            grandTotal,
+            dateTimeStr,
+            orderStatus
+        }) {
+
+            const logoUrl = new URL('../pictures/logo-removebg-preview.png', window.location.href).href;
+
+            const rowsHtml = items.map((item, i) => `
+        <tr>
+            <td>${i + 1}. ${escapeHtmlAttr(item.name)}</td>
+            <td style="text-align:center;">${item.qty}</td>
+            <td style="text-align:right;">₹${item.price.toLocaleString('en-IN')}</td>
+            <td style="text-align:right;">₹${(item.price * item.qty).toLocaleString('en-IN')}</td>
+        </tr>
+    `).join('');
+
+            return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Invoice ${escapeHtmlAttr(orderId)}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+html,body{height:100%;}
+body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;padding:30px 35px;max-width:800px;margin:auto;display:flex;flex-direction:column;min-height:100vh;}
+.inv-content{flex:1;}
+.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.inv-brand{display:flex;align-items:center;gap:14px;}
+.inv-brand img{width:60px;height:60px;object-fit:contain;}
+.inv-brand-name{font-size:28px;font-weight:800;color:#6a1b9a;}
+.inv-brand-tag{font-size:11px;color:#777;letter-spacing:1px;text-transform:uppercase;}
+.inv-brand-sub{font-size:13px;color:#555;margin-top:4px;}
+.inv-right{text-align:right;}
+.inv-title{font-size:24px;font-weight:800;color:#6a1b9a;}
+.inv-id{font-size:14px;font-weight:700;margin-top:4px;}
+.inv-date{font-size:12px;color:#777;margin-top:4px;}
+.inv-hr{border:none;border-top:3px solid #6a1b9a;margin:16px 0 22px;}
+.inv-info-box{display:flex;border:1px solid #e8dff0;border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.inv-info-col{flex:1;padding:16px 18px;}
+.inv-info-col:first-child{background:#faf5ff;}
+.inv-info-col:last-child{border-left:1px solid #e8dff0;}
+.inv-info-label{font-size:11px;font-weight:700;color:#ffc107;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.inv-info-col strong{display:block;font-size:16px;margin-bottom:4px;}
+.inv-info-col span{display:block;font-size:13px;color:#555;}
+.inv-status-row{font-size:13px;margin-bottom:6px;}
+.inv-status-row b{color:#6a1b9a;}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:18px;}
+.inv-table th{background:#6a1b9a !important;color:#fff !important;padding:12px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border:1px solid #6a1b9a;border-right:1px solid rgba(255,255,255,0.35);}
+.inv-table th:last-child{border-right:1px solid #6a1b9a;}
+.inv-table td{padding:11px 12px;border-bottom:1px solid #eee;font-size:13px;border-right:1px solid #e8dff0;}
+.inv-table td:last-child{border-right:none;}
+.inv-table tbody tr:nth-child(even){background:#faf5ff;}
+.inv-totals{display:flex;justify-content:flex-end;}
+.inv-totals table{min-width:260px;border-collapse:collapse;}
+.inv-totals td{padding:8px 10px;font-size:14px;text-align:right;}
+.inv-totals .grand td{background:#6a1b9a !important;color:#fff !important;font-size:18px;font-weight:800;padding:12px;}
+.inv-footer{text-align:center;margin-top:auto;padding-top:30px;color:#6a1b9a;font-size:14px;line-height:1.7;border-top:1px solid #eee;}
+@media print{
+    body{padding:18px;min-height:100vh;display:flex;flex-direction:column;}
+    .inv-content{flex:1;}
+    .inv-footer{margin-top:auto;}
+}
+</style>
+</head>
+<body>
+
+<div class="inv-content">
+    <div class="inv-header">
+        <div class="inv-brand">
+            <img src="${logoUrl}" alt="Hari Crackers">
+            <div>
+                <div class="inv-brand-name">HARI CRACKERS</div>
+                <div class="inv-brand-tag">Light Up Every Celebration</div>
+                <div class="inv-brand-sub">Ranjankudi, Perambalur(d.t), Tamil Nadu | +91 86677 25665</div>
+            </div>
+        </div>
+        <div class="inv-right">
+            <div class="inv-title">INVOICE</div>
+            <div class="inv-id">#${escapeHtmlAttr(orderId)}</div>
+            <div class="inv-date">${escapeHtmlAttr(dateTimeStr)}</div>
+        </div>
+    </div>
+
+    <hr class="inv-hr">
+
+    <div class="inv-info-box">
+        <div class="inv-info-col">
+            <div class="inv-info-label">Bill To</div>
+            <strong>${escapeHtmlAttr(customerName)}</strong>
+            ${customerPhone ? `<span>${escapeHtmlAttr(customerPhone)}</span>` : ''}
+        </div>
+        <div class="inv-info-col">
+            <div class="inv-info-label">Status</div>
+            <div class="inv-status-row">Order: <b>${escapeHtmlAttr(orderStatus || 'Completed')}</b></div>
+            <div class="inv-status-row">Payment: <b>${escapeHtmlAttr(payMethod || '-')}</b></div>
+            <div class="inv-status-row">Total Items: <b>${totalItems}</b></div>
+        </div>
+    </div>
+
+    <table class="inv-table">
+    <thead>
+    <tr>
+    <th>Product</th>
+    <th style="text-align:center;">Qty</th>
+    <th style="text-align:right;">Price</th>
+    <th style="text-align:right;">Amount</th>
+    </tr>
+    </thead>
+    <tbody>${rowsHtml}</tbody>
+    </table>
+
+    <div class="inv-totals">
+    <table>
+    <tr><td>Subtotal:</td><td>₹${subtotal.toLocaleString('en-IN')}</td></tr>
+    <tr class="grand"><td>Grand Total:</td><td>₹${grandTotal.toLocaleString('en-IN')}</td></tr>
+    </table>
+    </div>
+</div>
+
+<div class="inv-footer">
+    ✨ Thank you for choosing Hari Crackers.<br>
+    Wishing you a Safe, Bright & Joyful Celebration!
+</div>
+
+</body>
+</html>`;
+        }
+
+        function openInvoiceAndPrint(html) {
+            const win = window.open('', '_blank');
+            if (!win) {
+                showToast('⚠️ Popup blocked — allow popups for this site to print the bill', 'error');
+                return;
+            }
+            win.document.open();
+            win.document.write(html);
+            win.document.close();
+            win.focus();
+            setTimeout(() => {
+                try { win.print(); } catch (e) { }
+            }, 400);
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ============================================================
+        // UI
+        // ============================================================
+        document.getElementById('hamburgerBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        billItems = loadBillFromLocalStorage();
+        loadCustomerFromLocalStorage();
+        renderCart();
+        listenToProducts();
+
+        // ============================================================
+        // ⌨️ KEYBOARD-FIRST NAVIGATION
+        // ============================================================
+        // POS counter-ku mouse illama keyboard vachu bill build panna
+        // ============================================================
+
+        let highlightIndex = 0;   // ↑ ↓ navigate panna current highlighted row
+
+        // ----------------- SEARCH BOX KEYBOARD -----------------
+        searchInput.addEventListener('keydown', (e) => {
+            const term = searchInput.value.trim().toLowerCase();
+            const filtered = term
+                ? allProducts.filter(p => (p.name || '').toLowerCase().includes(term))
+                : allProducts;
+            const visible = filtered.filter(p => p.inStock !== false); // only in-stock
+
+            // ✅ ENTER → product add pannu + andha product-oda QTY field-ku focus
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (visible.length === 0) {
+                    showToast('⚠️ No matching product found', 'error');
+                    return;
+                }
+
+                const pick = visible[Math.min(highlightIndex, visible.length - 1)];
+
+                // Search box clear pannu
+                searchInput.value = '';
+                highlightIndex = 0;
+
+                // Product-ah bill la add pannu
+                addToBill(pick);
+                showToast(`✅ Added: ${pick.name} — qty edit pannunga`, 'success');
+
+                // ✅ Andha product-oda qty field-ku focus move
+                setTimeout(() => {
+                    focusQtyFieldForProduct(pick.id);
+                }, 100);
+
+                return;
+            }
+
+            // ✅ ARROW DOWN → next product highlight
+            // Last product-la irundha → Customer Name field-ku move
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (visible.length === 0) return;
+
+                // Last product-ah already highlight pannirundha → Customer field-ku move
+                if (highlightIndex >= visible.length - 1) {
+                    focusCustomerPane();
+                    return;
+                }
+
+                highlightIndex = Math.min(highlightIndex + 1, visible.length - 1);
+                highlightProductRow(visible[highlightIndex].id);
+                return;
+            }
+
+            // ✅ ARROW UP → previous product highlight
+            // First product-la irundha → Search box-ku thirumba focus
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (visible.length === 0) return;
+
+                // First product-la irundha → Search box-ku thirumba focus
+                if (highlightIndex <= 0) {
+                    highlightIndex = 0;
+                    // Ellaa highlight-um remove pannu
+                    document.querySelectorAll('.product-pick-table tbody tr.kb-highlight').forEach(tr => {
+                        tr.classList.remove('kb-highlight');
+                    });
+                    searchInput.focus();
+                    return;
+                }
+
+                highlightIndex = Math.max(highlightIndex - 1, 0);
+                highlightProductRow(visible[highlightIndex].id);
+                return;
+            }
+
+            // ✅ ESC → clear search
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                highlightIndex = 0;
+                renderProductGrid();
+                return;
+            }
+
+            // ✅ BACKSPACE → search box empty-ah irundha, LAST ITEM remove pannum
+            // (idhu standard POS behaviour — search box khali-la backspace = undo)
+            if (e.key === 'Backspace' && searchInput.value === '') {
+                e.preventDefault();
+                removeLastBillItem();
+                return;
+            }
+
+            // ✅ RIGHT ARROW → Bill Items pane-ku move
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                focusBillPane();
+                return;
+            }
+        });
+
+
+        
+            // ----------------- FOCUS QTY FIELD FOR SPECIFIC PRODUCT -----------------
+            // Bill Items la andha product-oda qty input-ku focus
+            function focusQtyFieldForProduct(productId) {
+                // Bill la irukkura rows-ah paaru
+                const rows = cartTbody.querySelectorAll('tr[data-index]');
+
+                for (const row of rows) {
+                    const idx = parseInt(row.dataset.index, 10);
+                    const item = billItems[idx];
+
+                    if (item && item.id === productId) {
+                        const qtyInput = row.querySelector('.qty-input');
+                        if (qtyInput) {
+                            qtyInput.focus();
+                            qtyInput.select();  // Text-ah select pannu (easy edit)
+                            qtyInput.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                            return;
+                        }
+                    }
+                }
+
+                // Product bill la illena, search box-ku focus thirumba
+                searchInput.focus();
+            }
+
+        // ----------------- HIGHLIGHT PRODUCT ROW -----------------
+        function highlightProductRow(productId) {
+            // Ellaa rows-layum 'kb-highlight' remove pannu
+            document.querySelectorAll('.product-pick-table tbody tr').forEach(tr => {
+                tr.classList.remove('kb-highlight');
+            });
+            // Current row-ku add pannu
+            const row = document.querySelector(`.product-pick-table tbody tr[data-id="${productId}"]`);
+            if (row) {
+                row.classList.add('kb-highlight');
+                row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+        }
+
+
+        // ----------------- PANE NAVIGATION (Left ↔ Right) -----------------
+        // Search box → Right arrow → Bill Items pane
+        // Bill Items → Left arrow → Search box
+
+        function focusBillPane() {
+            // Bill Items table la first interactive element-ku focus
+            const firstBillElement = document.querySelector('#cartTableOuter .row-check')
+                || document.querySelector('#cartTableOuter .qty-input')
+                || document.querySelector('#cartTableOuter .rate-input')
+                || document.querySelector('#cartTableOuter .remove-row');
+
+            if (firstBillElement) {
+                firstBillElement.focus();
+                if (firstBillElement.select) firstBillElement.select();
+                // Scroll into view
+                firstBillElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            } else {
+                // Bill empty-ah irundha → search box-ku focus thirumba
+                searchInput.focus();
+                showToast('Bill empty — products add', 'info');
+            }
+        }
+
+        function focusProductPane() {
+            // Search box-ku focus thirumba
+            searchInput.focus();
+            searchInput.select();
+        }
+        // ----------------- REMOVE LAST BILL ITEM -----------------
+        function removeLastBillItem() {
+            if (billItems.length === 0) {
+                showToast('Bill empty', 'info');
+                return;
+            }
+            const lastItem = billItems[billItems.length - 1];
+            billItems.pop();
+            renderCart();
+            showToast(`🗑️ Removed: ${lastItem.name}`, 'info');
+        }
+
+        // ----------------- GLOBAL KEYBOARD (page-wide) -----------------
+        document.addEventListener('keydown', (e) => {
+            // Input/textarea-la type pannumbodhu, intha shortcut skip pannu
+            const tag = (e.target.tagName || '').toLowerCase();
+            const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select';
+
+            // ✅ GLOBAL BACKSPACE (input la illama) → last item remove
+            if (e.key === 'Backspace' && !isTyping) {
+                e.preventDefault();
+                removeLastBillItem();
+                return;
+            }
+
+            // ✅ GLOBAL ENTER (input la illama) → search box-ku focus
+            if (e.key === 'Enter' && !isTyping) {
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+                return;
+            }
+
+            // ✅ GLOBAL '/' → search box-ku focus (like YouTube)
+            if (e.key === '/' && !isTyping) {
+                e.preventDefault();
+                searchInput.focus();
+                return;
+            }
+        });
+
+        // ----------------- AUTO-FOCUS SEARCH BOX ON LOAD -----------------
+        // Page load aana udanae search box-ku focus
+        window.addEventListener('load', () => {
+            setTimeout(() => searchInput.focus(), 300);
+        });
+
+        function listenToBadges() {
+            // ============================================================
+            // ORDERS BADGE
+            // ============================================================
+            const ordersRef = collection(db, 'orders');
+            onSnapshot(ordersRef, (snapshot) => {
+                const orderBadge = document.getElementById('orderBadge');
+                if (orderBadge) {
+                    orderBadge.textContent = snapshot.size;
+                    orderBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
+                }
+            }, (error) => {
+                console.error('Error listening to orders:', error);
+            });
+
+            // ============================================================
+            // PRODUCTS BADGE
+            // ============================================================
+            const productsRef = collection(db, 'products');
+            onSnapshot(productsRef, (snapshot) => {
+                const productBadge = document.getElementById('productBadge');
+                if (productBadge) {
+                    productBadge.textContent = snapshot.size;
+                    productBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
+                }
+            }, (error) => {
+                console.error('Error listening to products:', error);
+            });
+
+            // ============================================================
+            // ✅ STOCK ALERTS BADGE — Low stock products count
+            // ============================================================
+            const productsBadgeRef = collection(db, 'products');
+
+            onSnapshot(productsBadgeRef, (snapshot) => {
+                let lowStockCount = 0;
+
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const stockQty = data.stockQty;
+                    const threshold = data.lowStockThreshold || 5;
+
+                    // Stock track pannirundha + threshold-ku kuraiya irundha count
+                    if (typeof stockQty === 'number' && stockQty <= threshold) {
+                        lowStockCount++;
+                    }
+                });
+
+                const badge = document.getElementById('stockAlertBadge');
+                if (badge) {
+                    badge.textContent = lowStockCount;
+                    badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
+                }
+            }, (error) => {
+                console.error('Stock alert badge error:', error);
+            });
+        }
+
+        listenToBadges();
+
+        // ============================================================
+        // EXPOSE LIGHTBOX GLOBALLY
+        // ============================================================
+        window.openLightbox = openLightbox;
+        window.closeLightbox = closeLightbox;
+
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+
+            if (!confirm('Are you sure you want to logout?')) {
+                return;
+            }
+
+            try {
+                await signOut(auth);
+
+                // After logout, always go to admin login
+                window.location.href = '/admin/index.html';
+
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed. Please try again.');
+            }
+        });
+
+        function renderLowStockWarningBanner() {
+            const banner = document.getElementById('lowStockWarningBanner');
+            const countEl = document.getElementById('lowStockCount');
+            const listEl = document.getElementById('lowStockWarningList');
+
+            if (!banner || !countEl || !listEl) return;
+
+            const lowStock = allProducts
+                .filter(p => typeof p.stockQty === 'number')
+                .filter(p => p.stockQty <= (p.lowStockThreshold || 5))
+                .sort((a, b) => (a.stockQty || 0) - (b.stockQty || 0));
+
+            if (lowStock.length === 0) {
+                banner.style.display = 'none';
+                return;
+            }
+
+            countEl.textContent = lowStock.length;
+
+            listEl.innerHTML = lowStock.slice(0, 8).map(p => {
+                const isOut = (p.stockQty || 0) <= 0;
+                return `
+            <span class="warning-item ${isOut ? 'out-of-stock' : ''}" 
+                  onclick="scrollToProduct('${p.id}')"
+                  title="Click to add to bill">
+                ${p.name}
+                <span class="qty-badge">${isOut ? 'OUT' : p.stockQty + ' left'}</span>
+            </span>
+        `;
+            }).join('');
+
+            banner.style.display = 'flex';
+        }
+
+        window.scrollToProduct = function (productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            searchInput.value = product.name;
+            renderProductGrid();
+
+            document.querySelector('.product-pick-table')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        };
+
+
+    </script>
+</body>
+
+</html>

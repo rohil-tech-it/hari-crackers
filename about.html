@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us — Hari Crackers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <!-- FAVICON / TAB LOGO -->
+  <link rel="icon" type="image/png" href="./pictures/logo-removebg-preview.png">
+  <style>
+    /* Force badge to always show */
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--ember);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex !important;
+      /* ← Force display */
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-white);
+    }
+
+    /* When cart is empty, show 0 with faded style */
+    .cart-badge.empty {
+      background: #999;
+      font-size: 0.55rem;
+    }
+
+    /* Live indicator */
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(46, 204, 113, 0.15);
+      color: #2ecc71;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .live-indicator .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2ecc71;
+      animation: blink-dot 1.5s infinite;
+    }
+
+    @keyframes blink-dot {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.2;
+      }
+    }
+
+    .settings-sync-badge {
+      display: inline-block;
+      background: #2ecc71;
+      color: #fff;
+      font-size: 0.6rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-left: 8px;
+      vertical-align: middle;
+      animation: pulse-badge 2s infinite;
+    }
+
+    @keyframes pulse-badge {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    /* Story Image Center - Responsive */
+    @media (max-width: 768px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .story-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin: 30px auto 0;
+        width: 100%;
+      }
+
+      .story-img {
+        display: block;
+        margin: 0 auto;
+        width: 80%;
+        max-width: 280px;
+        height: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .story-img {
+        width: 75%;
+        max-width: 220px;
+      }
+    }
+
+    /* Mobile - Story Image Perfect Center */
+    @media (max-width: 768px) {
+      .story-section .story-image {
+        text-align: center !important;
+        width: 100%;
+      }
+
+      .story-section .story-image .story-img {
+        display: inline-block !important;
+        width: 300px !important;
+        max-width: 95%;
+        height: auto !important;
+        margin: 0 auto !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .story-section .story-image .story-img {
+        width: 280px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .story-section .story-img {
+        width: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .story-section .hero-grid {
+        justify-items: center !important;
+      }
+    }
+
+    /* ===== SOCIAL FLOAT - MOBILE FIX ===== */
+    @media (max-width: 768px) {
+      .social-float {
+        display: flex !important;
+        flex-direction: column;
+        position: fixed;
+        left: 12px;
+        bottom: 80px;
+        top: auto;
+        transform: none;
+        z-index: 9999;
+        gap: 8px;
+      }
+
+      .social-float a {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .social-float {
+        left: 10px;
+        bottom: 75px;
+      }
+
+      .social-float a {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== TOP BAR ===== -->
+  <div class="top-bar">
+    <div class="top-bar-flex">
+      <span class="tb-tamil">🎆 தீபாவளி 2026 புக்கிங் தொடங்கியது</span>
+      <span class="tb-sep">•</span>
+      <span class="tb-english">Diwali 2026 Bookings Open • Up to 80% OFF • Premium Sivakasi Fireworks • Fast
+        Delivery Across Tamil Nadu</span>
+    </div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="nav-top">
+      <a href="index.html" class="logo">
+        <img src="pictures/logo-removebg-preview.png" class="logo-img" alt="Hari Crackers">
+      </a>
+
+      <div class="nav-top-right">
+        <a href="tel:+917010392742" class="nav-top-phone">
+          <i class="fas fa-phone"></i>
+          <span>+91 86677 25665</span>
+        </a>
+
+        <button class="header-cart" id="open-cart-btn">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="header-cart-total">₹0</span>
+          <span class="cart-badge" id="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <div class="all-categories">
+        <!-- ✅ ADDED id="all-cat-btn" -->
+        <button class="all-categories-btn" id="all-cat-btn">
+          All Categories
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <!-- ✅ ADDED id + menu items -->
+        <div class="all-categories-menu" id="all-cat-menu">
+          <a href="products.html#cat-Sound-Crackers"><i class="fas fa-volume-high"></i> Sound Crackers</a>
+          <a href="products.html#cat-Flower-Pots"><i class="fas fa-fire-flame-curved"></i> Flower Pots</a>
+          <a href="products.html#cat-Ground-Chakkars"><i class="fas fa-record-vinyl"></i> Ground Chakkars</a>
+          <a href="products.html#cat-Atom-Bombs">
+            <i class="fas fa-bomb"></i> Atom Bombs
+          </a> <a href="products.html#cat-Rocket"><i class="fas fa-rocket"></i> Rockets</a>
+          <a href="products.html#cat-Multishots"><i class="fas fa-star-of-life"></i> Multishots</a>
+        </div>
+      </div>
+
+      <!-- ✅ ADDED id="mainNav" -->
+      <nav class="main-nav" id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a class="active" href="about.html">About</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="" class="btn" id="priceListBtn">
+          Download Price List
+        </a>
+
+        <!-- ✅ ADDED id="hamburgerBtn" -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ===== PREMIUM ABOUT HERO ===== -->
+  <section class="about-premium-hero">
+    <!-- Animated Sparks -->
+    <span class="spark s1"></span>
+    <span class="spark s2"></span>
+    <span class="spark s3"></span>
+    <span class="spark s4"></span>
+    <span class="spark s5"></span>
+    <span class="spark s6"></span>
+
+    <div class="container">
+
+      <div class="hero-content">
+
+        <div class="hero-badge">
+          <i class="fas fa-fire"></i>
+          Factory Direct from Sivakasi
+        </div>
+
+        <h1>
+          Crafting <span id="aboutTagline">Brilliant Celebrations</span>
+        </h1>
+
+        <p id="aboutDescription">
+          Premium Sivakasi Fireworks with factory-direct pricing,
+          trusted quality, and safe delivery across Tamil Nadu.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="products.html" class="btn btn-primary">
+            <i class="fas fa-shopping-bag"></i> Shop Now
+          </a>
+
+          <a href="contact.html" class="btn btn-ghost">
+            <i class="fas fa-phone"></i> Contact Us
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Floating Premium Cards -->
+      <div class="hero-floating-cards">
+
+        <div class="float-card">
+          <i class="fas fa-star"></i>
+          <div>
+            <strong>Premium</strong>
+            <span>Quality</span>
+          </div>
+        </div>
+
+        <div class="float-card">
+          <i class="fas fa-shield-alt"></i>
+          <div>
+            <strong>100%</strong>
+            <span>Safe Products</span>
+          </div>
+        </div>
+
+        <div class="float-card">
+          <i class="fas fa-truck-fast"></i>
+          <div>
+            <strong>Fast</strong>
+            <span>Delivery</span>
+          </div>
+        </div>
+
+        <div class="float-card">
+          <i class="fas fa-gift"></i>
+          <div>
+            <strong>Festival</strong>
+            <span>Combo Packs</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== OUR STORY - PREMIUM ===== -->
+  <section class="section story-section">
+    <div class="container">
+      <div class="story-wrapper">
+        <!-- Left Content -->
+        <div class="story-content reveal">
+          <span class="story-chip">
+            <i class="fas fa-fire"></i>
+            OUR STORY
+          </span>
+
+          <h2 id="storyTitle">
+            From the Heart of
+            <span>Sivakasi</span>
+          </h2>
+
+          <div class="story-line"></div>
+
+          <p class="story-text" id="storyText1">
+            Hari Crackers works directly with licensed Sivakasi manufacturers,
+            bringing premium fireworks without middlemen, ensuring factory pricing
+            and trusted quality.
+          </p>
+
+          <p class="story-text" id="storyText2">
+            Every order is carefully inspected, packed with care, and dispatched
+            safely so your celebrations arrive brighter and more memorable.
+          </p>
+
+          <!-- Feature Cards -->
+          <div class="story-features" id="storyFeatures">
+
+            <div class="feature-box">
+              <i class="fas fa-industry"></i>
+              <span>Factory Direct</span>
+            </div>
+
+            <div class="feature-box">
+              <i class="fas fa-shield-check"></i>
+              <span>Safety Tested</span>
+            </div>
+
+            <div class="feature-box">
+              <i class="fas fa-box-open"></i>
+              <span>Carefully Packed</span>
+            </div>
+
+            <div class="feature-box">
+              <i class="fas fa-truck-fast"></i>
+              <span>Fast Delivery</span>
+            </div>
+          </div>
+
+          <a href="contact.html" class="btn btn-primary">
+            Contact Us
+            <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <!-- Right Visual -->
+        <div class="story-image reveal">
+          <div class="story-image-card">
+            <span class="glow glow1"></span>
+            <span class="glow glow2"></span>
+            <span class="glow glow3"></span>
+
+            <img src="./pictures/haricrackers.png" alt="Hari Crackers Gift Box" class="story-img">
+
+            <div class="story-badge">
+              <i class="fas fa-star"></i>
+              Premium Sivakasi Quality
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PREMIUM MISSION & VISION ===== -->
+  <section class="section premium-purpose">
+    <div class="purpose-bg">
+      <span class="particle p1"></span>
+      <span class="particle p2"></span>
+      <span class="particle p3"></span>
+      <span class="particle p4"></span>
+      <span class="particle p5"></span>
+    </div>
+
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">
+          <i class="fas fa-star"></i>
+          OUR PURPOSE
+        </span>
+        <h2>Driven by <span class="accent">Trust & Celebration</span></h2>
+
+        <p> Every firework we deliver carries the spirit of Sivakasi,
+          combining tradition, quality, and customer satisfaction.
+        </p>
+      </div>
+
+      <div class="purpose-grid">
+        <!-- Mission -->
+        <div class="purpose-card mission reveal">
+          <div class="purpose-icon">
+            <i class="fas fa-bullseye"></i>
+          </div>
+          <span class="purpose-label">OUR MISSION</span>
+          <h3>Creating Joy Through Safe Celebrations</h3>
+          <p>
+            At Hari Crackers, our mission is to deliver premium Sivakasi
+            fireworks directly from trusted manufacturers to families
+            across Tamil Nadu, ensuring every celebration is brighter,
+            safer, and more affordable.
+          </p>
+          <ul class="purpose-list">
+            <li><i class="fas fa-check-circle"></i> Factory Direct Pricing</li>
+            <li><i class="fas fa-check-circle"></i> Safety Tested Products</li>
+            <li><i class="fas fa-check-circle"></i> Fast & Secure Delivery</li>
+            <li><i class="fas fa-check-circle"></i> Customer First Approach</li>
+          </ul>
+
+        </div>
+        <!-- Vision -->
+        <div class="purpose-card vision reveal">
+          <div class="purpose-icon">
+            <i class="fas fa-eye"></i>
+          </div>
+          <span class="purpose-label">OUR VISION</span>
+          <h3>Becoming South India's Most Trusted Fireworks Brand</h3>
+          <p>
+            We envision Hari Crackers as a household name known for
+            integrity, innovation, premium quality, and unforgettable
+            festive experiences that bring families together year after year.
+          </p>
+          <ul class="purpose-list">
+            <li><i class="fas fa-check-circle"></i> Premium Quality Assurance</li>
+            <li><i class="fas fa-check-circle"></i> Ethical Business Practices</li>
+            <li><i class="fas fa-check-circle"></i> Innovation in Service</li>
+            <li><i class="fas fa-check-circle"></i> Long-Term Customer Trust</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== OUR VALUES ===== -->
+  <section class="section values-section">
+
+    <!-- Hanging Crackers -->
+    <div class="hanging-crackers">
+      <div class="hanger h1">
+        <span class="rope"></span>
+        <img src="./pictures/rocket-removebg-preview.png" alt="Rocket">
+      </div>
+
+      <div class="hanger h2">
+        <span class="rope"></span>
+        <img src="./pictures/flowerpot-removebg-preview.png" alt="Flower Pot">
+      </div>
+
+      <div class="hanger h3">
+        <span class="rope"></span>
+        <img src="./pictures/giftbox-removebg-preview.png" alt="Gift Box">
+      </div>
+
+      <div class="hanger h4">
+        <span class="rope"></span>
+        <img src="./pictures/chakkarams-removebg-preview.png" alt="Rocket">
+      </div>
+
+      <div class="hanger h5">
+        <span class="rope"></span>
+        <img src="./pictures/cracker-removebg-preview.png" alt="Flower Pot">
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">
+          <i class="fas fa-star"></i>
+          WHAT WE STAND FOR
+        </span>
+
+        <h2>Our Core <span class="accent">Values</span></h2>
+
+        <p id="valuesSubtext">
+          The principles that light up every celebration we deliver.
+        </p>
+      </div>
+
+      <div class="values-grid">
+        <div class="value-card reveal">
+          <div class="value-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Safety First</h3>
+          <p>Every firework is sourced from licensed Sivakasi manufacturers and quality-checked before delivery.</p>
+        </div>
+
+        <div class="value-card reveal">
+          <div class="value-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h3>Trust & Integrity</h3>
+          <p>Transparent pricing, honest service, and long-lasting customer relationships are our foundation.</p>
+        </div>
+
+        <div class="value-card reveal">
+          <div class="value-icon">
+            <i class="fas fa-gem"></i>
+          </div>
+          <h3>Premium Quality</h3>
+          <p>From sparklers to aerial shots, every product is selected for brilliance, consistency, and performance.</p>
+        </div>
+
+        <div class="value-card reveal">
+          <div class="value-icon">
+            <i class="fas fa-truck-fast"></i>
+          </div>
+          <h3>Fast Delivery</h3>
+          <p>We deliver safely and quickly across Tamil Nadu so your celebrations never wait.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SAFETY TIPS ===== -->
+  <section class="section safety-section">
+    <div class="safety-overlay"></div>
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">
+          <i class="fas fa-shield-alt"></i> Safety First
+        </span>
+        <h2>Celebrate <span class="accent">Responsibly</span></h2>
+        <p>Follow these simple precautions for a safe and memorable Diwali celebration.</p>
+      </div>
+
+      <div class="safety-grid">
+        <div class="safety-card reveal">
+          <div class="safety-icon">
+            <i class="fas fa-people-arrows"></i>
+          </div>
+          <h3>Maintain Distance</h3>
+          <p>Keep at least 15 feet away from lit fireworks and never lean over them.</p>
+        </div>
+
+        <div class="safety-card reveal">
+          <div class="safety-icon">
+            <i class="fas fa-water"></i>
+          </div>
+          <h3>Keep Water Ready</h3>
+          <p>Always keep a bucket of water or a fire extinguisher nearby.</p>
+        </div>
+
+        <div class="safety-card reveal">
+          <div class="safety-icon">
+            <i class="fas fa-child"></i>
+          </div>
+          <h3>Adult Supervision</h3>
+          <p>Children should burst crackers only under adult supervision.</p>
+        </div>
+
+        <div class="safety-card reveal">
+          <div class="safety-icon">
+            <i class="fas fa-ban"></i>
+          </div>
+          <h3>Never Relight</h3>
+          <p>Do not relight failed fireworks. Wait and soak them in water.</p>
+        </div>
+
+        <div class="safety-card reveal">
+          <div class="safety-icon">
+            <i class="fas fa-box"></i>
+          </div>
+          <h3>Store Properly</h3>
+          <p>Store crackers in a cool, dry place away from heat and flames.</p>
+        </div>
+
+        <div class="safety-card reveal">
+          <div class="safety-icon">
+            <i class="fas fa-shirt"></i>
+          </div>
+          <h3>Wear Cotton Clothes</h3>
+          <p>Wear cotton clothes and avoid loose synthetic clothing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="hari-footer">
+    <div class="container">
+      <!-- Top Footer -->
+      <div class="hari-footer-grid">
+        <!-- Brand -->
+        <div class="hari-brand">
+          <img src="pictures/logo-removebg-preview.png" alt="Hari Crackers" class="hari-footer-logo">
+          <p>
+            Premium Fireworks with factory-direct pricing, quality-tested products, and fast delivery across
+            Tamil Nadu.
+          </p>
+          <div class="hari-socials">
+            <a href="https://www.facebook.com/your-page" target="_blank" rel="noopener">
+              <i class="fab fa-facebook-f"></i>
+              <a href="https://www.instagram.com/hari_crackers_/" target="_blank">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="https://www.youtube.com/your-channel" target="_blank" rel="noopener">
+                <i class="fab fa-youtube"></i> <a href="https://wa.me/919597060024" target="_blank" rel="noopener"><i
+                    class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="hari-links">
+          <h4>Quick Links</h4>
+          <a href="index.html">Home</a>
+          <a href="products.html">Products</a>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact</a>
+        </div>
+
+        <!-- Categories -->
+        <div class="hari-links">
+          <h4>Categories</h4>
+          <a href="products.html">Sound Crackers</a>
+          <a href="products.html">Sparklers</a>
+          <a href="products.html">Flower Pots</a>
+          <a href="products.html">Rockets</a>
+          <a href="products.html">Aerial Shots</a>
+        </div>
+
+        <!-- Contact -->
+        <div class="hari-contact">
+          <h4>Contact Info</h4>
+
+          <div class="contact-box">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>2/8A NH-45 National Highway
+              Ranjankudi, Perambalur(d.t)
+              pincode-621115</span>
+          </div>
+
+          <div class="contact-box">
+            <i class="fas fa-phone"></i>
+            <span>+91 70103 92742, <br> +91 86677
+              25665</span>
+          </div>
+
+          <div class="contact-box">
+            <i class="fas fa-envelope"></i>
+            <span>haricrackers182@gmail.com</span>
+          </div>
+
+          <div class="contact-box">
+            <i class="fas fa-clock"></i>
+            <span>Mon – Sat | 9:00 AM – 8:00 PM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile CTA -->
+      <div class="hari-call-strip">
+        <h3>Need Help Choosing Crackers?</h3>
+
+        <p>
+          Call our Sivakasi team directly for combo packs,
+          wholesale orders, and festive offers.
+        </p>
+
+        <a href="tel:+917010392742" class="call-btn">
+          <i class="fas fa-phone-alt"></i>
+          Call +91 70103 92742
+        </a>
+
+      </div>
+
+      <!-- Bottom -->
+      <div class="hari-footer-bottom">
+        <div>
+          © 2026 <strong>Hari Crackers</strong> | All Rights
+          Reserved.
+        </div>
+
+        <div class="bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms</a>
+          <a href="#">Safety</a>
+        </div>
+      </div>
+
+      <div class="developer-credit">
+        Developed by <strong>Rohil Technologies</strong>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ==========================================
+     FLOATING ACTION BUTTONS
+========================================== -->
+
+  <!-- LEFT SIDE SHOP -->
+  <a href="products.html" class="floating-shop" title="Shop Now">
+    <img src="./pictures/ordernow.png" alt="Shop Now">
+  </a>
+
+  <!-- RIGHT SIDE BUTTONS -->
+  <div class="floating-actions">
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/hari_crackers_/" target="_blank" class="fab-btn fab-instagram" title="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+
+    <!-- WhatsApp -->
+    <a href="https://wa.me/919597060024" target="_blank" class="fab-btn fab-whatsapp" title="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Call -->
+    <a href="tel:+917010392742" class="fab-btn fab-call" title="Call">
+      <i class="fas fa-phone-alt"></i>
+    </a>
+
+    <!-- Back To Top -->
+    <button id="backToTop" class="fab-btn fab-top" type="button" title="Back to Top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+  </div>
+
+  <!-- ============================================================
+  ✅ CART SYNC — shared cart state across all pages (Home, Products,
+  About, FAQ, Contact). This is what fills in the header cart badge
+  and total on every page, not just products.html.
+  ============================================================ -->
+  <script src="cart.js"></script>
+
+  <!-- ============================================================
+  FIREBASE — AUTO-SYNC
+  ============================================================ -->
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "firebase/app";
+    import { getFirestore, doc, onSnapshot } from "firebase/firestore";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
+      authDomain: "hari-crackers.firebaseapp.com",
+      projectId: "hari-crackers",
+      storageBucket: "hari-crackers.firebasestorage.app",
+      messagingSenderId: "510011644696",
+      appId: "1:510011644696:web:b32ce0844e59b774a2dc6d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ============================================================
+    // DOM ELEMENTS
+    // ============================================================
+    const elements = {
+      topBarMsg: document.getElementById('topBarMsg'),
+      headerPhone: document.getElementById('headerPhone'),
+      headerEmail: document.getElementById('headerEmail'),
+      navPhone: document.getElementById('navPhone'),
+      aboutTagline: document.getElementById('aboutTagline'),
+      aboutDescription: document.getElementById('aboutDescription'),
+      storyTitle: document.getElementById('storyTitle'),
+      storyText1: document.getElementById('storyText1'),
+      storyText2: document.getElementById('storyText2'),
+      storyFeatures: document.getElementById('storyFeatures'),
+      missionSubtext: document.getElementById('missionSubtext'),
+      missionText: document.getElementById('missionText'),
+      visionText: document.getElementById('visionText'),
+      valuesSubtext: document.getElementById('valuesSubtext'),
+      footerBrandName: document.getElementById('footerBrandName'),
+      footerDesc: document.getElementById('footerDesc'),
+      footerPhone: document.getElementById('footerPhone'),
+      footerEmail: document.getElementById('footerEmail'),
+      footerAddress: document.getElementById('footerAddress'),
+      footerFacebook: document.getElementById('footerFacebook'),
+      footerInstagram: document.getElementById('footerInstagram'),
+      footerYouTube: document.getElementById('footerYouTube'),
+      footerWhatsApp: document.getElementById('footerWhatsApp'),
+      sfPhone: document.getElementById('sfPhone'),
+      sfWhatsApp: document.getElementById('sfWhatsApp'),
+      sfInstagram: document.getElementById('sfInstagram'),
+      sfFacebook: document.getElementById('sfFacebook'),
+      priceListBtn: document.getElementById('priceListBtn'),
+    };
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    const cleanPhone = (phone) => {
+      if (!phone) return '';
+      return phone.replace(/[^0-9+]/g, '');
+    };
+
+    const formatPhoneForDisplay = (phone) => {
+      if (!phone) return '+91 00000 00000';
+      const cleaned = cleanPhone(phone);
+      if (cleaned.startsWith('91') && cleaned.length === 12) {
+        return `+91 ${cleaned.slice(2, 7)} ${cleaned.slice(7)}`;
+      }
+      return phone;
+    };
+
+    const formatPhoneForLink = (phone) => {
+      if (!phone) return '+919655586460';
+      const cleaned = cleanPhone(phone);
+      if (cleaned.startsWith('91')) return `+${cleaned}`;
+      if (cleaned.startsWith('+')) return cleaned;
+      return `+${cleaned}`;
+    };
+
+    // ============================================================
+    // UPDATE UI FROM FIREBASE
+    // ============================================================
+    function updateUI(data) {
+      console.log('🔄 Updating from Firebase:', data);
+
+      // Store Name
+      if (data.storeName) {
+        if (elements.topBarMsg) {
+          elements.topBarMsg.textContent = `Welcome to ${data.storeName} — Premium Sivakasi Fireworks, delivered across Tamil Nadu.`;
+        }
+        if (elements.footerBrandName) {
+          elements.footerBrandName.textContent = data.storeName;
+        }
+      }
+
+      // Store Phone
+      if (data.storePhone) {
+        const display = formatPhoneForDisplay(data.storePhone);
+        const link = formatPhoneForLink(data.storePhone);
+
+        // Top Bar Phone
+        if (elements.headerPhone) {
+          elements.headerPhone.innerHTML = `<i class="fas fa-phone"></i> ${display}`;
+          elements.headerPhone.href = `tel:${link}`;
+        }
+        // Nav Phone
+        if (elements.navPhone) {
+          elements.navPhone.innerHTML = `<i class="fas fa-phone"></i> ${display}`;
+          elements.navPhone.href = `tel:${link}`;
+        }
+        // Footer Phone
+        if (elements.footerPhone) {
+          elements.footerPhone.textContent = display;
+          elements.footerPhone.href = `tel:${link}`;
+        }
+        // Floating Phone
+        if (elements.sfPhone) {
+          elements.sfPhone.href = `tel:${link}`;
+        }
+      }
+
+      // Store Email
+      if (data.storeEmail) {
+        if (elements.headerEmail) {
+          elements.headerEmail.innerHTML = `<i class="fas fa-envelope"></i>${data.storeEmail}`;
+          elements.headerEmail.href = `mailto:${data.storeEmail}`;
+        }
+        if (elements.footerEmail) {
+          elements.footerEmail.textContent = data.storeEmail;
+          elements.footerEmail.href = `mailto:${data.storeEmail}`;
+        }
+      }
+
+      // Store Address
+      if (data.storeAddress && elements.footerAddress) {
+        elements.footerAddress.textContent = data.storeAddress;
+      }
+
+      // Store Tagline
+      if (data.storeTagline && elements.aboutTagline) {
+        elements.aboutTagline.textContent = data.storeTagline;
+      }
+
+      // About Description
+      if (data.aboutDescription && elements.aboutDescription) {
+        elements.aboutDescription.textContent = data.aboutDescription;
+      }
+
+      // Story
+      if (data.storyTitle && elements.storyTitle) {
+        elements.storyTitle.textContent = data.storyTitle;
+      }
+      if (data.storyText1 && elements.storyText1) {
+        elements.storyText1.textContent = data.storyText1;
+      }
+      if (data.storyText2 && elements.storyText2) {
+        elements.storyText2.textContent = data.storyText2;
+      }
+      if (data.storyFeatures && elements.storyFeatures) {
+        const features = data.storyFeatures.split(',').map(f => f.trim());
+        elements.storyFeatures.innerHTML = features.map(f =>
+          `<span><i class="fas fa-check-circle"></i> ${f}</span>`
+        ).join('');
+      }
+
+      // Mission & Vision
+      if (data.missionSubtext && elements.missionSubtext) {
+        elements.missionSubtext.textContent = data.missionSubtext;
+      }
+      if (data.missionText && elements.missionText) {
+        elements.missionText.textContent = data.missionText;
+      }
+      if (data.visionText && elements.visionText) {
+        elements.visionText.textContent = data.visionText;
+      }
+
+      // Values
+      if (data.valuesSubtext && elements.valuesSubtext) {
+        elements.valuesSubtext.textContent = data.valuesSubtext;
+      }
+
+      // Footer Description
+      if (data.footerDescription && elements.footerDesc) {
+        elements.footerDesc.textContent = data.footerDescription;
+      }
+
+      // Social Media - Footer
+      if (data.facebookUrl && elements.footerFacebook) {
+        elements.footerFacebook.href = data.facebookUrl;
+      }
+      if (data.instagramUrl && elements.footerInstagram) {
+        elements.footerInstagram.href = data.instagramUrl;
+      }
+      if (data.youtubeUrl && elements.footerYouTube) {
+        elements.footerYouTube.href = data.youtubeUrl;
+      }
+
+      // WhatsApp - Footer
+      if (data.whatsappNumber && elements.footerWhatsApp) {
+        const cleanWa = data.whatsappNumber.replace(/[^0-9]/g, '');
+        elements.footerWhatsApp.href = `https://wa.me/${cleanWa}`;
+      }
+
+      // Social Media - Floating
+      if (data.instagramUrl && elements.sfInstagram) {
+        elements.sfInstagram.href = data.instagramUrl;
+      }
+      if (data.facebookUrl && elements.sfFacebook) {
+        elements.sfFacebook.href = data.facebookUrl;
+      }
+
+      // WhatsApp - Floating
+      if (data.whatsappNumber && elements.sfWhatsApp) {
+        const cleanWa = data.whatsappNumber.replace(/[^0-9]/g, '');
+        elements.sfWhatsApp.href = `https://wa.me/${cleanWa}`;
+      }
+
+      // Price List PDF
+      if (data.pdfFileName && elements.priceListBtn) {
+        elements.priceListBtn.href = `assets/pdf/${data.pdfFileName}`;
+      }
+    }
+
+    // ============================================================
+    // LISTEN TO FIREBASE — REAL-TIME AUTO-SYNC
+    // ============================================================
+    const docRef = doc(db, 'storeSettings', 'settings');
+
+    onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log('✅ Firebase data received:', data);
+        updateUI(data);
+      } else {
+        console.log('📄 No settings found, using defaults');
+        // Default fallback
+        updateUI({
+          storeName: 'Hari Crackers',
+          storePhone: '+91 00000 00000',
+          storeEmail: 'haricrackers182@gmail.com',
+          storeTagline: 'Premium Sivakasi Fireworks',
+          storeAddress: 'Sivakasi, Tamil Nadu',
+          aboutDescription: 'Premium Sivakasi Fireworks — Quality fireworks delivered with care, passion, and trust.',
+          storyTitle: 'From a Family Workshop to Your Festival Table',
+          storyText1: 'Hari Crackers sources directly from licensed manufacturers in Sivakasi — India\'s fireworks capital — cutting out middlemen so you get factory pricing without compromising on quality or safety.',
+          storyText2: 'Every batch is tested for consistent burn and sound compliance before it reaches our warehouse, and every order is packed by hand and checked twice before dispatch.',
+          storyFeatures: 'Direct from Sivakasi,Factory Pricing,Quality Tested,Hand Packed',
+          missionSubtext: 'What drives us every day to deliver the best fireworks experience',
+          missionText: 'To bring the joy of Sivakasi fireworks to every home in Tamil Nadu with unmatched quality, safety, and affordability. We strive to make every celebration brighter and every moment more memorable.',
+          visionText: 'To become the most trusted fireworks brand in South India, known for integrity, innovation, and exceptional customer experience. We envision a world where every celebration is safe and spectacular.',
+          valuesSubtext: 'The principles that guide everything we do',
+          footerDescription: 'Premium Sivakasi fireworks, delivered safely across Tamil Nadu. Celebrate bigger, celebrate brighter.u. Celebrate bigger, celebrate brighter.',
+          facebookUrl: '#',
+          instagramUrl: '#',
+          youtubeUrl: '#',
+          whatsappNumber: '919655586460'
+        });
+      }
+    }, (error) => {
+      console.error('❌ Firebase error:', error);
+    });
+
+    console.log('🚀 Hari Crackers About — Auto-Sync from Firebase enabled!');
+
+    // ===== BACK TO TOP =====
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (backToTopBtn) {
+      window.addEventListener('scroll', () => {
+        backToTopBtn.classList.toggle('visible', window.scrollY > 300);
+      });
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    // ===== HAMBURGER MENU =====
+    const hamburger = document.querySelector('.hamburger');
+    const mainNav = document.querySelector('.main-nav');
+    if (hamburger && mainNav) {
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        mainNav.classList.toggle('open');
+      });
+    }
+
+    // ===== ALL CATEGORIES =====
+    const catBtn = document.getElementById('all-cat-btn');
+    const catMenu = document.getElementById('all-cat-menu');
+    if (catBtn && catMenu) {
+      catBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        catMenu.classList.toggle('open');
+        catBtn.querySelector('i').classList.toggle('fa-chevron-down');
+        catBtn.querySelector('i').classList.toggle('fa-chevron-up');
+      });
+      document.addEventListener('click', () => {
+        catMenu.classList.remove('open');
+        if (catBtn.querySelector('i')) {
+          catBtn.querySelector('i').classList.remove('fa-chevron-up');
+          catBtn.querySelector('i').classList.add('fa-chevron-down');
+        }
+      });
+    }// ============================================================
+    // HARI CRACKERS — shared front-end behaviour
+    // ============================================================
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+      /* ============================================================
+         🔥 ALL CATEGORIES DROPDOWN - WORKS ON ALL PAGES
+         ============================================================ */
+      const catBtn = document.getElementById('all-cat-btn');
+      const catMenu = document.getElementById('all-cat-menu');
+
+      if (catBtn && catMenu) {
+        // Toggle dropdown on button click
+        catBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          this.classList.toggle('active');
+          catMenu.classList.toggle('open');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+          if (!catBtn.contains(e.target) && !catMenu.contains(e.target)) {
+            catBtn.classList.remove('active');
+            catMenu.classList.remove('open');
+          }
+        });
+
+        // Close dropdown when clicking a link inside
+        catMenu.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            catBtn.classList.remove('active');
+            catMenu.classList.remove('open');
+          });
+        });
+      } else {
+        console.log('⚠️ All Categories elements not found on this page');
+      }
+
+      /* ============================================================
+         🔥 HAMBURGER MENU TOGGLE - WORKS ON ALL PAGES
+         ============================================================ */
+      const hamburger = document.querySelector('.hamburger');
+      const mainNav = document.querySelector('.main-nav');
+
+      if (hamburger && mainNav) {
+        hamburger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          this.classList.toggle('active');
+          mainNav.classList.toggle('active');
+        });
+
+        document.addEventListener('click', function (e) {
+          if (!hamburger.contains(e.target) && !mainNav.contains(e.target)) {
+            hamburger.classList.remove('active');
+            mainNav.classList.remove('active');
+          }
+        });
+
+        mainNav.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            hamburger.classList.remove('active');
+            mainNav.classList.remove('active');
+          });
+        });
+      }
+
+      /* ============================================================
+         🔥 ACTIVE NAV LINK HIGHLIGHT
+         ============================================================ */
+      const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+      document.querySelectorAll('.main-nav a').forEach(function (link) {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+
+      /* ============================================================
+         🔥 FAQ ACCORDION
+         ============================================================ */
+      document.querySelectorAll('.accordion-item').forEach(function (item) {
+        const q = item.querySelector('.accordion-q');
+        if (!q) return;
+        q.addEventListener('click', function () {
+          const isOpen = item.classList.contains('open');
+          document.querySelectorAll('.accordion-item.open').forEach(function (el) {
+            if (el !== item) el.classList.remove('open');
+          });
+          item.classList.toggle('open', !isOpen);
+        });
+      });
+
+      /* ============================================================
+         🔥 SCROLL REVEAL
+         ============================================================ */
+      const revealEls = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && revealEls.length) {
+        const io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        revealEls.forEach(function (el) { io.observe(el); });
+      } else {
+        revealEls.forEach(function (el) { el.classList.add('in-view'); });
+      }
+
+      /* ============================================================
+         🔥 BACK TO TOP BUTTON
+         ============================================================ */
+      const backToTop = document.getElementById('back-to-top');
+      if (backToTop) {
+        window.addEventListener('scroll', function () {
+          backToTop.classList.toggle('show', window.scrollY > 400);
+        });
+        backToTop.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      console.log('✅ Hari Crackers JS loaded successfully!');
+    });
+  </script>
+  <script>
+    // ============================================================
+    // ALL CATEGORIES DROPDOWN - FIX
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function () {
+      const allCatBtn = document.getElementById('all-cat-btn');
+      const allCatMenu = document.getElementById('all-cat-menu');
+
+      if (allCatBtn && allCatMenu) {
+        // Toggle dropdown on button click
+        allCatBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          allCatMenu.classList.toggle('open');
+          allCatBtn.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+          if (!allCatBtn.contains(e.target) && !allCatMenu.contains(e.target)) {
+            allCatMenu.classList.remove('open');
+            allCatBtn.classList.remove('active');
+          }
+        });
+
+        // Close dropdown when clicking a category link
+        allCatMenu.querySelectorAll('a').forEach(function (link) {
+          link.addEventListener('click', function () {
+            allCatMenu.classList.remove('open');
+            allCatBtn.classList.remove('active');
+          });
+        });
+
+        console.log('✅ All Categories dropdown initialized!');
+      } else {
+        console.warn('⚠️ All Categories button or menu not found!');
+      }
+    });
+  </script>
+  <!-- ============================================================
+  ✅ CART BUTTON — no cart modal exists on this page, so send the
+  user to the products page where they can view/edit their cart.
+  ============================================================ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const openCartBtn = document.getElementById('open-cart-btn');
+      if (openCartBtn) {
+        openCartBtn.addEventListener('click', function () {
+          window.location.href = 'products.html';
+        });
+      }
+    });
+  </script>
+  <script type="importmap">
+{
+  "imports": {
+    "firebase/app":"https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
+    "firebase/firestore":"https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
+  }
+}
+</script>
+
+  <script type="module">
+    import { initializeApp } from "firebase/app";
+    import { getFirestore, doc, getDoc } from "firebase/firestore";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
+      authDomain: "hari-crackers.firebaseapp.com",
+      projectId: "hari-crackers",
+      storageBucket: "hari-crackers.firebasestorage.app",
+      messagingSenderId: "510011644696",
+      appId: "1:510011644696:web:b32ce0844e59b774a2dc6d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const priceListBtn = document.getElementById("priceListBtn");
+
+    if (priceListBtn) {
+      priceListBtn.addEventListener("click", function () {
+        window.open("./assets/pdf/HARI CRACKERS PRICELIST.pdf", "_blank");
+      });
+    }
+
+    (function () {
+      const backToTopBtn = document.getElementById('backToTop');
+
+      // Show/hide button based on scroll position
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 300) {
+          backToTopBtn.classList.add('show');
+        } else {
+          backToTopBtn.classList.remove('show');
+        }
+      });
+
+      // Smooth scroll to top when clicked
+      backToTopBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Optional: hide on load if at top
+      if (window.scrollY <= 300) {
+        backToTopBtn.classList.remove('show');
+      }
+    })();
+
+    const backToTop = document.getElementById("backToTop");
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+
+</html>

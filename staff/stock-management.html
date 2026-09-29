@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management — Hari Crackers Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --card: #6a1b9a;
+            --yellow: #ffc107;
+            --yellow-bright: #ffd54f;
+            --border: rgba(106, 27, 154, 0.12);
+            --border-strong: rgba(106, 27, 154, 0.30);
+            --text: #1f1f1f;
+            --text-muted: #555;
+            --text-dim: #888;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #faf5ff;
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #1a0033 0%, #2d0050 45%, #4a148c 100%);
+            color: #f5e6ff;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid rgba(255, 193, 7, 0.30);
+            flex-shrink: 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(45, 0, 80, 0.3);
+        }
+
+        .sidebar-brand {
+            padding: 24px 22px 20px;
+            border-bottom: 1px solid rgba(255, 193, 7, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .sidebar-brand .brand-icon {
+            width: 90px;
+            height: 90px;
+            min-width: 90px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.4);
+        }
+
+        .sidebar-brand .brand-icon img {
+            width: 78px;
+            height: 78px;
+            object-fit: contain;
+        }
+
+        .sidebar-brand .brand-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .sidebar-brand .brand-text span {
+            color: var(--yellow);
+        }
+
+        .sidebar-brand .brand-sub {
+            font-size: 0.6rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 18px 14px;
+        }
+
+        .sidebar-nav .nav-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: white;
+            padding: 8px 12px 12px;
+            font-weight: 600;
+        }
+
+        .sidebar-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-nav .nav-item i {
+            width: 20px;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .sidebar-nav .nav-item:hover {
+            background: rgba(255, 193, 7, 0.15);
+            color: #fff;
+        }
+
+        .sidebar-nav .nav-item:hover i {
+            color: var(--yellow);
+        }
+
+        .sidebar-nav .nav-item.active {
+            background: rgba(255, 193, 7, 0.20);
+            color: var(--yellow);
+            border-right: 3px solid var(--yellow);
+        }
+
+        .sidebar-nav .nav-item.active i {
+            color: var(--yellow);
+        }
+
+        .sidebar-nav .nav-item .badge {
+            margin-left: auto;
+            background: var(--yellow);
+            color: #2d0050;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px 24px;
+            border-top: 1px solid rgba(255, 193, 7, 0.15);
+        }
+
+        .sidebar-footer .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-footer .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--yellow), var(--yellow-bright));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #2d0050;
+        }
+
+        .sidebar-footer .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .sidebar-footer .user-email {
+            font-size: 0.7rem;
+            color: #d0c0e0;
+        }
+
+        .sidebar-footer .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(106, 27, 154, 0.15));
+            border: 2px solid rgba(255, 193, 7, 0.4);
+            color: #ffc107;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .sidebar-footer .logout-btn:hover {
+            background: linear-gradient(135deg, #ffc107, #e6a800);
+            color: #2d0050;
+        }
+
+        /* MAIN */
+        .main-content {
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            height: var(--header-height);
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-header h2 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--text);
+        }
+
+        .top-header h2 span {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        .hamburger-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: #fff;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(45, 0, 80, 0.4);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .page-content {
+            padding: 28px 30px 40px;
+            flex: 1;
+        }
+
+        /* ALERT BANNER */
+        .alert-banner {
+            background: linear-gradient(135deg, #fee, #fdd);
+            border: 2px solid #e74c3c;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+
+        .alert-banner.show {
+            display: block;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(231, 76, 60, 0);
+            }
+        }
+
+        .alert-banner .alert-title {
+            font-weight: 700;
+            color: #c0392b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .alert-banner .alert-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .alert-banner .alert-item {
+            background: #fff;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #c0392b;
+        }
+
+        /* STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .stat-icon.green {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+        }
+
+        .stat-icon.orange {
+            background: rgba(243, 156, 18, 0.15);
+            color: #f39c12;
+        }
+
+        .stat-icon.red {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        .stat-icon.blue {
+            background: rgba(106, 27, 154, 0.15);
+            color: var(--card);
+        }
+
+        .stat-info .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-top: 2px;
+        }
+
+        /* FILTER BAR */
+        .filter-bar {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .filter-bar input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-bar input:focus,
+        .filter-bar select:focus {
+            border-color: var(--yellow);
+        }
+
+        /* BULK ACTIONS */
+        .bulk-actions {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .bulk-actions .bulk-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+
+        .btn-bulk {
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-bulk.add {
+            background: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-bulk.add:hover {
+            background: rgba(46, 204, 113, 0.25);
+        }
+
+        .btn-bulk.sub {
+            background: rgba(231, 76, 60, 0.15);
+            color: #c0392b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-bulk.sub:hover {
+            background: rgba(231, 76, 60, 0.25);
+        }
+
+        .bulk-input {
+            width: 70px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .bulk-input:focus {
+            border-color: var(--yellow);
+        }
+
+        /* STOCK TABLE */
+        .stock-table-wrap {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        .stock-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 900px;
+        }
+
+        .stock-table thead th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: var(--card);
+            white-space: nowrap;
+        }
+
+        .stock-table thead th.num {
+            text-align: right;
+        }
+
+        .stock-table thead th.center {
+            text-align: center;
+        }
+
+        .stock-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        .stock-table tbody tr:hover {
+            background: #f5e6ff;
+        }
+
+        .stock-table tbody td {
+            padding: 12px 16px;
+            vertical-align: middle;
+        }
+
+        .stock-table tbody td.num {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .stock-table tbody td.center {
+            text-align: center;
+        }
+
+        .stock-product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stock-product-cell img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #fff;
+        }
+
+        .stock-product-cell .name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .stock-product-cell .category {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .stock-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .stock-badge.in {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+        }
+
+        .stock-badge.low {
+            background: rgba(243, 156, 18, 0.15);
+            color: #f39c12;
+        }
+
+        .stock-badge.out {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        .stock-badge.untracked {
+            background: rgba(136, 136, 136, 0.15);
+            color: #888;
+        }
+
+        .qty-input-stock {
+            width: 80px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .qty-input-stock:focus {
+            border-color: var(--yellow);
+        }
+
+        .btn-update {
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, var(--yellow), var(--yellow-bright));
+            color: #2d0050;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-update:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .hamburger-menu {
+                display: flex !important;
+            }
+
+            .top-header {
+                padding: 0 16px;
+            }
+
+            .page-content {
+                padding: 20px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: #333;
+            color: #fff;
+            font-size: 0.9rem;
+            z-index: 99999;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            display: block !important;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: #2ecc71;
+        }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        .toast.info {
+            background: #6a1b9a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <img src="../pictures/logo-removebg-preview.png" alt="Hari Crackers Logo">
+            </div>
+            <div>
+                <div class="brand-text">Hari <span>Crackers</span></div>
+                <span class="brand-sub">Staff Panel</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-label">Staff Menu</div>
+
+            <a href="billing.html" class="nav-item">
+                <i class="fas fa-cog"></i> Billing
+            </a>
+            <a href="bills-history.html" class="nav-item">
+                <i class="fas fa-file-invoice"></i> Billing History
+            </a>
+
+            <div class="nav-label" style="margin-top:20px;">Inventory</div>
+
+            <a href="stock-management.html" class="nav-item active">
+                <i class="fas fa-warehouse"></i> Stock Management
+                <span class="badge" id="stockAlertBadge" style="background:#e74c3c;display:none;">0</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <div>
+                    <div class="user-name">Staff</div>
+                    <div class="user-email">staffharicrackers@gmail.com</div>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2>Stock Management <span>— inventory control</span></h2>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <!-- ALERT BANNER -->
+            <div class="alert-banner" id="alertBanner">
+                <div class="alert-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="alertBannerText">Low Stock Alert</span>
+                </div>
+                <div class="alert-list" id="alertList"></div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-boxes"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-label">Total Products</div>
+                        <div class="stat-value" id="statTotal">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-label">In Stock</div>
+                        <div class="stat-value" id="statInStock">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-label">Low Stock</div>
+                        <div class="stat-value" id="statLow">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-label">Out of Stock</div>
+                        <div class="stat-value" id="statOut">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTER -->
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Search product name...">
+                <select id="filterSelect">
+                    <option value="all">All Products</option>
+                    <option value="instock">In Stock Only</option>
+                    <option value="low">Low Stock Only</option>
+                    <option value="out">Out of Stock Only</option>
+                    <option value="untracked">Untracked (no qty)</option>
+                </select>
+                <button class="btn-update" onclick="refreshData()">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+            </div>
+
+            <!-- BULK ACTIONS -->
+            <div class="bulk-actions">
+                <span class="bulk-label">Bulk Action:</span>
+                <input type="number" class="bulk-input" id="bulkQty" value="10" min="1" placeholder="Qty">
+                <button class="btn-bulk add" onclick="bulkUpdate('add')">
+                    <i class="fas fa-plus"></i> Add to All
+                </button>
+                <button class="btn-bulk sub" onclick="bulkUpdate('sub')">
+                    <i class="fas fa-minus"></i> Sub from All
+                </button>
+            </div>
+
+            <!-- TABLE -->
+            <div class="stock-table-wrap">
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th class="num">Price</th>
+                            <th class="center">Current Stock</th>
+                            <th class="center">Low Alert At</th>
+                            <th class="center">Status</th>
+                            <th class="center">Update Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockTbody">
+                        <tr>
+                            <td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="importmap">
+{
+    "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js"
+    }
+}
+</script>
+
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import {
+            getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc,
+            writeBatch, addDoc, serverTimestamp, where,
+            getDocs
+        } from "firebase/firestore";
+        import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
+            authDomain: "hari-crackers.firebaseapp.com",
+            projectId: "hari-crackers",
+            storageBucket: "hari-crackers.firebasestorage.app",
+            messagingSenderId: "510011644696",
+            appId: "1:510011644696:web:b32ce0844e59b774a2dc6d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);   // ✅ INTHA LINE ADD PANNUNGA
+        let allProducts = [];
+
+        // ============================================================
+        // LOAD PRODUCTS REAL-TIME
+        // ============================================================
+        function listenToProducts() {
+            const q = query(collection(db, 'products'), orderBy('orderIndex', 'asc'));
+            onSnapshot(q, (snapshot) => {
+                allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderStats();
+                renderAlertBanner();
+                renderTable();
+
+                // ✅ NEW: Products badge update
+                const productBadge = document.getElementById('productBadge');
+                if (productBadge) {
+                    productBadge.textContent = allProducts.length;
+                    productBadge.style.display = allProducts.length > 0 ? 'inline-block' : 'none';
+                }
+            });
+        }
+
+        // ============================================================
+        // STATS
+        // ============================================================
+        function renderStats() {
+            const total = allProducts.length;
+            let inStock = 0, low = 0, out = 0;
+
+            allProducts.forEach(p => {
+                if (typeof p.stockQty !== 'number') return;
+                const threshold = p.lowStockThreshold || 5;
+                if (p.stockQty <= 0) out++;
+                else if (p.stockQty <= threshold) low++;
+                else inStock++;
+            });
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statInStock').textContent = inStock;
+            document.getElementById('statLow').textContent = low;
+            document.getElementById('statOut').textContent = out;
+        }
+
+        // ============================================================
+        // ALERT BANNER
+        // ============================================================
+        function renderAlertBanner() {
+            const banner = document.getElementById('alertBanner');
+            const bannerText = document.getElementById('alertBannerText');
+            const list = document.getElementById('alertList');
+
+            const alerts = allProducts
+                .filter(p => typeof p.stockQty === 'number')
+                .filter(p => p.stockQty <= (p.lowStockThreshold || 5))
+                .sort((a, b) => (a.stockQty || 0) - (b.stockQty || 0));
+
+            if (alerts.length === 0) {
+                banner.classList.remove('show');
+                return;
+            }
+
+            const outCount = alerts.filter(p => p.stockQty <= 0).length;
+            const lowCount = alerts.length - outCount;
+
+            bannerText.textContent = `⚠️ ${outCount} out of stock, ${lowCount} low stock — please restock!`;
+
+            list.innerHTML = alerts.slice(0, 8).map(p => {
+                const out = p.stockQty <= 0;
+                return `<span class="alert-item">${p.name} — ${out ? 'OUT' : p.stockQty + ' left'}</span>`;
+            }).join('');
+
+            banner.classList.add('show');
+        }
+
+        // ============================================================
+        // SHOW STOCK NOTIFICATION — Browser notification show pannum
+        // ============================================================
+        function showStockNotification(alert) {
+            console.log('🔔 New stock alert:', alert);
+
+            const isOut = alert.type === 'out_of_stock';
+            const title = isOut ? '❌ Out of Stock!' : '⚠️ Low Stock Alert!';
+            const message = alert.message || `${alert.productName} — Only ${alert.currentStock} left`;
+
+            // Browser Notification
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const notification = new Notification(title, {
+                    body: message,
+                    icon: '../pictures/logo-removebg-preview.png',
+                    badge: '../pictures/logo-removebg-preview.png',
+                    tag: alert.productId,        // Same product-ku duplicate notification illa
+                    requireInteraction: false,    // Auto-close
+                    vibrate: [200, 100, 200]      // Mobile vibrate
+                });
+
+                // Click panna admin panel open aagum
+                notification.onclick = function () {
+                    window.focus();
+                    window.location.href = 'stock-management.html';
+                    notification.close();
+                };
+
+                // 8 seconds aprom auto-close
+                setTimeout(() => notification.close(), 8000);
+            } else {
+                console.warn('⚠️ Notification permission not granted');
+            }
+        }
+
+        // ============================================================
+        // LISTEN TO ORDERS — Orders badge count
+        // ============================================================
+        function listenToOrders() {
+            const ordersRef = collection(db, 'orders');
+            onSnapshot(ordersRef, (snapshot) => {
+                const orderBadge = document.getElementById('orderBadge');
+                if (orderBadge) {
+                    orderBadge.textContent = snapshot.size;
+                    orderBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
+                }
+            }, (error) => {
+                console.error('Orders badge error:', error);
+            });
+        }
+
+
+ // ============================================================
+// LISTEN TO STOCK ALERTS — Sidebar badge count (Low Stock Products)
+// ============================================================
+function listenToStockAlerts() {
+    const productsRef = collection(db, 'products');
+    
+    onSnapshot(productsRef, (snapshot) => {
+        let lowStockCount = 0;
+        
+        snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            const stockQty = data.stockQty;
+            const threshold = data.lowStockThreshold || 5;
+            
+            // Stock track pannirundha + threshold-ku kuraiya irundha count pannum
+            if (typeof stockQty === 'number' && stockQty <= threshold) {
+                lowStockCount++;
+            }
+        });
+        
+        const badge = document.getElementById('stockAlertBadge');
+        if (badge) {
+            badge.textContent = lowStockCount;
+            badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
+        }
+    }, (error) => {
+        console.error('Stock alert badge error:', error);
+    });
+}
+        // ============================================================
+        // TABLE
+        // ============================================================
+        function renderTable() {
+            const search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            const filter = document.getElementById('filterSelect').value;
+
+            let filtered = allProducts.filter(p => {
+                if (search && !(p.name || '').toLowerCase().includes(search)) return false;
+                if (filter === 'instock') return typeof p.stockQty === 'number' && p.stockQty > (p.lowStockThreshold || 5);
+                if (filter === 'low') return typeof p.stockQty === 'number' && p.stockQty > 0 && p.stockQty <= (p.lowStockThreshold || 5);
+                if (filter === 'out') return typeof p.stockQty === 'number' && p.stockQty <= 0;
+                if (filter === 'untracked') return typeof p.stockQty !== 'number';
+                return true;
+            });
+
+            const tbody = document.getElementById('stockTbody');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="empty-state"><i class="fas fa-box-open"></i><br>No products found</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(p => {
+                const img = p.imageUrl || '../pictures/logo-removebg-preview.png';
+                const stockQty = typeof p.stockQty === 'number' ? p.stockQty : null;
+                const threshold = p.lowStockThreshold || 5;
+
+                let badge;
+                if (stockQty === null) {
+                    badge = `<span class="stock-badge untracked">Not Tracked</span>`;
+                } else if (stockQty <= 0) {
+                    badge = `<span class="stock-badge out">Out of Stock</span>`;
+                } else if (stockQty <= threshold) {
+                    badge = `<span class="stock-badge low">Low Stock</span>`;
+                } else {
+                    badge = `<span class="stock-badge in">In Stock</span>`;
+                }
+
+                return `
+                    <tr data-id="${p.id}">
+                        <td>
+                            <div class="stock-product-cell">
+                                <img src="${img}" onerror="this.src='../pictures/logo-removebg-preview.png'">
+                                <div>
+                                    <div class="name">${p.name || 'Unnamed'}</div>
+                                    <div class="category">${p.category || 'Uncategorized'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="num">₹${(p.price || 0).toLocaleString('en-IN')}</td>
+                        <td class="center">
+                            <input type="number" class="qty-input-stock" min="0"
+                                data-id="${p.id}"
+                                value="${stockQty !== null ? stockQty : ''}"
+                                placeholder="—">
+                        </td>
+                        <td class="center">${threshold}</td>
+                        <td class="center">${badge}</td>
+                        <td class="center">
+                            <button class="btn-update" onclick="updateStock('${p.id}')">
+                                <i class="fas fa-save"></i> Update
+                            </button>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        // ============================================================
+        // UPDATE STOCK (INDIVIDUAL)
+        // ============================================================
+        window.updateStock = async function (productId) {
+            const input = document.querySelector(`.qty-input-stock[data-id="${productId}"]`);
+            if (!input) return;
+
+            const rawValue = input.value.trim();
+            if (rawValue === '') {
+                showToast('Please enter a stock quantity', 'error');
+                return;
+            }
+
+            const newQty = parseInt(rawValue, 10);
+            if (isNaN(newQty) || newQty < 0) {
+                showToast('Invalid quantity', 'error');
+                return;
+            }
+
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            try {
+                await updateDoc(doc(db, 'products', productId), {
+                    stockQty: newQty,
+                    inStock: newQty > 0,
+                    updatedAt: new Date().toISOString()
+                });
+                showToast(`✅ ${product.name} → ${newQty} units`, 'success');
+
+                // If stock is low, create alert
+                if (newQty <= (product.lowStockThreshold || 5)) {
+                    await createStockAlert(product, newQty);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('❌ Error: ' + err.message, 'error');
+            }
+        };
+
+        async function createStockAlert(product, newQty) {
+            try {
+                // Use getDocs instead of onSnapshot (faster, one-time query)
+                const q = query(
+                    collection(db, 'stockAlerts'),
+                    where('productId', '==', product.id),
+                    where('status', '==', 'unread')
+                );
+                const existing = await getDocs(q);
+
+                if (!existing.empty) {
+                    console.log(`Alert already exists for ${product.name}`);
+                    return;
+                }
+
+                const threshold = product.lowStockThreshold || 5;
+                await addDoc(collection(db, 'stockAlerts'), {
+                    productId: product.id,
+                    productName: product.name,
+                    currentStock: newQty,
+                    threshold: threshold,
+                    type: newQty <= 0 ? 'out_of_stock' : 'low_stock',
+                    message: newQty <= 0
+                        ? `❌ OUT OF STOCK: ${product.name}`
+                        : `⚠️ LOW STOCK: ${product.name} — Only ${newQty} left`,
+                    status: 'unread',
+                    createdAt: serverTimestamp(),
+                    timestamp: serverTimestamp()
+                });
+                console.log(`🔔 Alert created for ${product.name}`);
+            } catch (err) {
+                console.error('Alert creation error:', err);
+            }
+        }
+
+        // ============================================================
+        // BULK UPDATE
+        // ============================================================
+        window.bulkUpdate = async function (action) {
+            const bulkQty = parseInt(document.getElementById('bulkQty').value, 10);
+            if (isNaN(bulkQty) || bulkQty < 1) {
+                showToast('Please enter a valid quantity', 'error');
+                return;
+            }
+
+            const filtered = getFilteredProducts();
+            if (filtered.length === 0) {
+                showToast('No products to update', 'error');
+                return;
+            }
+
+            const confirmMsg = action === 'add'
+                ? `Add ${bulkQty} units to ${filtered.length} products?`
+                : `Subtract ${bulkQty} units from ${filtered.length} products?`;
+
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                const batch = writeBatch(db);
+                let count = 0;
+
+                filtered.forEach(p => {
+                    // ✅ FIX: stockQty illa na, 0-a consider pannunga
+                    const currentStock = typeof p.stockQty === 'number' ? p.stockQty : 0;
+                    const newStock = action === 'add'
+                        ? currentStock + bulkQty
+                        : Math.max(0, currentStock - bulkQty);
+
+                    batch.update(doc(db, 'products', p.id), {
+                        stockQty: newStock,
+                        inStock: newStock > 0,
+                        updatedAt: new Date().toISOString()
+                    });
+                    count++;
+                });
+
+                await batch.commit();
+                showToast(`✅ Updated ${count} products`, 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('❌ Error: ' + err.message, 'error');
+            }
+        };
+
+        function getFilteredProducts() {
+            const search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            const filter = document.getElementById('filterSelect').value;
+
+            return allProducts.filter(p => {
+                if (search && !(p.name || '').toLowerCase().includes(search)) return false;
+                if (filter === 'instock') return typeof p.stockQty === 'number' && p.stockQty > (p.lowStockThreshold || 5);
+                if (filter === 'low') return typeof p.stockQty === 'number' && p.stockQty > 0 && p.stockQty <= (p.lowStockThreshold || 5);
+                if (filter === 'out') return typeof p.stockQty === 'number' && p.stockQty <= 0;
+                if (filter === 'untracked') return typeof p.stockQty !== 'number';
+                return true;
+            });
+        }
+
+        // ============================================================
+        // REFRESH
+        // ============================================================
+        window.refreshData = function () {
+            showToast('🔄 Refreshing...', 'info');
+            renderStats();
+            renderAlertBanner();
+            renderTable();
+        };
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ============================================================
+        // EVENTS
+        // ============================================================
+        document.getElementById('searchInput').addEventListener('input', renderTable);
+        document.getElementById('filterSelect').addEventListener('change', renderTable);
+
+        document.getElementById('hamburgerBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        });
+
+        // ============================================================
+        // BROWSER NOTIFICATION — Permission Request
+        // ============================================================
+        // ============================================================
+        // BROWSER NOTIFICATION — Permission Request on User Interaction
+        // ============================================================
+        function requestNotificationPermission() {
+            if (!('Notification' in window)) {
+                console.warn('⚠️ Browser notification not supported');
+                return;
+            }
+
+            if (Notification.permission === 'granted') {
+                console.log('✅ Notification already granted');
+                return;
+            }
+
+            if (Notification.permission === 'denied') {
+                console.warn('❌ Notification blocked. Enable in browser settings.');
+                return;
+            }
+
+            // Request permission
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    console.log('✅ Notification permission granted');
+                    new Notification('Hari Crackers', {
+                        body: 'Notifications enabled! 🎉',
+                        icon: '../pictures/logo-removebg-preview.png'
+                    });
+                } else {
+                    console.log('❌ Notification permission denied');
+                }
+            });
+        }
+
+        // Auto-request on first user click anywhere on page
+        document.addEventListener('click', function requestOnce() {
+            requestNotificationPermission();
+            document.removeEventListener('click', requestOnce);
+        }, { once: true });
+
+        // INIT
+        listenToProducts();
+        listenToOrders();        // ✅ NEW: Orders badge count
+        listenToStockAlerts();   // ✅ NEW: Stock alert badge count
+
+        // ENTER key = update stock
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.classList.contains('qty-input-stock')) {
+                updateStock(e.target.dataset.id);
+            }
+        });
+
+        console.log('🚀 Stock Management loaded');
+
+    </script>
+</body>
+
+</html>

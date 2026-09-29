@@ -1,0 +1,2717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hari Crackers — Premium Sivakasi Fireworks Online</title>
+    <meta name="description"
+        content="Hari Crackers — order premium Sivakasi fireworks online. Track your order, browse our full catalogue, and celebrate bigger.">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
+    <!-- FAVICON / TAB LOGO -->
+    <link rel="icon" type="image/png" href="./pictures/logo-removebg-preview.png">
+    <style>
+        /* Force badge to always show */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--ember);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex !important;
+            /* ← Force display */
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-white);
+        }
+
+        /* When cart is empty, show 0 with faded style */
+        .cart-badge.empty {
+            background: #999;
+            font-size: 0.55rem;
+        }
+
+        /* ===== STATS SECTION - REDESIGN + COUNT-UP ===== */
+        .strip-stats .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 30px 18px;
+            text-align: center;
+            border: 1px solid rgba(255, 106, 0, 0.08);
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.07);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-icon {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--card);
+            background: var(--yellow);
+            box-shadow: 0 8px 18px rgba(255, 106, 0, 0.25);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 6px;
+        }
+
+        .stat-card span {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted, #666);
+        }
+
+        @media (max-width: 768px) {
+            .strip-stats .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .stat-card {
+                padding: 22px 12px;
+            }
+        }
+
+        /* ===== SOCIAL FLOAT - MOBILE FIX ===== */
+        @media (max-width: 768px) {
+            .social-float {
+                display: flex !important;
+                flex-direction: column;
+                position: fixed;
+                left: 12px;
+                bottom: 80px;
+                top: auto;
+                transform: none;
+                z-index: 9999;
+                gap: 8px;
+            }
+
+            .social-float a {
+                width: 46px;
+                height: 46px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .social-float {
+                left: 10px;
+                bottom: 75px;
+            }
+
+            .social-float a {
+                width: 42px;
+                height: 42px;
+            }
+        }
+
+        /* IMAGE ZOOM MODAL */
+        .cat-img {
+            cursor: zoom-in;
+        }
+
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            z-index: 99999;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            text-align: center;
+        }
+
+        .zoom-modal.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-img-wrap {
+            overflow: hidden;
+            max-width: 90vw;
+            max-height: 75vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-img-wrap img {
+            max-width: 90vw;
+            max-height: 75vh;
+            transition: transform 0.25s ease;
+            cursor: grab;
+            transform: scale(1);
+        }
+
+        .zoom-close {
+            position: absolute;
+            top: 18px;
+            right: 28px;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .zoom-controls {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .zoom-controls button {
+            background: #fff;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .zoom-caption {
+            color: #fff;
+            margin-top: 14px;
+            font-weight: 600;
+        }
+
+        /* ADD TO CART BUTTON */
+        .add-to-cart-btn {
+            background-color: var(--yellow);
+            color: var(--card);
+            border: none;
+            border-radius: 999px;
+            padding: 11px 24px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 16px rgba(255, 178, 56, 0.35);
+            transition: all 0.25s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            background-color: var(--card);
+            color: var(--yellow);
+            box-shadow: 0 10px 24px rgba(255, 106, 0, 0.4);
+        }
+
+        .add-to-cart-btn.added {
+            background-color: #ad0101 !important;
+            color: #ffffff !important;
+        }
+
+        /* OFFER BADGE ON IMAGE */
+        .category-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .offer-badge {
+            position: absolute;
+            top: 12px;
+            left: -32px;
+            background: linear-gradient(135deg, #ff6a00, #ff6a00);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 5px 40px;
+            transform: rotate(-45deg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            z-index: 5;
+            text-transform: uppercase;
+        }
+
+        .offer-badge::before,
+        .offer-badge::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            border-style: solid;
+        }
+
+        .offer-badge::before {
+            left: 0;
+            border-width: 4px 4px 0 0;
+            border-color: #0b1a45 transparent transparent transparent;
+        }
+
+        .offer-badge::after {
+            right: 0;
+            border-width: 4px 0 0 4px;
+            border-color: #0b1a45 transparent transparent transparent;
+        }
+
+        @media (max-width: 480px) {
+            .offer-badge {
+                font-size: 0.6rem;
+                padding: 4px 32px;
+                top: 8px;
+                left: -28px;
+            }
+        }
+    </style>
+</head>
+
+<body id="home-page">
+    <div class="top-bar">
+        <div class="top-bar-flex">
+            <span class="tb-tamil">🎆 தீபாவளி 2026 புக்கிங்
+                தொடங்கியது</span>
+            <span class="tb-sep">•</span>
+            <span class="tb-english">Diwali 2026 Bookings Open • Up to 80%
+                OFF • Premium Sivakasi Fireworks • Fast
+                Delivery Across Tamil Nadu</span>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="nav-top">
+            <a href="index.html" class="logo">
+                <img src="pictures/logo-removebg-preview.png" class="logo-img" alt="Hari Crackers">
+            </a>
+
+            <div class="nav-top-right">
+                <a href="tel:+917010392742" class="nav-top-phone">
+                    <i class="fas fa-phone"></i>
+                    <span>+91 86677 25665</span>
+                </a>
+
+                <button class="header-cart" id="open-cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="header-cart-total">₹0</span>
+                    <span class="cart-badge" id="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="nav-bottom">
+            <div class="all-categories">
+                <!-- ✅ ADDED id="all-cat-btn" -->
+                <button class="all-categories-btn" id="all-cat-btn">
+                    All Categories
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <!-- ✅ ADDED id + menu items -->
+                <div class="all-categories-menu" id="all-cat-menu">
+                    <a href="products.html#cat-Sound-Crackers"><i class="fas fa-volume-high"></i> Sound
+                        Crackers</a>
+                    <a href="products.html#cat-Flower-Pots"><i class="fas fa-fire-flame-curved"></i> Flower
+                        Pots</a>
+                    <a href="products.html#cat-Ground-Chakkars"><i class="fas fa-record-vinyl"></i> Ground
+                        Chakkars</a>
+                    <a href="products.html#cat-Atom-Bombs">
+                        <i class="fas fa-bomb"></i> Atom Bombs
+                    </a>
+                    <a href="products.html#cat-Rocket"><i class="fas fa-rocket"></i> Rockets</a>
+                    <a href="products.html#cat-Multishots"><i class="fas fa-star-of-life"></i> Multishots</a>
+                </div>
+            </div>
+
+            <!-- ✅ ADDED id="mainNav" -->
+            <nav class="main-nav" id="mainNav">
+                <ul>
+                    <li><a class="active" href="#">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="" class="btn" id="priceListBtn">
+                    Download Price List
+                </a>
+
+                <!-- ✅ ADDED id="hamburgerBtn" -->
+                <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- TOP BANNER CAROUSEL -->
+    <section class="hero-carousel" id="hero-carousel">
+        <div class="carousel-track" id="carousel-track">
+
+            <!-- Slide 1 -->
+            <div class="carousel-slide slide-1">
+                <img class="slide-img" src="./pictures/home2.png" alt="Hari Crackers Fireworks"
+                    onerror="this.style.display='none'">
+                <div class="slide-content">
+                    <span class="eyebrow">✨ Welcome to Hari Crackers</span>
+                    <h2><span class="accent">Quality Fireworks</span> at Factory Prices</h2>
+                    <p>Celebrate every festival with premium-quality fireworks at affordable prices.</p>
+                    <a href="products.html" class="btn btn-primary">Shop Now</a>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-slide slide-2">
+                <img class="slide-img" src="pictures/home3.png" alt="Premium Quality Crackers"
+                    onerror="this.style.display='none'">
+                <div class="slide-content">
+                    <span class="eyebrow">⭐ Premium Quality</span>
+                    <h2>Trusted Quality for <span class="accent">Safe Celebrations</span></h2>
+                    <p>Quality-tested fireworks that bring brightness and joy to every celebration.</p>
+                    <a href="products.html" class="btn btn-primary">Explore Collection</a>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-slide slide-3">
+                <img class="slide-img" src="pictures/home1.png" alt="Bulk Orders" onerror="this.style.display='none'">
+                <div class="slide-content">
+                    <span class="eyebrow">📦 Bulk Orders</span>
+                    <h2>Wholesale & Retail <span class="accent">Special Offers</span></h2>
+                    <p>Perfect for families, events, dealers, schools, and corporate celebrations.</p>
+                    <a href="products.html" class="btn btn-primary">View Products</a>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="carousel-slide slide-4">
+                <img class="slide-img" src="pictures/home4.png" alt="Fast Delivery" onerror="this.style.display='none'">
+                <div class="slide-content">
+                    <span class="eyebrow">🚚 Quick Service</span>
+                    <h2>Easy Ordering & <span class="accent">Fast Delivery</span></h2>
+                    <p>Get your favorite fireworks with quick service and secure delivery.</p>
+                    <a href="products.html" class="btn btn-primary">Order Today</a>
+                </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="carousel-slide slide-5">
+                <img class="slide-img" src="./pictures/home5.jpg" alt="Festival Celebration"
+                    onerror="this.style.display='none'">
+                <div class="slide-content">
+                    <span class="eyebrow">🎆 Celebrate with Confidence</span>
+                    <h2>Your Trusted <span class="accent">Fireworks Store</span></h2>
+                    <p>Quality • Value • Fast Service — Everything you need for a brighter celebration.</p>
+                    <a href="products.html" class="btn btn-primary">Start Shopping</a>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="carousel-arrow prev" id="carousel-prev" aria-label="Previous slide">‹</button>
+        <button class="carousel-arrow next" id="carousel-next" aria-label="Next slide">›</button>
+
+        <div class="carousel-dots" id="carousel-dots">
+            <span class="dot active" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+            <span class="dot" data-slide="2"></span>
+            <span class="dot" data-slide="3"></span>
+            <span class="dot" data-slide="4"></span>
+        </div>
+    </section>
+
+    <!-- SHOP BY CATEGORY — quick icon nav strip -->
+    <section class="cat-quicknav">
+        <div class="container">
+            <div class="cat-quicknav-grid">
+                <a href="products.html#cat-Sound-Crackers" class="cat-quick-item">
+                    <span class="cat-quick-icon"><i class="fas fa-volume-high"></i></span>
+                    <span>Sound Crackers</span>
+                </a>
+                <a href="products.html#cat-Flower-Pots" class="cat-quick-item">
+                    <span class="cat-quick-icon"><i class="fas fa-fire-flame-curved"></i></span>
+                    <span>Flower Pots</span>
+                </a>
+                <a href="products.html#cat-Ground-Chakkars" class="cat-quick-item">
+                    <span class="cat-quick-icon"><i class="fas fa-record-vinyl"></i></span>
+                    <span>Ground Chakkars</span>
+                </a>
+                <a href="products.html#cat-Atom-Bombs" class="cat-quick-item">
+                    <span class="cat-quick-icon"><i class="fas fa-burst"></i></span>
+                    <span>Atom Bombs</span>
+                </a>
+                <a href="products.html#cat-Rocket" class="cat-quick-item">
+                    <span class="cat-quick-icon"><i class="fas fa-rocket"></i></span>
+                    <span>Rockets</span>
+                </a>
+                <a href="products.html#cat-Multishots" class="cat-quick-item">
+                    <span class="cat-quick-icon"><i class="fas fa-star-of-life"></i></span>
+                    <span>Multishots</span>
+                </a>
+                <a href="products.html" class="cat-quick-item">
+                    <span class="cat-quick-icon"><i class="fas fa-gift"></i></span>
+                    <span>Gift Boxes</span>
+                </a>
+                <a href="products.html" class="cat-quick-item">
+                    <span class="cat-quick-icon">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </span>
+                    <span>Sparklers</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- WELCOME BLOCK — solid orange panel + navy/gold badge -->
+    <section class="section">
+        <div class="container">
+            <div class="welcome-grid reveal">
+                <!-- Orange Content Panel -->
+                <div class="welcome-panel">
+                    <span class="welcome-eyebrow">✨ Welcome to Hari
+                        Crackers</span>
+                    <h2>WELCOME TO <span>HARI CRACKERS</span></h2>
+                    <p>
+                        Based in Sivakasi, the hub of fireworks, we are a
+                        leading wholesale &amp; retail cracker shop offering
+                        premium-quality products at the best prices. We
+                        bring you fireworks directly from trusted
+                        manufacturers, a wide range for every budget, and
+                        fast, reliable doorstep delivery — so your festive
+                        moments are always bright and memorable.
+                    </p>
+                    <a href="about.html" class="btn-learn-more">Learn
+                        More</a>
+                </div>
+
+                <!-- Navy & Gold Logo Badge -->
+                <div class="welcome-badge-card">
+                    <div class="welcome-badge-circle">
+                        <img src="./pictures/logo-removebg-preview.png" alt="Hari Crackers Logo"
+                            class="welcome-badge-logo">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRUST SECTION -->
+            <div class="trust-showcase">
+
+                <div class="trust-card reveal">
+                    <div class="trust-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>Factory Fresh Products</h3>
+                    <p>Directly sourced from Sivakasi manufacturers for
+                        maximum freshness and quality.</p>
+                </div>
+
+                <div class="trust-card reveal">
+                    <div class="trust-icon">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <h3>Festival Savings</h3>
+                    <p>Enjoy exciting Diwali offers with wholesale pricing
+                        for every customer.</p>
+                </div>
+
+                <div class="trust-card reveal">
+                    <div class="trust-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Safe Delivery</h3>
+                    <p>Secure packaging and timely delivery across Tamil
+                        Nadu before the festive season.</p>
+                </div>
+
+                <div class="trust-card reveal">
+                    <div class="trust-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Customer Happiness</h3>
+                    <p>Thousands of families trust Hari Crackers for
+                        brighter and memorable celebrations.</p>
+                </div>
+
+            </div>
+
+            <div class="hero-cta" style="justify-content:center; margin-top:36px;">
+                <a href="products.html" class="btn" style="background-color: #ffc107; color: #2d0050;">Shop
+                    Now</a>
+                <a href="#pricelist" class="btn btn-ghost">Download Price
+                    List</a>
+            </div>
+
+            <div style="text-align:center; margin-top:16px;">
+                <div class="hero-phone" style="display:inline-flex;">
+                    Customer Support :
+                    <strong>+91 7010392742, +91 8667725665</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+     OUR BRANDS SECTION
+============================================ -->
+    <section class="our-brands">
+        <div class="container">
+
+            <!-- Section Heading -->
+            <div class="brands-head">
+                <span class="brands-pill">
+                    <i class="fas fa-star"></i>
+                    Trusted Brands
+                </span>
+                <h2>Our <span>Brands</span></h2>
+                <p>We partner with the most trusted firework brands in
+                    Sivakasi to bring you the best quality products.
+                </p>
+            </div>
+
+            <!-- Product Slider -->
+            <div class="product-slider">
+                <div class="slider-track">
+                    <div class="product-card"><img src="pictures/product-brands/p1.jpg" alt="Brand 1"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p2.jpg" alt="Brand 2"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p3.jpg" alt="Brand 3"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p4.png" alt="Brand 4"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p5.jpg" alt="Brand 5"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p6.jpg" alt="Brand 6"></div>
+
+                    <!-- Duplicate for seamless loop -->
+                    <div class="product-card"><img src="pictures/product-brands/p1.jpg" alt="Brand 1"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p2.jpg" alt="Brand 2"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p3.png" alt="Brand 3"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p4.png" alt="Brand 4"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p5.jpg" alt="Brand 5"></div>
+                    <div class="product-card"><img src="pictures/product-brands/p6.jpg" alt="Brand 6"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FESTIVAL STATS SECTION -->
+    <section class="festival-stats">
+
+        <div class="festival-overlay"></div>
+
+        <div class="container">
+
+            <div class="festival-header reveal">
+                <span class="festival-tag">🔥 HARI CRACKERS</span>
+                <h2>Why Thousands Choose <span>Hari Crackers</span></h2>
+                <p>Premium Sivakasi Fireworks • Trusted Quality • Fast
+                    Delivery</p>
+            </div>
+
+            <div class="festival-grid">
+
+                <div class="festival-card reveal">
+                    <div class="festival-icon">
+                        <i class="fas fa-boxes-stacked"></i>
+                    </div>
+
+                    <h3 class="stat-number" data-target="150" data-suffix="+">0</h3>
+                    <p>Products in Catalogue</p>
+                </div>
+
+                <div class="festival-card reveal">
+                    <div class="festival-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+
+                    <h3 class="stat-number" data-target="5000" data-suffix="+">0</h3>
+                    <p>Happy Customers</p>
+                </div>
+
+                <div class="festival-card reveal">
+                    <div class="festival-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+
+                    <h3 class="stat-number" data-target="100" data-suffix="%">0</h3>
+                    <p>Quality Tested</p>
+                </div>
+
+                <div class="festival-card reveal">
+                    <div class="festival-icon">
+                        <i class="fas fa-truck-fast"></i>
+                    </div>
+
+                    <h3 class="stat-number" data-target="24" data-suffix="hr">0</h3>
+                    <p>Fast Dispatch</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- IMAGE ZOOM MODAL -->
+    <div class="zoom-modal" id="zoomModal">
+        <span class="zoom-close" id="zoomClose"><i class="fas fa-times"></i></span>
+        <div class="zoom-controls">
+            <button id="zoomOutBtn"><i class="fas fa-search-minus"></i></button>
+            <button id="zoomResetBtn"><i class="fas fa-compress"></i></button>
+            <button id="zoomInBtn"><i class="fas fa-search-plus"></i></button>
+        </div>
+        <div class="zoom-img-wrap">
+            <img id="zoomImg" src alt>
+        </div>
+        <p class="zoom-caption" id="zoomCaption"></p>
+    </div>
+
+    <section class="premium-products section" id="products">
+        <div class="container">
+
+            <div class="section-head reveal">
+                <span class="eyebrow">Hari Crackers 2026</span>
+                <h2>Popular <span class="accent">Crackers</span></h2>
+                <p>Best-selling Sivakasi crackers at wholesale prices.</p>
+            </div>
+
+            <div class="premium-grid">
+                <!-- 1 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/10CM.jpeg" alt="10 CM Colour Sparkler"
+                            onclick="openZoom(this.src,'10 CM Colour Sparkler')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>10 CM Colour Sparkler</h3>
+                        <div class="premium-price">₹20</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;"
+                            data-name="10 CM Colour Sparkler" data-price="20">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/GROUND CHAKKAR BIG.jpg" alt="Ground Chakkar Big"
+                            onclick="openZoom(this.src,'Ground Chakkar Big')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>Ground Chakkar Big</h3>
+                        <div class="premium-price">₹40</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;"
+                            data-name="Ground Chakkar Big" data-price="40">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/flowerpots-big.jpg" alt="Flower Pots Big"
+                            onclick="openZoom(this.src,'Flower Pots Big')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>Flower Pots Big</h3>
+                        <div class="premium-price">₹70</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="Flower Pots Big"
+                            data-price="70">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/Classic Bomb.jpg" alt="Classic Bomb"
+                            onclick="openZoom(this.src,'Classic Bomb')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>Classic Bomb</h3>
+                        <div class="premium-price">₹120</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="Classic Bomb"
+                            data-price="120">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/BIJILI 100.jpeg" alt="Bijili 100"
+                            onclick="openZoom(this.src,'Bijili 100')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>Bijili 100</h3>
+                        <div class="premium-price">₹30</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="Bijili 100"
+                            data-price="30">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 6 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/colorkoti.jfif" alt="Colour Kotti"
+                            onclick="openZoom(this.src,'Colour Kotti')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>Colour Kotti</h3>
+                        <div class="premium-price">₹200</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="Colour Kotti"
+                            data-price="200">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 7 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/3 Lakshimi.png" alt="3½ Lakshmi"
+                            onclick="openZoom(this.src,'12 Shot')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>3½ Lakshmi</h3>
+                        <div class="premium-price">₹12</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="12 Shot"
+                            data-price="120">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 8 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/flowerpots-big.jpg" alt="Flowrpots Big"
+                            onclick="openZoom(this.src,'3½ Pipe')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>FLOWERPOTS BIG</h3>
+                        <div class="premium-price">₹70</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="3½ Pipe"
+                            data-price="280">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 9 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/BUTTERFLY.jpg" alt="Butterfly"
+                            onclick="openZoom(this.src,'Butterfly')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>Butterfly</h3>
+                        <div class="premium-price">₹90</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="Butterfly"
+                            data-price="90">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 10 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/Musical Rocket.jpeg" alt="Musical Rocket"
+                            onclick="openZoom(this.src,'Musical Rocket')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>Musical Rocket</h3>
+                        <div class="premium-price">₹130</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="Musical Rocket"
+                            data-price="130">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 11 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/10000 WALA.png" alt="1000 Wala"
+                            onclick="openZoom(this.src,'1000 Wala')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>1000 Wala</h3>
+                        <div class="premium-price">₹250</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;" data-name="1000 Wala"
+                            data-price="250">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 12 -->
+                <div class="premium-card reveal">
+                    <span class="offer-ribbon">80% OFF</span>
+                    <div class="premium-img">
+                        <img src="pictures/products/ROMAN HANDIL PENCIL.webp" alt="Roman Handil Pencil"
+                            onclick="openZoom(this.src,'Roman Handil Pencil')">
+                    </div>
+                    <div class="premium-content">
+                        <h3>Roman Handil Pencil</h3>
+                        <div class="premium-price">₹150</div>
+                        <button class="premium-cart add-to-cart-btn" style="color: #2d0050;"
+                            data-name="Roman Handil Pencil" data-price="150">
+                            <i class="fas fa-cart-plus" style="color: #2d0050;"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FESTIVE PREMIUM SECTION -->
+    <section class="spark-zone">
+        <div class="container">
+
+            <div class="spark-head reveal">
+                <span class="spark-pill">✨ Hari Crackers Special</span>
+                <h2>Make Your <span>Diwali 2026</span> Brighter</h2>
+                <p>Premium fireworks with factory-direct pricing
+                    and doorstep delivery across Tamil Nadu.</p>
+            </div>
+
+            <div class="spark-layout">
+
+                <!-- Left Offer Box -->
+                <div class="flame-box reveal">
+                    <span class="flame-tag">LIMITED OFFER</span>
+
+                    <h3>Save Up to <span>80% OFF</span></h3>
+
+                    <p>Book your crackers early and enjoy premium quality
+                        fireworks at the best prices this Diwali
+                        season.</p>
+
+                    <ul class="flame-list">
+                        <li><i class="fas fa-check-circle"></i> Factory
+                            Direct Pricing</li>
+                        <li><i class="fas fa-check-circle"></i> Premium
+                            Sivakasi Quality</li>
+                        <li><i class="fas fa-check-circle"></i> Fast Door
+                            Delivery</li>
+                    </ul>
+
+                    <a href="products.html" class="ignite-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        Shop Collection
+                    </a>
+                </div>
+
+                <!-- Right Feature Cards -->
+                <div class="glow-grid reveal">
+
+                    <div class="glow-card">
+                        <div class="glow-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h4>Premium Quality</h4>
+                        <p>Trusted Sivakasi fireworks made with superior
+                            quality standards.</p>
+                    </div>
+
+                    <div class="glow-card">
+                        <div class="glow-icon">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <h4>Huge Collection</h4>
+                        <p>Gift boxes, rockets, flower pots, sparklers and
+                            much more.</p>
+                    </div>
+
+                    <div class="glow-card">
+                        <div class="glow-icon">
+                            <i class="fas fa-truck-fast"></i>
+                        </div>
+                        <h4>Quick Delivery</h4>
+                        <p>Fast and secure delivery before your celebrations
+                            begin.</p>
+                    </div>
+
+                    <div class="glow-card">
+                        <div class="glow-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h4>Friendly Support</h4>
+                        <p>Our team is always ready to help you choose the
+                            right crackers.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SAFE DIWALI SECTION -->
+    <section class="section diwali-safety">
+
+        <!-- LEFT HANGING CRACKER -->
+        <div class="hanging-cracker-left">
+            <img src="pictures/hanging-cracker-removebg-preview.png" alt="Hanging Crackers">
+        </div>
+
+        <!-- Decorative Fireworks -->
+        <i class="fas fa-burst firework fw1"></i>
+        <i class="fas fa-burst firework fw2"></i>
+
+        <!-- Hanging Diyas -->
+        <div class="diya diya1"><i class="fas fa-oil-can"></i></div>
+        <div class="diya diya2"><i class="fas fa-oil-can"></i></div>
+        <div class="diya diya3"><i class="fas fa-oil-can"></i></div>
+
+        <div class="container">
+
+            <!-- Header -->
+            <div class="safety-header reveal">
+
+                <div class="safety-logo">
+                    <img src="pictures/logo-removebg-preview.png" alt="Hari Crackers">
+                </div>
+
+                <div class="safety-title">
+                    <span class="ribbon">DO'S & DON'TS FOR A</span>
+                    <h2>SAFE DIWALI</h2>
+                    <p>Safe Choices • Happy Celebrations • Brighter
+                        Tomorrow</p>
+                </div>
+
+            </div>
+
+            <!-- Do & Don't Grid -->
+            <div class="safety-grid">
+
+                <!-- DO'S -->
+                <div class="safety-box do-box reveal">
+
+                    <div class="box-title do-title">
+                        <span class="circle"><i class="fas fa-check"></i></span>
+                        Do's
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon green"><i class="fas fa-bucket"></i></div>
+                        <p>Keep a bucket of water beside you while bursting
+                            crackers.</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon green"><i class="fas fa-kit-medical"></i></div>
+                        <p>Ensure that you have a first aid kit.</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon green"><i class="fas fa-wand-magic-sparkles"></i></div>
+                        <p>Ignite crackers only in open outdoor areas.</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon green"><i class="fas fa-droplet"></i></div>
+                        <p>Immerse used crackers in water before
+                            disposal.</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon green"><i class="fas fa-house"></i></div>
+                        <p>Keep children indoors after bursting crackers
+                            safely.</p>
+                    </div>
+
+                </div>
+
+                <!-- DON'TS -->
+                <div class="safety-box dont-box reveal">
+
+                    <div class="box-title dont-title">
+                        <span class="circle"><i class="fas fa-times"></i></span>
+                        Don'ts
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon red"><i class="fas fa-user-slash"></i></div>
+                        <p>Never experiment with crackers.</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon red"><i class="fas fa-children"></i></div>
+                        <p>Don't leave children unattended while bursting
+                            crackers.</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon red"><i class="fas fa-shirt"></i></div>
+                        <p>Don't wear nylon clothes while bursting
+                            crackers.</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon red"><i class="fas fa-bolt"></i></div>
+                        <p>Don't burst crackers near electric poles and
+                            wires.</p>
+                    </div>
+
+                    <div class="tip">
+                        <div class="icon red"><i class="fas fa-face-surprise"></i></div>
+                        <p>Don't keep your face close while lighting
+                            crackers.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Bottom Button -->
+            <div style="text-align:center;margin-top:45px; ">
+                <a href="products.html" class="btn btn-primary">Explore All
+                    Crackers →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= MOVING TESTIMONIALS ================= -->
+    <section class="moving-reviews">
+        <div class="container">
+
+            <div class="review-heading">
+                <span>Customer Reviews</span>
+                <h2>Trusted by <span class="orange"> Happy
+                        Customers</span></h2>
+                <p>Factory-direct Sivakasi crackers with premium quality and
+                    fast delivery.</p>
+            </div>
+
+            <div class="review-slider">
+
+                <div class="review-track">
+
+                    <!-- Repeat these 10 cards -->
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">M</div>
+                            <div>
+                                <h4>Murali K</h4>
+                                <small>Sivakasi</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Factory-fresh crackers with excellent
+                            quality.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">P</div>
+                            <div>
+                                <h4>Priya S</h4>
+                                <small>Aruppukottai</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Fast delivery and beautiful sparklers.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">R</div>
+                            <div>
+                                <h4>Raja S</h4>
+                                <small>Virudhunagar</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Wholesale pricing is excellent.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">V</div>
+                            <div>
+                                <h4>Vignesh R</h4>
+                                <small>Rajapalayam</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Combo packs are worth every rupee.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">A</div>
+                            <div>
+                                <h4>Arul M</h4>
+                                <small>Madurai</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Received my order within one day.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">K</div>
+                            <div>
+                                <h4>Kavitha L</h4>
+                                <small>Kovilpatti</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Beautiful flower pot displays.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">S</div>
+                            <div>
+                                <h4>Senthil P</h4>
+                                <small>Dindigul</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Perfect for wholesale buyers.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">N</div>
+                            <div>
+                                <h4>Nisha R</h4>
+                                <small>Tuticorin</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Premium quality and quick shipping.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">G</div>
+                            <div>
+                                <h4>Ganesh N</h4>
+                                <small>Theni</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>I order every Diwali from here.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">D</div>
+                            <div>
+                                <h4>Devi P</h4>
+                                <small>Ramanathapuram</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Aerial shots made our festival unforgettable.</p>
+                    </div>
+
+                    <!-- Duplicate for Infinite Loop -->
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">M</div>
+                            <div>
+                                <h4>Murali K</h4>
+                                <small>Sivakasi</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Factory-fresh crackers with excellent
+                            quality.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">P</div>
+                            <div>
+                                <h4>Priya S</h4>
+                                <small>Aruppukottai</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Fast delivery and beautiful sparklers.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">R</div>
+                            <div>
+                                <h4>Raja S</h4>
+                                <small>Virudhunagar</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Wholesale pricing is excellent.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">V</div>
+                            <div>
+                                <h4>Vignesh R</h4>
+                                <small>Rajapalayam</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Combo packs are worth every rupee.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">A</div>
+                            <div>
+                                <h4>Arul M</h4>
+                                <small>Madurai</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Received my order within one day.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">K</div>
+                            <div>
+                                <h4>Kavitha L</h4>
+                                <small>Kovilpatti</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Beautiful flower pot displays.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">S</div>
+                            <div>
+                                <h4>Senthil P</h4>
+                                <small>Dindigul</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Perfect for wholesale buyers.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">N</div>
+                            <div>
+                                <h4>Nisha R</h4>
+                                <small>Tuticorin</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Premium quality and quick shipping.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">G</div>
+                            <div>
+                                <h4>Ganesh N</h4>
+                                <small>Theni</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>I order every Diwali from here.</p>
+                    </div>
+
+                    <div class="review-box">
+                        <div class="review-top">
+                            <div class="avatar">D</div>
+                            <div>
+                                <h4>Devi P</h4>
+                                <small>Ramanathapuram</small>
+                            </div>
+                        </div>
+                        <div class="stars">★★★★★</div>
+                        <p>Aerial shots made our festival unforgettable.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== PREMIUM FAQ SECTION ===== -->
+    <section class="section premium-faq">
+
+        <!-- Decorative Fireworks -->
+        <div class="faq-firework fw-left">
+            <i class="fas fa-burst"></i>
+        </div>
+
+        <div class="faq-firework fw-right">
+            <i class="fas fa-sparkles"></i>
+        </div>
+
+        <div class="container">
+
+            <!-- Header -->
+            <div class="premium-faq-header reveal">
+
+                <span class="faq-ribbon">
+                    <i class="fas fa-circle-question"></i>
+                    HELP CENTER
+                </span>
+
+                <h2>
+                    Frequently Asked
+                    <span>Questions</span>
+                </h2>
+
+                <p>
+                    Everything you need to know about ordering, delivery,
+                    safety and payments.
+                </p>
+
+            </div>
+
+            <!-- Search -->
+            <div class="faq-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="faqSearch" placeholder="Search your question...">
+            </div>
+
+            <!-- Categories -->
+            <div class="faq-categories">
+
+                <button class="faq-cat active" data-cat="all">
+                    <i class="fas fa-layer-group"></i>
+                    All
+                </button>
+
+                <button class="faq-cat" data-cat="ordering">
+                    <i class="fas fa-cart-shopping"></i>
+                    Ordering
+                </button>
+
+                <button class="faq-cat" data-cat="delivery">
+                    <i class="fas fa-truck-fast"></i>
+                    Delivery
+                </button>
+
+                <button class="faq-cat" data-cat="safety">
+                    <i class="fas fa-shield-heart"></i>
+                    Safety
+                </button>
+
+                <button class="faq-cat" data-cat="payment">
+                    <i class="fas fa-wallet"></i>
+                    Payment
+                </button>
+
+            </div>
+
+            <!-- FAQ List -->
+            <div class="faq-list">
+
+                <!-- FAQ 1 -->
+                <div class="accordion-item open" data-cat="ordering">
+                    <div class="accordion-q">
+                        <div class="faq-badge">01</div>
+                        <div class="faq-heading">How do I place an
+                            order?</div>
+                        <div class="plus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <div class="accordion-a">
+                        <p>Browse our Products page, select your crackers,
+                            and confirm your order through WhatsApp or
+                            our Contact page.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="accordion-item" data-cat="delivery">
+                    <div class="accordion-q">
+                        <div class="faq-badge">02</div>
+                        <div class="faq-heading">How can I track my
+                            order?</div>
+                        <div class="plus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <div class="accordion-a">
+                        <p>Once your order is confirmed, we'll share
+                            tracking details through WhatsApp or SMS.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="accordion-item" data-cat="safety">
+                    <div class="accordion-q">
+                        <div class="faq-badge">03</div>
+                        <div class="faq-heading">Are your crackers
+                            safety-tested?</div>
+                        <div class="plus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <div class="accordion-a">
+                        <p>Yes. Every product is sourced from licensed
+                            Sivakasi manufacturers and follows quality and
+                            safety standards.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="accordion-item" data-cat="delivery">
+                    <div class="accordion-q">
+                        <div class="faq-badge">04</div>
+                        <div class="faq-heading">How long does delivery
+                            take?</div>
+                        <div class="plus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <div class="accordion-a">
+                        <p>Most orders are dispatched within 24 hours, and
+                            delivery time depends on your location in
+                            Tamil Nadu.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="accordion-item" data-cat="ordering">
+                    <div class="accordion-q">
+                        <div class="faq-badge">05</div>
+                        <div class="faq-heading">Do you provide wholesale
+                            pricing?</div>
+                        <div class="plus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <div class="accordion-a">
+                        <p>Yes. We offer attractive bulk and wholesale
+                            pricing for retailers, events, and large orders.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="accordion-item" data-cat="payment">
+                    <div class="accordion-q">
+                        <div class="faq-badge">06</div>
+                        <div class="faq-heading">Which payment methods do
+                            you accept?</div>
+                        <div class="plus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <div class="accordion-a">
+                        <p>We accept UPI, Google Pay, PhonePe, Bank
+                            Transfer, and Cash on Delivery for eligible
+                            locations.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 7 -->
+                <div class="accordion-item" data-cat="safety">
+                    <div class="accordion-q">
+                        <div class="faq-badge">07</div>
+                        <div class="faq-heading">What safety precautions
+                            should I follow?</div>
+                        <div class="plus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <div class="accordion-a">
+                        <p>Burst crackers only in open spaces, keep a bucket
+                            of water nearby, wear cotton clothes, and
+                            supervise children.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="accordion-item" data-cat="payment">
+                    <div class="accordion-q">
+                        <div class="faq-badge">08</div>
+                        <div class="faq-heading">What is your return and
+                            refund policy?</div>
+                        <div class="plus"><i class="fas fa-plus"></i></div>
+                    </div>
+                    <div class="accordion-a">
+                        <p>If products are damaged during transit, contact
+                            us within 24 hours with photos, and we'll
+                            assist with a replacement or refund.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom CTA -->
+            <div class="faq-support">
+                <div class="support-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+
+                <div>
+                    <h3>Still Need Help?</h3>
+                    <p>
+                        Our Hari Crackers support team is available to
+                        assist
+                        you with orders and product enquiries.
+                    </p>
+                </div>
+
+                <a href="contact.html" class="btn btn-primary">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="hari-footer">
+        <div class="container">
+            <!-- Top Footer -->
+            <div class="hari-footer-grid">
+                <!-- Brand -->
+                <div class="hari-brand">
+                    <img src="pictures/logo-removebg-preview.png" alt="Hari Crackers" class="hari-footer-logo">
+                    <p>
+                        Premium Fireworks with factory-direct pricing, quality-tested products, and fast delivery across
+                        Tamil Nadu.
+                    </p>
+                    <div class="hari-socials">
+                        <a href="https://www.facebook.com/your-page" target="_blank" rel="noopener">
+                            <i class="fab fa-facebook-f"></i>
+                            <a href="https://www.instagram.com/hari_crackers_/" target="_blank">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.youtube.com/your-channel" target="_blank" rel="noopener">
+                                <i class="fab fa-youtube"></i> </a>
+
+                            <a href="https://wa.me/919597060024" target="_blank" rel="noopener"><i
+                                    class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="hari-links">
+                    <h4>Quick Links</h4>
+                    <a href="index.html">Home</a>
+                    <a href="products.html">Products</a>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+
+                <!-- Categories -->
+                <div class="hari-links">
+                    <h4>Categories</h4>
+                    <a href="products.html">Sound Crackers</a>
+                    <a href="products.html">Sparklers</a>
+                    <a href="products.html">Flower Pots</a>
+                    <a href="products.html">Rockets</a>
+                    <a href="products.html">Aerial Shots</a>
+                </div>
+
+                <!-- Contact -->
+                <div class="hari-contact">
+                    <h4>Contact Info</h4>
+
+                    <div class="contact-box">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>2/8A NH-45 National Highway
+                            Ranjankudi, Perambalur(d.t)
+                            pincode-621115</span>
+                    </div>
+
+                    <div class="contact-box">
+                        <i class="fas fa-phone"></i>
+                        <span>+91 70103 92742, <br> +91 86677
+                            25665</span>
+                    </div>
+
+                    <div class="contact-box">
+                        <i class="fas fa-envelope"></i>
+                        <span>haricrackers182@gmail.com</span>
+                    </div>
+
+                    <div class="contact-box">
+                        <i class="fas fa-clock"></i>
+                        <span>Mon – Sat | 9:00 AM – 8:00 PM</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile CTA -->
+            <div class="hari-call-strip">
+                <h3>Need Help Choosing Crackers?</h3>
+
+                <p>
+                    Call our Sivakasi team directly for combo packs,
+                    wholesale orders, and festive offers.
+                </p>
+
+                <a href="tel:+917010392742" class="call-btn">
+                    <i class="fas fa-phone-alt"></i>
+                    Call +91 70103 92742
+                </a>
+
+            </div>
+
+            <!-- Bottom -->
+            <div class="hari-footer-bottom">
+                <div>
+                    © 2026 <strong>Hari Crackers</strong> | All Rights
+                    Reserved.
+                </div>
+
+                <div class="bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Safety</a>
+                </div>
+            </div>
+
+            <div class="developer-credit">
+                Developed by <strong>Rohil Technologies</strong>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+     FLOATING ACTION BUTTONS
+========================================== -->
+
+    <!-- LEFT SIDE SHOP -->
+    <a href="products.html" class="floating-shop" title="Shop Now">
+        <img src="./pictures/ordernow.png" alt="Shop Now">
+    </a>
+
+    <!-- RIGHT SIDE BUTTONS -->
+    <div class="floating-actions">
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/hari_crackers_/" target="_blank" class="fab-btn fab-instagram"
+            title="Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+
+        <!-- WhatsApp -->
+        <a href="https://wa.me/919597060024" target="_blank" class="fab-btn fab-whatsapp" title="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+
+        <!-- Call -->
+        <a href="tel:+917010392742" class="fab-btn fab-call" title="Call">
+            <i class="fas fa-phone-alt"></i>
+        </a>
+
+        <!-- Back To Top -->
+        <button id="backToTop" class="fab-btn fab-top" type="button" title="Back to Top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ALL JAVASCRIPT - INTERNAL (NO EXTERNAL FILES NEEDED)          -->
+    <!-- ============================================================ -->
+    <script>
+
+
+        // ============================================================
+        // 1. REVEAL ON SCROLL
+        // ============================================================
+        (function () {
+            try {
+                var revealEls = document.querySelectorAll('.reveal');
+                if (!revealEls.length) return;
+
+                var observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                revealEls.forEach(function (el) { observer.observe(el); });
+
+                setTimeout(function () {
+                    revealEls.forEach(function (el) { el.classList.add('in-view'); });
+                }, 1500);
+            } catch (e) {
+                document.querySelectorAll('.reveal').forEach(function (el) {
+                    el.classList.add('in-view');
+                });
+            }
+        })();
+
+
+        // ============================================================
+        // 2. ALL CATEGORIES DROPDOWN
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            var allCatBtn = document.getElementById('all-cat-btn');
+            var allCatMenu = document.getElementById('all-cat-menu');
+
+            if (allCatBtn && allCatMenu) {
+                allCatBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    allCatMenu.classList.toggle('open');
+                    allCatBtn.classList.toggle('active');
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!allCatBtn.contains(e.target) && !allCatMenu.contains(e.target)) {
+                        allCatMenu.classList.remove('open');
+                        allCatBtn.classList.remove('active');
+                    }
+                });
+
+                allCatMenu.querySelectorAll('a').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        allCatMenu.classList.remove('open');
+                        allCatBtn.classList.remove('active');
+                    });
+                });
+            }
+        });
+
+
+        // ============================================================
+        // 3. HAMBURGER MENU TOGGLE
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            var hamburger = document.getElementById('hamburgerBtn');
+            var mainNav = document.getElementById('mainNav');
+
+            if (hamburger && mainNav) {
+                hamburger.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    hamburger.classList.toggle('active');
+                    mainNav.classList.toggle('active');
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!hamburger.contains(e.target) && !mainNav.contains(e.target)) {
+                        hamburger.classList.remove('active');
+                        mainNav.classList.remove('active');
+                    }
+                });
+            }
+        });
+
+
+        // ============================================================
+        // 4. HERO CAROUSEL
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            var track = document.getElementById('carousel-track');
+            var slides = track.querySelectorAll('.carousel-slide');
+            var dots = document.querySelectorAll('#carousel-dots .dot');
+            var prevBtn = document.getElementById('carousel-prev');
+            var nextBtn = document.getElementById('carousel-next');
+            var currentIndex = 0;
+            var totalSlides = slides.length;
+            var autoplayInterval = null;
+            var isTransitioning = false;
+
+            function goToSlide(index) {
+                if (isTransitioning) return;
+                isTransitioning = true;
+
+                if (index < 0) index = totalSlides - 1;
+                if (index >= totalSlides) index = 0;
+                currentIndex = index;
+
+                track.style.transition = 'transform 0.7s cubic-bezier(0.65, 0, 0.35, 1)';
+                track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+
+                dots.forEach(function (dot, i) {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
+
+                setTimeout(function () {
+                    isTransitioning = false;
+                }, 800);
+            }
+
+            function nextSlide() { goToSlide(currentIndex + 1); }
+
+            function prevSlide() { goToSlide(currentIndex - 1); }
+
+            function startAutoplay() {
+                if (autoplayInterval) clearInterval(autoplayInterval);
+                autoplayInterval = setInterval(nextSlide, 5000);
+            }
+
+            function stopAutoplay() {
+                if (autoplayInterval) {
+                    clearInterval(autoplayInterval);
+                    autoplayInterval = null;
+                }
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', function () {
+                stopAutoplay();
+                prevSlide();
+                startAutoplay();
+            });
+            if (nextBtn) nextBtn.addEventListener('click', function () {
+                stopAutoplay();
+                nextSlide();
+                startAutoplay();
+            });
+
+            dots.forEach(function (dot, index) {
+                dot.addEventListener('click', function () {
+                    stopAutoplay();
+                    goToSlide(index);
+                    startAutoplay();
+                });
+            });
+
+            var carousel = document.getElementById('hero-carousel');
+            if (carousel) {
+                carousel.addEventListener('mouseenter', stopAutoplay);
+                carousel.addEventListener('mouseleave', startAutoplay);
+            }
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowLeft') {
+                    stopAutoplay();
+                    prevSlide();
+                    startAutoplay();
+                }
+                if (e.key === 'ArrowRight') {
+                    stopAutoplay();
+                    nextSlide();
+                    startAutoplay();
+                }
+            });
+
+            // Touch support
+            var touchStartX = 0;
+            var touchEndX = 0;
+            if (carousel) {
+                carousel.addEventListener('touchstart', function (e) {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+                carousel.addEventListener('touchend', function (e) {
+                    touchEndX = e.changedTouches[0].screenX;
+                    var diff = touchStartX - touchEndX;
+                    if (Math.abs(diff) > 50) {
+                        stopAutoplay();
+                        if (diff > 0) { nextSlide(); } else { prevSlide(); }
+                        startAutoplay();
+                    }
+                }, { passive: true });
+            }
+
+            // Initialize
+            goToSlide(0);
+            startAutoplay();
+
+            // Expose for debugging
+            window.heroCarousel = { goToSlide: goToSlide, nextSlide: nextSlide, prevSlide: prevSlide };
+        });
+
+        // ============================================================
+        // 5. TESTIMONIAL CAROUSEL
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            var track = document.getElementById('testimonialTrack');
+            var slides = track.querySelectorAll('.testimonial-slide');
+            var dotsContainer = document.getElementById('testDots');
+            var prevBtn = document.getElementById('testPrev');
+            var nextBtn = document.getElementById('testNext');
+            var currentIndex = 0;
+            var totalSlides = slides.length;
+            var autoplayInterval = null;
+            var isTransitioning = false;
+
+            // Create dots
+            if (dotsContainer) {
+                dotsContainer.innerHTML = '';
+                for (var i = 0; i < totalSlides; i++) {
+                    var dot = document.createElement('span');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.dataset.index = i;
+                    dot.addEventListener('click', function () {
+                        var index = parseInt(this.dataset.index);
+                        stopAutoplayTest();
+                        goToSlideTest(index);
+                        startAutoplayTest();
+                    });
+                    dotsContainer.appendChild(dot);
+                }
+            }
+            var testDots = dotsContainer ? dotsContainer.querySelectorAll('.dot') : [];
+
+            function goToSlideTest(index) {
+                if (isTransitioning) return;
+                isTransitioning = true;
+                if (index < 0) index = totalSlides - 1;
+                if (index >= totalSlides) index = 0;
+                currentIndex = index;
+
+                track.style.transition = 'transform 0.6s cubic-bezier(0.65, 0, 0.35, 1)';
+                track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+
+                testDots.forEach(function (dot, i) {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
+
+                setTimeout(function () { isTransitioning = false; }, 700);
+            }
+
+            function nextSlideTest() { goToSlideTest(currentIndex + 1); }
+
+            function prevSlideTest() { goToSlideTest(currentIndex - 1); }
+
+            function startAutoplayTest() {
+                if (autoplayInterval) clearInterval(autoplayInterval);
+                autoplayInterval = setInterval(nextSlideTest, 6000);
+            }
+
+            function stopAutoplayTest() {
+                if (autoplayInterval) {
+                    clearInterval(autoplayInterval);
+                    autoplayInterval = null;
+                }
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', function () {
+                stopAutoplayTest();
+                prevSlideTest();
+                startAutoplayTest();
+            });
+            if (nextBtn) nextBtn.addEventListener('click', function () {
+                stopAutoplayTest();
+                nextSlideTest();
+                startAutoplayTest();
+            });
+
+            var testimonialSection = document.querySelector('.testimonials-section');
+            if (testimonialSection) {
+                testimonialSection.addEventListener('mouseenter', stopAutoplayTest);
+                testimonialSection.addEventListener('mouseleave', startAutoplayTest);
+            }
+
+            // Initialize
+            goToSlideTest(0);
+            startAutoplayTest();
+        });
+
+
+        // ============================================================
+        // 6. REVIEWS MODAL
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = document.getElementById('reviewsModal');
+            var openBtn = document.getElementById('openReviewsModalBtn');
+            var closeBtn = document.getElementById('reviewsModalClose');
+
+            function openModal() {
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeModal() {
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (openBtn) {
+                openBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    openModal();
+                });
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeModal);
+            }
+
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === this) {
+                        closeModal();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        });
+
+
+        // ============================================================
+        // 7. BACK TO TOP BUTTON
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            var backToTopBtn = document.getElementById('back-to-top');
+
+            if (backToTopBtn) {
+                window.addEventListener('scroll', function () {
+                    if (window.scrollY > 300) {
+                        backToTopBtn.classList.add('show');
+                    } else {
+                        backToTopBtn.classList.remove('show');
+                    }
+                });
+
+                backToTopBtn.addEventListener('click', function () {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+        });
+
+
+        // ============================================================
+        // 8. STATS COUNT-UP ANIMATION
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            var statNumbers = document.querySelectorAll('.stat-number');
+            if (!statNumbers.length) return;
+
+            var hasAnimated = false;
+
+            function animateNumber(el) {
+                var target = parseInt(el.dataset.target, 10) || 0;
+                var suffix = el.dataset.suffix || '';
+                var duration = 1600;
+                var startTime = null;
+
+                function step(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    var progress = Math.min((timestamp - startTime) / duration, 1);
+                    var eased = 1 - Math.pow(1 - progress, 3); // ease-out
+                    var current = Math.floor(eased * target);
+                    el.textContent = current.toLocaleString('en-IN') + suffix;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        el.textContent = target.toLocaleString('en-IN') + suffix;
+                    }
+                }
+                requestAnimationFrame(step);
+            }
+
+            var statsSection = document.querySelector('.strip-stats');
+            if (statsSection && 'IntersectionObserver' in window) {
+                var statsObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting && !hasAnimated) {
+                            hasAnimated = true;
+                            statNumbers.forEach(animateNumber);
+                            statsObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.4 });
+                statsObserver.observe(statsSection);
+            } else {
+                statNumbers.forEach(animateNumber);
+            }
+        });
+
+
+        // ============================================================
+        // 9. CART MODAL FUNCTIONALITY
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize cart badge
+            if (typeof CartManager !== 'undefined') {
+                CartManager.updateBadge();
+            }
+
+            // ===== OPEN CART MODAL =====
+            var openCartBtn = document.getElementById('open-cart-btn');
+            if (openCartBtn) {
+                openCartBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var modal = document.getElementById('cart-modal');
+                    if (modal) {
+                        modal.classList.add('active');
+                        updateCartModal();
+                    } else {
+                        // If cart modal doesn't exist on this page, go to products
+                        window.location.href = 'products.html';
+                    }
+                });
+            }
+
+            // ===== CLOSE CART MODAL =====
+            var closeCartBtn = document.getElementById('cart-modal-close');
+            if (closeCartBtn) {
+                closeCartBtn.addEventListener('click', function () {
+                    var modal = document.getElementById('cart-modal');
+                    if (modal) modal.classList.remove('active');
+                });
+            }
+
+            // ===== CONTINUE SHOPPING =====
+            var continueBtn = document.getElementById('cart-continue-btn');
+            if (continueBtn) {
+                continueBtn.addEventListener('click', function () {
+                    var modal = document.getElementById('cart-modal');
+                    if (modal) modal.classList.remove('active');
+                });
+            }
+
+            // ===== CLOSE ON OVERLAY CLICK =====
+            var modal = document.getElementById('cart-modal');
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                    }
+                });
+            }
+
+            // ===== ESC KEY TO CLOSE =====
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    var modal = document.getElementById('cart-modal');
+                    if (modal && modal.classList.contains('active')) {
+                        modal.classList.remove('active');
+                    }
+                }
+            });
+
+            // ===== UPDATE CART MODAL =====
+            function updateCartModal() {
+                if (typeof CartManager === 'undefined') return;
+
+                var items = CartManager.getCartItems();
+                var totalItems = CartManager.getTotalItems();
+                var container = document.getElementById('cart-modal-tbody');
+                var emptyMsg = document.getElementById('cart-empty-msg');
+                var table = document.getElementById('cart-modal-table');
+                var countEl = document.getElementById('cart-modal-count');
+                var totalProductsEl = document.getElementById('cart-modal-total-products');
+                var totalEl = document.getElementById('cart-modal-overall-total');
+                var warningEl = document.getElementById('cart-min-order-warning');
+                var warningTotalEl = document.getElementById('cart-warning-total');
+
+                // Update count
+                if (countEl) countEl.textContent = totalItems;
+                if (totalProductsEl) totalProductsEl.textContent = totalItems;
+
+                if (items.length === 0) {
+                    if (emptyMsg) emptyMsg.style.display = 'block';
+                    if (table) table.style.display = 'none';
+                    if (warningEl) warningEl.style.display = 'none';
+                    if (totalEl) totalEl.textContent = '₹0';
+                    return;
+                }
+
+                if (emptyMsg) emptyMsg.style.display = 'none';
+                if (table) table.style.display = 'table';
+
+                // Build items list
+                var html = '';
+                var totalAmount = 0;
+                items.forEach(function (item) {
+                    // Get price from data-price attribute or use default
+                    var price = 100; // Default price
+                    // Try to find product price from page
+                    var productRow = document.querySelector('.product-table tbody tr[data-name="' + item.name + '"]');
+                    if (productRow) {
+                        var priceTag = productRow.querySelector('.price-tag');
+                        if (priceTag) {
+                            var match = priceTag.textContent.trim().match(/₹(\d+)/);
+                            if (match) price = parseInt(match[1], 10);
+                        }
+                    }
+
+                    var amount = price * item.quantity;
+                    totalAmount += amount;
+
+                    html += '<tr>';
+                    html += '<td>' + item.name + '</td>';
+                    html += '<td>' + item.quantity + '</td>';
+                    html += '<td>₹' + price.toLocaleString() + '</td>';
+                    html += '<td>₹' + amount.toLocaleString() + '</td>';
+                    html += '<td><button class="cart-modal-remove" data-name="' + item.name + '">Remove</button></td>';
+                    html += '</tr>';
+                });
+
+                if (container) container.innerHTML = html;
+
+                // Update total
+                if (totalEl) totalEl.textContent = '₹' + totalAmount.toLocaleString();
+
+                // Check minimum order
+                var minOrder = 2500;
+                if (warningEl) {
+                    if (totalAmount > 0 && totalAmount < minOrder) {
+                        warningEl.style.display = 'flex';
+                        if (warningTotalEl) warningTotalEl.textContent = '₹' + totalAmount.toLocaleString();
+                    } else {
+                        warningEl.style.display = 'none';
+                    }
+                }
+
+                // Add remove button listeners
+                container.querySelectorAll('.cart-modal-remove').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var name = this.dataset.name;
+                        if (typeof CartManager !== 'undefined') {
+                            CartManager.removeItem(name);
+                            CartManager.updateBadge();
+                            updateCartModal();
+                        }
+                    });
+                });
+            }
+
+            // ===== PROCEED TO CHECKOUT =====
+            var checkoutBtn = document.getElementById('cart-checkout-btn');
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', function () {
+                    var totalItems = typeof CartManager !== 'undefined' ? CartManager.getTotalItems() : 0;
+                    if (totalItems === 0) {
+                        alert('Your cart is empty!');
+                        return;
+                    }
+                    // Redirect to products page to complete order
+                    window.location.href = 'products.html';
+                });
+            }
+
+            console.log('✅ Hari Crackers - Cart functionality loaded!');
+            console.log('📦 Items in cart: ' + (typeof CartManager !== 'undefined' ? CartManager.getTotalItems() : 0));
+        });
+    </script>
+    <script src="cart.js"></script>
+
+    <script type="importmap">
+{
+  "imports": {
+    "firebase/app":"https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
+    "firebase/firestore":"https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
+  }
+}
+</script>
+
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import { getFirestore, doc, getDoc } from "firebase/firestore";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
+            authDomain: "hari-crackers.firebaseapp.com",
+            projectId: "hari-crackers",
+            storageBucket: "hari-crackers.firebasestorage.app",
+            messagingSenderId: "510011644696",
+            appId: "1:510011644696:web:b32ce0844e59b774a2dc6d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const priceListBtn = document.getElementById("priceListBtn");
+
+        if (priceListBtn) {
+            priceListBtn.addEventListener("click", function () {
+                window.open("./assets/pdf/HARI CRACKERS PRICELIST.pdf", "_blank");
+            });
+        }
+
+        // ============================================================
+        // 🔥 LOAD STORE SETTINGS FROM FIREBASE (Admin → User Side)
+        // ============================================================
+        async function loadUserSideSettings() {
+            try {
+                const snap = await getDoc(doc(db, "storeSettings", "settings"));
+
+                if (!snap.exists()) {
+                    console.log('⚠️ No settings found — using HTML defaults');
+                    return;
+                }
+
+                const data = snap.data();
+                console.log('📦 Settings loaded:', data);
+
+                // ---------------------------------------------
+                // 1. STORE NAME
+                // ---------------------------------------------
+                if (data.storeName) {
+                    document.querySelectorAll('.brand-text, .brand-name').forEach(el => {
+                        if (el.textContent.includes('Hari')) {
+                            el.innerHTML = data.storeName.replace(
+                                /(\w+)\s*(\w+)/,
+                                '$1 <span>$2</span>'
+                            );
+                        }
+                    });
+                }
+
+                // ---------------------------------------------
+                // 2. STORE EMAIL
+                // ---------------------------------------------
+                if (data.storeEmail) {
+                    document.querySelectorAll('.hari-contact .contact-box span').forEach(el => {
+                        if (el.textContent.includes('@')) {
+                            el.textContent = data.storeEmail;
+                        }
+                    });
+                }
+
+                // ---------------------------------------------
+                // 3. STORE PHONE
+                // ---------------------------------------------
+                if (data.storePhone) {
+                    // Header phone
+                    const headerPhone = document.querySelector('.nav-top-phone span');
+                    if (headerPhone) headerPhone.textContent = data.storePhone;
+
+                    // Footer phone (2 numbers)
+                    document.querySelectorAll('.hari-contact .contact-box span').forEach(el => {
+                        if (el.textContent.includes('+91') && el.textContent.includes('7010')) {
+                            el.innerHTML = data.storePhone + ', <br> ' + data.storePhone;
+                        }
+                    });
+
+                    // Hero phone
+                    const heroPhone = document.querySelector('.hero-phone strong');
+                    if (heroPhone) heroPhone.textContent = data.storePhone;
+
+                    // Call buttons
+                    document.querySelectorAll('.call-btn, .fab-call').forEach(el => {
+                        if (el.href && el.href.startsWith('tel:')) {
+                            el.href = 'tel:' + data.storePhone.replace(/\s/g, '');
+                        }
+                    });
+
+                    // Call btn text
+                    const callBtn = document.querySelector('.call-btn');
+                    if (callBtn) {
+                        callBtn.innerHTML = '<i class="fas fa-phone-alt"></i> Call ' + data.storePhone;
+                    }
+                }
+
+                // ---------------------------------------------
+                // 4. STORE ADDRESS
+                // ---------------------------------------------
+                if (data.storeAddress) {
+                    document.querySelectorAll('.hari-contact .contact-box span').forEach(el => {
+                        if (el.textContent.includes('NH-45') || el.textContent.includes('Ranjankudi')) {
+                            el.textContent = data.storeAddress;
+                        }
+                    });
+                }
+
+                // ---------------------------------------------
+                // 5. STORE HOURS
+                // ---------------------------------------------
+                if (data.storeHours) {
+                    document.querySelectorAll('.hari-contact .contact-box span').forEach(el => {
+                        if (el.textContent.includes('Mon') && el.textContent.includes('AM')) {
+                            el.textContent = data.storeHours;
+                        }
+                    });
+                }
+
+                // ---------------------------------------------
+                // 6. STORE TAGLINE (Top bar)
+                // ---------------------------------------------
+                if (data.storeTagline) {
+                    const topBar = document.querySelector('.tb-english');
+                    if (topBar) {
+                        topBar.textContent = data.storeTagline +
+                            ' • Up to 80% OFF • Fast Delivery Across Tamil Nadu';
+                    }
+                }
+
+                // ---------------------------------------------
+                // 7. WHATSAPP NUMBER
+                // ---------------------------------------------
+                if (data.whatsappNumber) {
+                    document.querySelectorAll('.fab-whatsapp, a[href*="wa.me"]').forEach(link => {
+                        link.href = 'https://wa.me/' + data.whatsappNumber;
+                    });
+                }
+
+                // ---------------------------------------------
+                // 8. SOCIAL MEDIA LINKS
+                // ---------------------------------------------
+                const socials = document.querySelectorAll('.hari-socials a');
+                if (socials.length >= 4) {
+                    if (data.facebookUrl) socials[0].href = data.facebookUrl;
+                    if (data.instagramUrl) socials[1].href = data.instagramUrl;
+                    if (data.youtubeUrl) socials[2].href = data.youtubeUrl;
+                    // whatsapp link (4th) handled above
+                }
+
+                console.log('✅ All settings applied to user side!');
+
+            } catch (error) {
+                console.error('❌ Error loading user settings:', error);
+            }
+        }
+
+        // Run on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadUserSideSettings);
+        } else {
+            loadUserSideSettings();
+        }
+    </script>
+
+    <script>
+        // ===== IMAGE ZOOM MODAL =====
+        (function () {
+            var modal = document.getElementById('zoomModal');
+            var img = document.getElementById('zoomImg');
+            var caption = document.getElementById('zoomCaption');
+            var closeBtn = document.getElementById('zoomClose');
+            var zoomInBtn = document.getElementById('zoomInBtn');
+            var zoomOutBtn = document.getElementById('zoomOutBtn');
+            var zoomResetBtn = document.getElementById('zoomResetBtn');
+            var scale = 1;
+
+            window.openZoom = function (src, name) {
+                img.src = src;
+                caption.textContent = name || '';
+                scale = 1;
+                img.style.transform = 'scale(1)';
+                modal.classList.add('active');
+            };
+
+            function closeZoom() {
+                modal.classList.remove('active');
+            }
+
+            if (closeBtn) closeBtn.addEventListener('click', closeZoom);
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) closeZoom();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeZoom();
+            });
+
+            if (zoomInBtn) zoomInBtn.addEventListener('click', function () {
+                scale = Math.min(scale + 0.25, 3);
+                img.style.transform = 'scale(' + scale + ')';
+            });
+            if (zoomOutBtn) zoomOutBtn.addEventListener('click', function () {
+                scale = Math.max(scale - 0.25, 0.5);
+                img.style.transform = 'scale(' + scale + ')';
+            });
+            if (zoomResetBtn) zoomResetBtn.addEventListener('click', function () {
+                scale = 1;
+                img.style.transform = 'scale(1)';
+            });
+
+            // mouse wheel zoom
+            img.addEventListener('wheel', function (e) {
+                e.preventDefault();
+                scale += e.deltaY < 0 ? 0.15 : -0.15;
+                scale = Math.max(0.5, Math.min(scale, 3));
+                img.style.transform = 'scale(' + scale + ')';
+            }, { passive: false });
+        })();
+
+        // ===== ADD TO CART BUTTONS =====
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.add-to-cart-btn').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var name = this.dataset.name;
+                    var price = parseFloat(this.dataset.price) || 0;
+
+                    if (typeof CartManager !== 'undefined' && CartManager.addItem) {
+                        CartManager.addItem(name, price, 1); CartManager.updateBadge();
+                    } else {
+                        console.warn('CartManager not found — check cart.js');
+                    }
+
+                    // visual feedback
+                    var original = this.innerHTML;
+                    this.classList.add('added');
+                    this.innerHTML = '<i class="fas fa-check"></i> Added';
+                    var self = this;
+                    setTimeout(function () {
+                        self.classList.remove('added');
+                        self.innerHTML = original;
+                    }, 1200);
+                });
+            });
+        });
+
+        const backBtn = document.getElementById("backToTop");
+
+        window.addEventListener("scroll", function () {
+
+            if (window.scrollY > 250) {
+                backBtn.classList.add("show");
+            } else {
+                backBtn.classList.remove("show");
+            }
+
+        });
+
+        backBtn.addEventListener("click", function () {
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        });
+
+        // ---------- FAQ ACCORDION ----------
+        var accordionItems = document.querySelectorAll('.accordion-item');
+        accordionItems.forEach(function (item) {
+            var q = item.querySelector('.accordion-q');
+            if (q) {
+                q.addEventListener('click', function () {
+                    var isOpen = item.classList.contains('open');
+                    accordionItems.forEach(function (el) {
+                        el.classList.remove('open');
+                    });
+                    if (!isOpen) {
+                        item.classList.add('open');
+                    }
+                });
+            }
+        });
+
+        // ---------- FAQ SEARCH ----------
+        var faqSearch = document.getElementById('faqSearch');
+        var faqItems = document.querySelectorAll('.accordion-item');
+        var noResults = document.querySelector('.faq-no-results');
+
+        if (faqSearch) {
+            faqSearch.addEventListener('input', function () {
+                var query = this.value.toLowerCase().trim();
+                var found = false;
+
+                faqItems.forEach(function (item) {
+                    var title = item.querySelector('.faq-title');
+                    var answer = item.querySelector('.accordion-a');
+                    var text = (title ? title.textContent : '') + (answer ? answer.textContent : '');
+                    var match = text.toLowerCase().includes(query);
+
+                    if (query === '') {
+                        item.style.display = '';
+                        found = true;
+                    } else if (match) {
+                        item.style.display = '';
+                        found = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                if (noResults) {
+                    noResults.style.display = (query !== '' && !found) ? 'block' : 'none';
+                }
+            });
+        }
+
+        // ---------- FAQ CATEGORY FILTER ----------
+        var categoryBtns = document.querySelectorAll('.faq-cat');
+        categoryBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                categoryBtns.forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                var cat = btn.dataset.cat;
+
+                faqItems.forEach(function (item) {
+                    if (cat === 'all' || item.dataset.cat === cat) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                if (noResults) {
+                    var visible = document.querySelectorAll('.accordion-item[style*="display: none"]');
+                    noResults.style.display = (visible.length === faqItems.length) ? 'block' : 'none';
+                }
+            });
+        });
+
+        (function () {
+            const backToTopBtn = document.getElementById('backToTop');
+
+            // Show/hide button based on scroll position
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            });
+
+            // Smooth scroll to top when clicked
+            backToTopBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Optional: hide on load if at top
+            if (window.scrollY <= 300) {
+                backToTopBtn.classList.remove('show');
+            }
+        })();
+
+        const backToTop = document.getElementById("backToTop");
+
+        backToTop.addEventListener("click", () => {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+
+
+    </script>
+
+</body>
+
+</html>

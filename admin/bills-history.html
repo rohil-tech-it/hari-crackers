@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Billing History | Hari Crackers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-white: #ffffff;
+            --bg-elevated: #faf5ff;
+            --card: #6a1b9a;
+            --border: rgba(106, 27, 154, 0.12);
+            --border-strong: rgba(106, 27, 154, 0.30);
+            --yellow: #ffc107;
+            --yellow-bright: #ffd54f;
+            --text: #1f1f1f;
+            --text-muted: #555555;
+            --text-dim: #888888;
+            --radius: 14px;
+            --radius-sm: 8px;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #faf5ff;
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR (same as billing.html) ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, #1a0033 0%, #2d0050 45%, #4a148c 100%);
+            color: #f5e6ff;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid rgba(255, 193, 7, 0.30);
+            flex-shrink: 0;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 4px 0 20px rgba(45, 0, 80, 0.3);
+        }
+
+        .sidebar-brand {
+            padding: 24px 22px 20px;
+            border-bottom: 1px solid rgba(255, 193, 7, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .sidebar-brand .brand-icon {
+            width: 90px;
+            height: 90px;
+            min-width: 90px;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.4);
+        }
+
+        .sidebar-brand .brand-icon img {
+            width: 78px;
+            height: 78px;
+            object-fit: contain;
+        }
+
+        .sidebar-brand .brand-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .sidebar-brand .brand-text span {
+            color: var(--yellow);
+        }
+
+        .sidebar-brand .brand-sub {
+            font-size: 0.6rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 18px 14px;
+        }
+
+        .sidebar-nav .nav-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: white;
+            padding: 8px 12px 12px;
+            font-weight: 600;
+        }
+
+        .sidebar-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-nav .nav-item i {
+            width: 20px;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .sidebar-nav .nav-item:hover {
+            background: rgba(255, 193, 7, 0.15);
+            color: #fff;
+        }
+
+        .sidebar-nav .nav-item:hover i {
+            color: var(--yellow);
+        }
+
+        .sidebar-nav .nav-item.active {
+            background: rgba(255, 193, 7, 0.20);
+            color: var(--yellow);
+            border-right: 3px solid var(--yellow);
+        }
+
+        .sidebar-nav .nav-item.active i {
+            color: var(--yellow);
+        }
+
+        .sidebar-nav .nav-item .badge {
+            margin-left: auto;
+            background: var(--yellow);
+            color: #2d0050;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 999px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px 24px;
+            border-top: 1px solid rgba(255, 193, 7, 0.15);
+        }
+
+        .sidebar-footer .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-footer .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--yellow), var(--yellow-bright));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #2d0050;
+        }
+
+        .sidebar-footer .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .sidebar-footer .user-email {
+            font-size: 0.7rem;
+            color: #d0c0e0;
+        }
+
+        .sidebar-footer .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(106, 27, 154, 0.15));
+            border: 2px solid rgba(255, 193, 7, 0.4);
+            color: #ffc107;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .sidebar-footer .logout-btn i {
+            font-size: 1rem;
+            color: #ffc107;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-footer .logout-btn:hover {
+            background: linear-gradient(135deg, #ffc107, #e6a800);
+            border-color: #ffc107;
+            color: #2d0050;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 193, 7, 0.4);
+        }
+
+        .sidebar-footer .logout-btn:hover i {
+            color: #2d0050;
+            transform: translateX(3px);
+        }
+
+        .sidebar-footer .logout-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            height: var(--header-height);
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-header .page-title h2 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--text);
+        }
+
+        .top-header .page-title h2 span {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.85rem;
+        }
+
+        .hamburger-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-white);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(45, 0, 80, 0.4);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .page-content {
+            padding: 28px 30px 40px;
+            flex: 1;
+        }
+
+        .panel {
+            background: var(--bg-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+        }
+
+        .filters-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+            background: var(--bg-white);
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+        }
+
+        .summary-card .sc-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-card .sc-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--card);
+            margin-top: 4px;
+        }
+
+        .bills-table-wrap {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow-x: auto;
+        }
+
+        .bills-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 700px;
+        }
+
+        .bills-table thead th {
+            text-align: left;
+            padding: 12px 14px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: var(--card);
+            white-space: nowrap;
+        }
+
+        .bills-table thead th.num {
+            text-align: right;
+        }
+
+        .bills-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .bills-table tbody tr:nth-child(even) {
+            background: #fbf7ff;
+        }
+
+        .bills-table tbody tr:hover {
+            background: #f2e6ff;
+        }
+
+        .bills-table td {
+            padding: 12px 14px;
+            vertical-align: middle;
+        }
+
+        .bills-table td.num {
+            text-align: right;
+            font-weight: 700;
+            color: var(--card);
+        }
+
+        .source-tag {
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .source-tag.walk-in {
+            background: #6a1b9a;
+        }
+
+        .source-tag.website {
+            background: #2ecc71;
+        }
+
+        .source-tag.other {
+            background: #888;
+        }
+
+        .expand-row td {
+            background: var(--bg-elevated);
+            padding: 0;
+        }
+
+        .expand-content {
+            padding: 16px 20px;
+            display: none;
+        }
+
+        .expand-content.open {
+            display: block;
+        }
+
+        .expand-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            margin-bottom: 12px;
+        }
+
+        .expand-items-table th {
+            text-align: left;
+            padding: 6px 8px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-strong);
+        }
+
+        .expand-items-table th.num {
+            text-align: right;
+        }
+
+        .expand-items-table td {
+            padding: 6px 8px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .expand-items-table td.num {
+            text-align: right;
+        }
+
+        .expand-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-mini {
+            border: none;
+            background: var(--card);
+            color: #fff;
+            padding: 7px 16px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-mini:hover {
+            background: #7b1fa2;
+        }
+
+        .empty-hint {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-dim);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: #333;
+            color: #fff;
+            font-size: 0.9rem;
+            z-index: 99999;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast.show {
+            display: block !important;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: #2ecc71;
+        }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        .toast.info {
+            background: #6a1b9a;
+        }
+
+        @media (max-width: 900px) {
+            .summary-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .hamburger-menu {
+                display: flex !important;
+            }
+
+            .top-header {
+                padding: 0 16px;
+            }
+
+            .page-content {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <img src="../pictures/logo-removebg-preview.png" alt="Hari Crackers Logo">
+            </div>
+            <div>
+                <div class="brand-text">Hari <span>Crackers</span></div>
+                <span class="brand-sub">Staff Panel</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-label">Main Menu</div>
+
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="orders.html" class="nav-item">
+                <i class="fas fa-shopping-bag"></i> Orders
+                <span class="badge" id="orderBadge">0</span>
+            </a>
+            <a href="products.html" class="nav-item">
+                <i class="fas fa-box"></i> Products
+                <span class="badge" id="productBadge">0</span>
+            </a>
+
+            <div class="nav-label" style="margin-top:20px;">Direct Billing</div>
+
+            <a href="billing.html" class="nav-item">
+                <i class="fas fa-cog"></i> Billing
+            </a>
+            <a href="bills-history.html" class="nav-item active">
+                <i class="fas fa-file-invoice"></i> Billing History
+            </a>
+
+            <div class="nav-label" style="margin-top:20px;">Inventory</div>
+
+            <a href="stock-management.html" class="nav-item">
+                <i class="fas fa-warehouse"></i> Stock Management
+                <span class="badge" id="stockAlertBadge" style="background:#e74c3c;display:none;">0</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <div>
+                    <div class="user-name">Admin</div>
+                    <div class="user-email">haricrackers182@gmail.com</div>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+                <div class="page-title">
+                    <h2>Billing History <span>— all saved bills (direct + website orders)</span></h2>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="sc-label">Total Bills</div>
+                    <div class="sc-value" id="scCount">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="sc-label">Total Sales</div>
+                    <div class="sc-value" id="scSales">₹0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="sc-label">Direct / Walk-in Bills</div>
+                    <div class="sc-value" id="scWalkin">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="sc-label">Today's Sales</div>
+                    <div class="sc-value" id="scToday">₹0</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="billSearch" placeholder="Search by Order ID, customer name or phone...">
+                    </div>
+                    <select class="filter-select" id="sourceFilter">
+                        <option value="all">All Sources</option>
+                        <option value="walk-in">Direct / Walk-in Only</option>
+                        <option value="website">Website Orders Only</option>
+                    </select>
+
+                    <!-- ✅ NEW: Export button -->
+                    <button class="btn-mini" id="exportCsvBtn" style="padding:12px 20px;font-size:0.85rem;">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                    <button class="btn-mini" id="printReportBtn"
+                        style="padding:12px 20px;font-size:0.85rem;background:#6a1b9a;">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="bills-table-wrap">
+                <table class="bills-table" id="billsTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th class="num">Items</th>
+                            <th>Payment</th>
+                            <th>Source</th>
+                            <th class="num">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="billsTbody">
+                        <tr>
+                            <td colspan="8" class="empty-hint">Loading bills...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="importmap">
+{
+    "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js"
+    }
+}
+</script>
+
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import {
+            getFirestore, collection, onSnapshot, query, orderBy, where,
+            doc, getDoc, getDocs, writeBatch, updateDoc
+        } from "firebase/firestore"; import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
+            authDomain: "hari-crackers.firebaseapp.com",
+            projectId: "hari-crackers",
+            storageBucket: "hari-crackers.firebasestorage.app",
+            messagingSenderId: "510011644696",
+            appId: "1:510011644696:web:b32ce0844e59b774a2dc6d",
+            measurementId: "G-F0M9590T8V"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);   // ✅ INTHA LINE ADD PANNUNGA
+
+        let allBills = [];
+        let expandedId = null;
+
+        const billsTbody = document.getElementById('billsTbody');
+        const billSearch = document.getElementById('billSearch');
+        const sourceFilter = document.getElementById('sourceFilter');
+
+        function escapeHtmlAttr(str) {
+            return String(str || '').replace(/[&<>"']/g, s => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[s]));
+        }
+
+        function listenToBills() {
+            const q = query(collection(db, 'orders'), orderBy('orderDate', 'desc'));
+            onSnapshot(q, (snapshot) => {
+                allBills = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderSummary();
+                renderBills();
+            }, (err) => {
+                console.error(err);
+                billsTbody.innerHTML = `<tr><td colspan="8" class="empty-hint">⚠️ Error loading bills: ${err.message}</td></tr>`;
+            });
+        }
+
+        function renderSummary() {
+            const totalSales = allBills.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
+            const walkinBills = allBills.filter(b => b.source === 'walk-in');
+            const todayStr = new Date().toDateString();
+            const todaySales = allBills
+                .filter(b => b.orderDate && new Date(b.orderDate).toDateString() === todayStr)
+                .reduce((sum, b) => sum + (b.totalAmount || 0), 0);
+
+            document.getElementById('scCount').textContent = allBills.length;
+            document.getElementById('scSales').textContent = '₹' + totalSales.toLocaleString('en-IN');
+            document.getElementById('scWalkin').textContent = walkinBills.length;
+            document.getElementById('scToday').textContent = '₹' + todaySales.toLocaleString('en-IN');
+        }
+
+        function getFilteredBills() {
+            const term = billSearch.value.trim().toLowerCase();
+            const source = sourceFilter.value;
+
+            return allBills.filter(b => {
+                if (source === 'walk-in' && b.source !== 'walk-in') return false;
+                if (source === 'website' && b.source === 'walk-in') return false;
+
+                if (!term) return true;
+                const haystack = [b.orderId, b.customerName, b.customerPhone].join(' ').toLowerCase();
+                return haystack.includes(term);
+            });
+        }
+
+        function renderBills() {
+            const list = getFilteredBills();
+
+            if (list.length === 0) {
+                billsTbody.innerHTML = `<tr><td colspan="8" class="empty-hint">No bills found</td></tr>`;
+                return;
+            }
+
+            billsTbody.innerHTML = list.map(b => {
+                const d = b.orderDate ? new Date(b.orderDate) : null;
+                const dateStr = d ? d.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-';
+                const sourceLabel = b.source === 'walk-in' ? 'Direct / Shop' : 'Website';
+                const sourceClass = b.source === 'walk-in' ? 'walk-in' : 'website';
+                const isOpen = expandedId === b.id;
+
+                let rowsHtml = `
+                <tr data-id="${b.id}" class="bill-row">
+                    <td><strong>${b.orderId || '-'}</strong></td>
+                    <td>${dateStr}</td>
+                    <td>${b.customerName || 'Walk-in Customer'}</td>
+                    <td>${b.customerPhone || '-'}</td>
+                    <td class="num">${b.totalItems || 0}</td>
+                    <td>${b.paymentMethod || '-'}</td>
+                    <td><span class="source-tag ${sourceClass}">${sourceLabel}</span></td>
+                    <td class="num">₹${(b.totalAmount || 0).toLocaleString('en-IN')}</td>
+                </tr>`;
+
+                if (isOpen) {
+                    const items = b.items || [];
+                    rowsHtml += `
+                    <tr class="expand-row">
+                        <td colspan="8">
+                            <div class="expand-content open">
+                                <table class="expand-items-table">
+                                    <thead>
+                                        <tr><th>Product</th><th class="num">Qty</th><th class="num">Price</th><th class="num">Amount</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        ${items.map(i => `
+                                            <tr>
+                                                <td>${i.name}</td>
+                                                <td class="num">${i.qty}</td>
+                                                <td class="num">₹${i.price}</td>
+                                                <td class="num">₹${i.amount}</td>
+                                            </tr>`).join('')}
+                                    </tbody>
+                                </table>
+                                <div class="expand-actions">
+                                    <button class="btn-mini" data-pdf-id="${b.id}"><i class="fas fa-file-pdf"></i> Download Bill PDF</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`;
+                }
+
+                return rowsHtml;
+            }).join('');
+        }
+
+        billsTbody.addEventListener('click', (e) => {
+            const pdfBtn = e.target.closest('[data-pdf-id]');
+            if (pdfBtn) {
+                e.stopPropagation();
+                const bill = allBills.find(b => b.id === pdfBtn.dataset.pdfId);
+                if (bill) openInvoiceAndPrint(buildInvoiceHtml(bill));
+                return;
+            }
+
+            const row = e.target.closest('.bill-row');
+            if (!row) return;
+            const id = row.dataset.id;
+            expandedId = (expandedId === id) ? null : id;
+            renderBills();
+        });
+
+        billSearch.addEventListener('input', renderBills);
+        sourceFilter.addEventListener('change', renderBills);
+
+        // ============================================================
+        // INVOICE HTML — Orders Page Theme (Purple Header + Vertical Lines)
+        // ============================================================
+        function buildInvoiceHtml(bill) {
+            const logoUrl = new URL('../pictures/logo-removebg-preview.png', window.location.href).href;
+            const items = bill.items || [];
+            const dateTimeStr = bill.orderDate
+                ? new Date(bill.orderDate).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
+                : '-';
+            const totalItems = bill.totalItems || 0;
+            const grandTotal = bill.totalAmount || 0;
+            const orderStatus = (bill.status || 'completed').replace(/^\w/, c => c.toUpperCase());
+
+            const rowsHtml = items.map((item, i) => `
+                <tr>
+                    <td>${i + 1}. ${escapeHtmlAttr(item.name)}</td>
+                    <td style="text-align:center;">${item.qty}</td>
+                    <td style="text-align:right;">₹${(item.price || 0).toLocaleString('en-IN')}</td>
+                    <td style="text-align:right;">₹${(item.amount || 0).toLocaleString('en-IN')}</td>
+                </tr>`).join('');
+
+            return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Invoice ${escapeHtmlAttr(bill.orderId || '')}</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+html, body{
+    height:100%;
+}
+
+body{
+    font-family:'Segoe UI',Arial,sans-serif;
+    color:#1f1f1f;
+    background:#fff;
+    padding:30px 35px;
+    max-width:800px;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+}
+
+.inv-content{
+    flex:1;
+}
+
+/* Header */
+.inv-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:12px;
+}
+
+.inv-brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.inv-brand img{
+    width:60px;
+    height:60px;
+    object-fit:contain;
+}
+
+.inv-brand-name{
+    font-size:28px;
+    font-weight:800;
+    color:#6a1b9a;
+}
+
+.inv-brand-tag{
+    font-size:11px;
+    color:#777;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+.inv-brand-sub{
+    font-size:13px;
+    color:#555;
+    margin-top:4px;
+}
+
+.inv-right{
+    text-align:right;
+}
+
+.inv-title{
+    font-size:24px;
+    font-weight:800;
+    color:#6a1b9a;
+}
+
+.inv-id{
+    font-size:14px;
+    font-weight:700;
+    margin-top:4px;
+}
+
+.inv-date{
+    font-size:12px;
+    color:#777;
+    margin-top:4px;
+}
+
+.inv-hr{
+    border:none;
+    border-top:3px solid #6a1b9a;
+    margin:16px 0 22px;
+}
+
+/* Bill To & Status */
+.inv-info-box{
+    display:flex;
+    border:1px solid #e8dff0;
+    border-radius:8px;
+    overflow:hidden;
+    margin-bottom:24px;
+}
+
+.inv-info-col{
+    flex:1;
+    padding:16px 18px;
+}
+
+.inv-info-col:first-child{
+    background:#faf5ff;
+}
+
+.inv-info-col:last-child{
+    border-left:1px solid #e8dff0;
+}
+
+.inv-info-label{
+    font-size:11px;
+    font-weight:700;
+    color:#ffc107;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:8px;
+}
+
+.inv-info-col strong{
+    display:block;
+    font-size:16px;
+    margin-bottom:4px;
+}
+
+.inv-info-col span{
+    display:block;
+    font-size:13px;
+    color:#555;
+}
+
+.inv-status-row{
+    font-size:13px;
+    margin-bottom:6px;
+}
+
+.inv-status-row b{
+    color:#6a1b9a;
+}
+
+/* Table */
+.inv-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:18px;
+}
+
+.inv-table th{
+    background:#6a1b9a !important;
+    color:#fff !important;
+    padding:12px;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    border:1px solid #6a1b9a;
+    border-right:1px solid rgba(255,255,255,0.35);
+}
+
+.inv-table th:last-child{
+    border-right:1px solid #6a1b9a;
+}
+
+.inv-table td{
+    padding:11px 12px;
+    border-bottom:1px solid #eee;
+    font-size:13px;
+    border-right:1px solid #e8dff0;
+}
+
+.inv-table td:last-child{
+    border-right:none;
+}
+
+.inv-table tbody tr:nth-child(even){
+    background:#faf5ff;
+}
+
+/* Totals */
+.inv-totals{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.inv-totals table{
+    min-width:260px;
+    border-collapse:collapse;
+}
+
+.inv-totals td{
+    padding:8px 10px;
+    font-size:14px;
+    text-align:right;
+}
+
+.inv-totals .grand td{
+    background:#6a1b9a !important;
+    color:#fff !important;
+    font-size:18px;
+    font-weight:800;
+    padding:12px;
+}
+
+/* Footer — Page Bottom */
+.inv-footer{
+    text-align:center;
+    margin-top:auto;
+    padding-top:30px;
+    color:#6a1b9a;
+    font-size:14px;
+    line-height:1.7;
+    border-top:1px solid #eee;
+}
+
+@media print{
+    body{
+        padding:18px;
+        min-height:100vh;
+        display:flex;
+        flex-direction:column;
+    }
+    .inv-content{
+        flex:1;
+    }
+    .inv-footer{
+        margin-top:auto;
+    }
+    .inv-table th,
+    .inv-table td {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="inv-content">
+
+    <div class="inv-header">
+        <div class="inv-brand">
+            <img src="${logoUrl}" alt="Hari Crackers">
+            <div>
+                <div class="inv-brand-name">HARI CRACKERS</div>
+                <div class="inv-brand-tag">Light Up Every Celebration</div>
+                <div class="inv-brand-sub">Sivakasi, Tamil Nadu&nbsp;&nbsp;|&nbsp;&nbsp;+91 86677 25665</div>
+            </div>
+        </div>
+        <div class="inv-right">
+            <div class="inv-title">INVOICE</div>
+            <div class="inv-id">#${escapeHtmlAttr(bill.orderId || '-')}</div>
+            <div class="inv-date">${escapeHtmlAttr(dateTimeStr)}</div>
+        </div>
+    </div>
+
+    <hr class="inv-hr">
+
+    <div class="inv-info-box">
+        <div class="inv-info-col">
+            <div class="inv-info-label">Bill To</div>
+            <strong>${escapeHtmlAttr(bill.customerName || 'Walk-in Customer')}</strong>
+            ${bill.customerPhone ? `<span>${escapeHtmlAttr(bill.customerPhone)}</span>` : ''}
+        </div>
+        <div class="inv-info-col">
+            <div class="inv-info-label">Status</div>
+            <div class="inv-status-row">Order: <b>${escapeHtmlAttr(orderStatus)}</b></div>
+            <div class="inv-status-row">Payment: <b>${escapeHtmlAttr(bill.paymentMethod || '-')}</b></div>
+            <div class="inv-status-row">Total Items: <b>${totalItems}</b></div>
+        </div>
+    </div>
+
+    <table class="inv-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th style="text-align:center;">Qty</th>
+                <th style="text-align:right;">Price</th>
+                <th style="text-align:right;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${rowsHtml}
+        </tbody>
+    </table>
+
+    <div class="inv-totals">
+        <table>
+            <tr><td>Subtotal:</td><td>₹${grandTotal.toLocaleString('en-IN')}</td></tr>
+            <tr class="grand"><td>Grand Total:</td><td>₹${grandTotal.toLocaleString('en-IN')}</td></tr>
+        </table>
+    </div>
+
+</div>
+
+<div class="inv-footer">
+    ✨ Thank you for choosing Hari Crackers.<br>
+    Wishing you a Safe, Bright & Joyful Celebration!
+</div>
+
+</body>
+</html>`;
+        }
+        function openInvoiceAndPrint(html) {
+            const win = window.open('', '_blank');
+            if (!win) {
+                alert('⚠️ Popup blocked — allow popups for this site to print the bill');
+                return;
+            }
+            win.document.open();
+            win.document.write(html);
+            win.document.close();
+            win.focus();
+            setTimeout(() => {
+                try { win.print(); } catch (e) { }
+            }, 400);
+        }
+
+        function listenToBadges() {
+            // ============================================================
+            // ORDERS BADGE
+            // ============================================================
+            const ordersRef = collection(db, 'orders');
+            onSnapshot(ordersRef, (snapshot) => {
+                const orderBadge = document.getElementById('orderBadge');
+                if (orderBadge) {
+                    orderBadge.textContent = snapshot.size;
+                    orderBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
+                }
+            });
+
+            // ============================================================
+            // PRODUCTS BADGE
+            // ============================================================
+            const productsRef = collection(db, 'products');
+            onSnapshot(productsRef, (snapshot) => {
+                const productBadge = document.getElementById('productBadge');
+                if (productBadge) {
+                    productBadge.textContent = snapshot.size;
+                    productBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
+                }
+            });
+            // ============================================================
+            // ✅ STOCK ALERTS BADGE — Low stock products count
+            // ============================================================
+            const productsBadgeRef = collection(db, 'products');
+
+            onSnapshot(productsBadgeRef, (snapshot) => {
+                let lowStockCount = 0;
+
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const stockQty = data.stockQty;
+                    const threshold = data.lowStockThreshold || 5;
+
+                    if (typeof stockQty === 'number' && stockQty <= threshold) {
+                        lowStockCount++;
+                    }
+                });
+
+                const badge = document.getElementById('stockAlertBadge');
+                if (badge) {
+                    badge.textContent = lowStockCount;
+                    badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
+                }
+            }, (error) => {
+                console.error('Stock alert badge error:', error);
+            });
+        }
+
+        // ============================================================
+        // UI
+        // ============================================================
+        document.getElementById('hamburgerBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        listenToBills();
+        listenToBadges();
+
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+
+            if (!confirm('Are you sure you want to logout?')) {
+                return;
+            }
+
+            try {
+                await signOut(auth);
+
+                // After logout, always go to admin login
+                window.location.href = '/admin/index.html';
+
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed. Please try again.');
+            }
+        });
+        // ============================================================
+        // ✅ EXPORT CSV
+        // ============================================================
+        document.getElementById('exportCsvBtn').addEventListener('click', () => {
+            const bills = getFilteredBills();
+
+            if (bills.length === 0) {
+                alert('No bills to export');
+                return;
+            }
+
+            // Build CSV
+            const headers = [
+                'Order ID', 'Date', 'Customer Name', 'Phone',
+                'Items', 'Payment', 'Source', 'Status', 'Amount'
+            ];
+
+            const rows = bills.map(b => {
+                const d = b.orderDate ? new Date(b.orderDate) : null;
+                const dateStr = d ? d.toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', hour12: true
+                }) : '';
+
+                return [
+                    b.orderId || '',
+                    dateStr,
+                    b.customerName || 'Walk-in',
+                    b.customerPhone || '',
+                    b.totalItems || 0,
+                    b.paymentMethod || '',
+                    b.source === 'walk-in' ? 'Direct/Shop' : 'Website',
+                    b.status || 'completed',
+                    (b.totalAmount || 0).toFixed(2)
+                ];
+            });
+
+            // CSV escape
+            const escapeCSV = (val) => {
+                const str = String(val ?? '');
+                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                    return '"' + str.replace(/"/g, '""') + '"';
+                }
+                return str;
+            };
+
+            const csvContent = [headers, ...rows]
+                .map(row => row.map(escapeCSV).join(','))
+                .join('\n');
+
+            // Download
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hari-crackers-bills-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert(`✅ Exported ${bills.length} bills to CSV`);
+        });
+
+        // ============================================================
+        // ✅ PRINT REPORT
+        // ============================================================
+        document.getElementById('printReportBtn').addEventListener('click', () => {
+            const bills = getFilteredBills();
+
+            if (bills.length === 0) {
+                alert('No bills to print');
+                return;
+            }
+
+            const totalSales = bills.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
+            const walkinCount = bills.filter(b => b.source === 'walk-in').length;
+
+            const rowsHtml = bills.map(b => {
+                const d = b.orderDate ? new Date(b.orderDate) : null;
+                const dateStr = d ? d.toLocaleDateString('en-IN') : '-';
+
+                return `
+            <tr>
+                <td>${escapeHtmlAttr(b.orderId || '-')}</td>
+                <td>${dateStr}</td>
+                <td>${escapeHtmlAttr(b.customerName || 'Walk-in')}</td>
+                <td>${b.customerPhone || '-'}</td>
+                <td style="text-align:center;">${b.totalItems || 0}</td>
+                <td>${b.paymentMethod || '-'}</td>
+                <td>${b.source === 'walk-in' ? 'Direct' : 'Website'}</td>
+                <td style="text-align:right;">₹${(b.totalAmount || 0).toLocaleString('en-IN')}</td>
+            </tr>`;
+            }).join('');
+
+            const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Bills Report — Hari Crackers</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',Arial,sans-serif;padding:30px;color:#1f1f1f;}
+    h1{color:#6a1b9a;font-size:22px;margin-bottom:6px;}
+    .meta{font-size:12px;color:#666;margin-bottom:20px;}
+    .summary{display:flex;gap:30px;margin-bottom:20px;padding:16px;background:#faf5ff;border-radius:8px;}
+    .summary-item{font-size:13px;}
+    .summary-item strong{display:block;font-size:18px;color:#6a1b9a;}
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    th{background:#6a1b9a;color:#fff;padding:10px;text-align:left;font-size:11px;text-transform:uppercase;}
+    td{padding:8px 10px;border-bottom:1px solid #eee;}
+    tr:nth-child(even){background:#faf5ff;}
+    @media print{
+        body{padding:15px;}
+        button{display:none;}
+    }
+</style>
+</head>
+<body>
+    <h1>Hari Crackers — Bills Report</h1>
+    <div class="meta">
+        Generated: ${new Date().toLocaleString('en-IN')} | 
+        Filter: ${sourceFilter.options[sourceFilter.selectedIndex].text}
+    </div>
+    <div class="summary">
+        <div class="summary-item">Total Bills <strong>${bills.length}</strong></div>
+        <div class="summary-item">Total Sales <strong>₹${totalSales.toLocaleString('en-IN')}</strong></div>
+        <div class="summary-item">Direct/Shop <strong>${walkinCount}</strong></div>
+        <div class="summary-item">Website <strong>${bills.length - walkinCount}</strong></div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th style="text-align:center;">Items</th>
+                <th>Payment</th>
+                <th>Source</th>
+                <th style="text-align:right;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+    </table>
+</body>
+</html>`;
+
+            const win = window.open('', '_blank');
+            if (!win) {
+                alert('Popup blocked — allow popups to print');
+                return;
+            }
+            win.document.open();
+            win.document.write(html);
+            win.document.close();
+            win.focus();
+            setTimeout(() => {
+                try { win.print(); } catch (e) { }
+            }, 400);
+        });
+
+    </script>
+</body>
+
+</html>
