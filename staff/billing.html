@@ -1554,13 +1554,32 @@
 
         import { initializeApp } from "firebase/app";
         import {
-            getFirestore, collection, onSnapshot, query, orderBy,
-            addDoc, doc, getDoc, setDoc, serverTimestamp,
-            where, limit, getDocs,
+            getFirestore,
+            collection,
+            onSnapshot,
+            query,
+            orderBy,
+            addDoc,
+            doc,
+            getDoc,
+            setDoc,
+            serverTimestamp,
+            where,
+            limit,
+            getDocs,
             writeBatch,
-            enableIndexedDbPersistence  // ✅ NEW
+            enableIndexedDbPersistence
         } from "firebase/firestore";
-        import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
+        import {
+            getAuth,
+            signOut
+        } from "firebase/auth";
+
+
+        // ============================================================
+        // FIREBASE CONFIG
+        // ============================================================
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
@@ -1572,1013 +1591,2940 @@
             measurementId: "G-F0M9590T8V"
         };
 
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const auth = getAuth(app);   // ✅ INTHA LINE ADD PANNUNGA
+        const auth = getAuth(app);
 
-        // ✅ OFFLINE PERSISTENCE ENABLE
+
+        // ============================================================
+        // OFFLINE PERSISTENCE
+        // ============================================================
+
         enableIndexedDbPersistence(db).catch((err) => {
+
             if (err.code === 'failed-precondition') {
-                // Multiple tabs open — offline only in one tab
-                console.warn('⚠️ Offline: only works in single tab');
+
+                console.warn(
+                    '⚠️ Offline persistence works only in one browser tab.'
+                );
+
             } else if (err.code === 'unimplemented') {
-                console.warn('⚠️ Browser does not support offline');
+
+                console.warn(
+                    '⚠️ Browser does not support offline persistence.'
+                );
+
             } else {
-                console.error('Offline persistence error:', err);
+
+                console.error(
+                    'Offline persistence error:',
+                    err
+                );
+
             }
+
         });
 
 
+        // ============================================================
+        // GLOBAL VARIABLES
+        // ============================================================
 
         let allProducts = [];
         let billItems = [];
 
-        const searchInput = document.getElementById('productSearch');
-        const suggestionsBox = document.getElementById('productSuggestions');
-        const cartTbody = document.getElementById('cartTbody');
-        const cartTableOuter = document.getElementById('cartTableOuter');
-        const cartEmptyMsg = document.getElementById('cartEmptyMsg');
-        const itemCountEl = document.getElementById('itemCount');
-        // ✅ NEW button
-        const saveAndDownloadBtn = document.getElementById('saveAndDownloadBtn');
-        const addItemBtn = document.getElementById('addItemBtn');
-        const historyLookupBtn = document.getElementById('historyLookupBtn');
-        const custPhoneInput = document.getElementById('custPhone');
-        const custNameInput = document.getElementById('custName');
-        const customerHistoryBox = document.getElementById('customerHistoryBox');
+        // Keyboard selected product index
+        let highlightIndex = 0;
+
+        // Manual item row
         let addItemRowOpen = false;
 
+        // Remove confirmation
+        let pendingRemoveIdx = null;
+
+
         // ============================================================
-        // LOCALSTORAGE — BILL + CUSTOMER PERSISTENCE
+        // DOM ELEMENTS
         // ============================================================
-        const BILL_STORAGE_KEY = 'haricrackers_billing_draft_v1';
-        const CUSTOMER_STORAGE_KEY = 'haricrackers_billing_customer_v1';
+
+        const searchInput =
+            document.getElementById('productSearch');
+
+        const suggestionsBox =
+            document.getElementById('productSuggestions');
+
+        const cartTbody =
+            document.getElementById('cartTbody');
+
+        const cartTableOuter =
+            document.getElementById('cartTableOuter');
+
+        const cartEmptyMsg =
+            document.getElementById('cartEmptyMsg');
+
+        const itemCountEl =
+            document.getElementById('itemCount');
+
+        const saveAndDownloadBtn =
+            document.getElementById('saveAndDownloadBtn');
+
+        const addItemBtn =
+            document.getElementById('addItemBtn');
+
+        const historyLookupBtn =
+            document.getElementById('historyLookupBtn');
+
+        const custPhoneInput =
+            document.getElementById('custPhone');
+
+        const custNameInput =
+            document.getElementById('custName');
+
+        const customerHistoryBox =
+            document.getElementById('customerHistoryBox');
+
+        const payMethodInput =
+            document.getElementById('payMethod');
+
+
+        // ============================================================
+        // LOCAL STORAGE
+        // ============================================================
+
+        const BILL_STORAGE_KEY =
+            'haricrackers_billing_draft_v1';
+
+        const CUSTOMER_STORAGE_KEY =
+            'haricrackers_billing_customer_v1';
+
+
+        // ============================================================
+        // SAVE BILL TO LOCAL STORAGE
+        // ============================================================
 
         function saveBillToLocalStorage() {
+
             try {
-                localStorage.setItem(BILL_STORAGE_KEY, JSON.stringify(billItems));
+
+                localStorage.setItem(
+                    BILL_STORAGE_KEY,
+                    JSON.stringify(billItems)
+                );
+
             } catch (e) {
-                console.warn('Could not save bill to localStorage:', e);
+
+                console.warn(
+                    'Could not save bill to localStorage:',
+                    e
+                );
+
             }
+
         }
+
+
+        // ============================================================
+        // LOAD BILL FROM LOCAL STORAGE
+        // ============================================================
 
         function loadBillFromLocalStorage() {
+
             try {
-                const raw = localStorage.getItem(BILL_STORAGE_KEY);
+
+                const raw =
+                    localStorage.getItem(BILL_STORAGE_KEY);
+
                 if (!raw) return [];
-                const parsed = JSON.parse(raw);
+
+                const parsed =
+                    JSON.parse(raw);
+
                 if (!Array.isArray(parsed)) return [];
+
                 return parsed
-                    .filter(i => i && i.id && typeof i.qty === 'number')
+                    .filter(
+                        i =>
+                            i &&
+                            i.id &&
+                            typeof i.qty === 'number'
+                    )
                     .map(i => ({
+
                         id: i.id,
-                        name: i.name || 'Unnamed',
-                        price: Number(i.price) || 0,
-                        oldPrice: Number(i.oldPrice) || Number(i.price) || 0,
-                        qty: Math.max(1, parseInt(i.qty, 10) || 1),
-                        included: i.included !== false,
-                        manual: !!i.manual
+
+                        name:
+                            i.name || 'Unnamed',
+
+                        price:
+                            Number(i.price) || 0,
+
+                        oldPrice:
+                            Number(i.oldPrice) ||
+                            Number(i.price) ||
+                            0,
+
+                        qty:
+                            Math.max(
+                                1,
+                                parseInt(i.qty, 10) || 1
+                            ),
+
+                        included:
+                            i.included !== false,
+
+                        manual:
+                            !!i.manual
+
                     }));
+
             } catch (e) {
-                console.warn('Could not load bill from localStorage:', e);
+
+                console.warn(
+                    'Could not load bill from localStorage:',
+                    e
+                );
+
                 return [];
+
             }
+
         }
+
+
+        // ============================================================
+        // CLEAR BILL LOCAL STORAGE
+        // ============================================================
 
         function clearBillFromLocalStorage() {
+
             try {
-                localStorage.removeItem(BILL_STORAGE_KEY);
+
+                localStorage.removeItem(
+                    BILL_STORAGE_KEY
+                );
+
             } catch (e) { }
+
         }
+
+
+        // ============================================================
+        // SAVE CUSTOMER LOCAL STORAGE
+        // ============================================================
 
         function saveCustomerToLocalStorage() {
+
             try {
-                localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify({
-                    name: custNameInput.value,
-                    phone: custPhoneInput.value,
-                    payMethod: document.getElementById('payMethod').value
-                }));
+
+                localStorage.setItem(
+                    CUSTOMER_STORAGE_KEY,
+                    JSON.stringify({
+
+                        name:
+                            custNameInput.value,
+
+                        phone:
+                            custPhoneInput.value,
+
+                        payMethod:
+                            payMethodInput.value
+
+                    })
+                );
+
             } catch (e) { }
+
         }
+
+
+        // ============================================================
+        // LOAD CUSTOMER LOCAL STORAGE
+        // ============================================================
 
         function loadCustomerFromLocalStorage() {
+
             try {
-                const raw = localStorage.getItem(CUSTOMER_STORAGE_KEY);
+
+                const raw =
+                    localStorage.getItem(
+                        CUSTOMER_STORAGE_KEY
+                    );
+
                 if (!raw) return;
-                const c = JSON.parse(raw);
-                if (c.name) custNameInput.value = c.name;
-                if (c.phone) custPhoneInput.value = c.phone;
-                if (c.payMethod) document.getElementById('payMethod').value = c.payMethod;
+
+                const c =
+                    JSON.parse(raw);
+
+                if (c.name) {
+
+                    custNameInput.value =
+                        c.name;
+
+                }
+
+                if (c.phone) {
+
+                    custPhoneInput.value =
+                        c.phone;
+
+                }
+
+                if (c.payMethod) {
+
+                    payMethodInput.value =
+                        c.payMethod;
+
+                }
+
             } catch (e) { }
+
         }
+
+
+        // ============================================================
+        // CLEAR CUSTOMER LOCAL STORAGE
+        // ============================================================
 
         function clearCustomerFromLocalStorage() {
+
             try {
-                localStorage.removeItem(CUSTOMER_STORAGE_KEY);
+
+                localStorage.removeItem(
+                    CUSTOMER_STORAGE_KEY
+                );
+
             } catch (e) { }
+
         }
 
-        custNameInput.addEventListener('input', saveCustomerToLocalStorage);
-        custPhoneInput.addEventListener('input', saveCustomerToLocalStorage);
-        document.getElementById('payMethod').addEventListener('change', saveCustomerToLocalStorage);
 
         // ============================================================
-        // LIGHTBOX — PRODUCT IMAGE PREVIEW
-        // ============================================================
-        const lightboxOverlay = document.getElementById('lightboxOverlay');
-        const lightboxImage = document.getElementById('lightboxImage');
-        const lightboxCaptionText = document.getElementById('lightboxCaptionText');
-        const lightboxClose = document.getElementById('lightboxClose');
-
-        function openLightbox(imageUrl, productName) {
-            if (!imageUrl) return;
-            lightboxImage.src = imageUrl;
-            lightboxCaptionText.textContent = productName || 'Product Image';
-            lightboxOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeLightbox() {
-            lightboxOverlay.classList.remove('active');
-            lightboxImage.src = '';
-            document.body.style.overflow = '';
-        }
-
-        lightboxClose.addEventListener('click', (e) => {
-            e.stopPropagation();
-            closeLightbox();
-        });
-
-        lightboxOverlay.addEventListener('click', (e) => {
-            if (e.target === lightboxOverlay) closeLightbox();
-        });
-
-        // ============================================================
-        // ⌨️ ARROW KEY NAVIGATION — CUSTOMER FIELDS
-        // ============================================================
-        // ↓ Arrow Down → Next field-ku move
-        // ↑ Arrow Up   → Previous field-ku move
+        // CUSTOMER LOCAL STORAGE EVENTS
         // ============================================================
 
-        const customerFieldOrder = [custNameInput, custPhoneInput, payMethodSelect, saveAndDownloadBtn];
+        custNameInput.addEventListener(
+            'input',
+            saveCustomerToLocalStorage
+        );
 
-        document.addEventListener('keydown', (e) => {
-            const tag = (e.target.tagName || '').toLowerCase();
-            const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select';
+        custPhoneInput.addEventListener(
+            'input',
+            saveCustomerToLocalStorage
+        );
 
-            // ✅ CUSTOMER FIELDS la mattum arrow nav work aagum
-            const currentIdx = customerFieldOrder.indexOf(e.target);
-            if (currentIdx === -1) return;  // customer fields illena skip
+        payMethodInput.addEventListener(
+            'change',
+            saveCustomerToLocalStorage
+        );
 
-            // ✅ ↓ ARROW DOWN → next field
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                // Search box la illa, so product selection-ku interfere aagadhu
-                // Adhanaal direct-ah next customer field-ku move
-                const nextIdx = Math.min(currentIdx + 1, customerFieldOrder.length - 1);
-                const nextField = customerFieldOrder[nextIdx];
-
-                if (nextField === saveAndDownloadBtn && saveAndDownloadBtn.disabled) {
-                    showToast('⚠️ Add items first', 'info');
-                    return;
-                }
-
-                nextField.focus();
-                if (nextField.select) nextField.select();  // input field-na select pannu
-                return;
-            }
-
-            // ✅ ↑ ARROW UP → previous field
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                const prevIdx = Math.max(currentIdx - 1, 0);
-                const prevField = customerFieldOrder[prevIdx];
-
-                prevField.focus();
-                if (prevField.select) prevField.select();
-                return;
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) {
-                closeLightbox();
-            }
-        });
 
         // ============================================================
-        // CUSTOMER HISTORY LOOKUP BY NAME OR MOBILE
+        // HTML ESCAPE
         // ============================================================
-        async function lookupCustomerHistory(phone, name) {
-            customerHistoryBox.style.display = 'block';
-            customerHistoryBox.innerHTML = '<div class="hist-empty">Searching...</div>';
-
-            try {
-                let orders = [];
-
-                if (phone && phone.length >= 10) {
-                    const q1 = query(collection(db, 'orders'), where('customerPhone', '==', phone), limit(25));
-                    const snap1 = await getDocs(q1);
-                    orders = snap1.docs.map(d => d.data());
-                }
-
-                if (orders.length === 0 && name && name.trim() && name.trim() !== 'Walk-in Customer') {
-                    const allSnap = await getDocs(query(collection(db, 'orders'), limit(200)));
-                    const nameLower = name.trim().toLowerCase();
-                    orders = allSnap.docs
-                        .map(d => d.data())
-                        .filter(o => (o.customerName || '').toLowerCase().includes(nameLower));
-                }
-
-                orders.sort((a, b) => new Date(b.orderDate || 0) - new Date(a.orderDate || 0));
-                renderCustomerHistory(orders, phone, name);
-
-            } catch (err) {
-                console.error(err);
-                customerHistoryBox.innerHTML = '<div class="hist-empty">⚠️ Search error: ' + err.message + '</div>';
-            }
-        }
-
-        function renderCustomerHistory(orders, phone, name) {
-            if (orders.length === 0) {
-                customerHistoryBox.innerHTML = `
-                    <div class="hist-title">Bill History</div>
-                    <div class="hist-empty">
-                        No previous billing history found for this number (${phone}). Welcome as a new customer.
-                    </div>`;
-                return;
-            }
-
-            const latestName = orders[0].customerName;
-            if (latestName && (custNameInput.value.trim() === '' || custNameInput.value.trim() === 'Walk-in Customer')) {
-                custNameInput.value = latestName;
-                saveCustomerToLocalStorage();
-            }
-
-            const totalSpent = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-
-            customerHistoryBox.innerHTML = `
-                <div class="hist-title">Bill History — ${orders.length} bills, ₹${totalSpent.toLocaleString('en-IN')} total</div>
-                ${orders.map(o => {
-                const d = o.orderDate ? new Date(o.orderDate) : null;
-                const dateStr = d ? d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
-                const itemNames = (o.items || []).map(i => i.name).join(', ');
-                return `
-                    <div class="hist-row" title="${escapeHtmlAttr(itemNames)}">
-                        <span>${o.orderId || '-'} <span class="hist-meta">· ${dateStr} · ${o.totalItems || 0} items</span></span>
-                        <span class="hist-amt">₹${(o.totalAmount || 0).toLocaleString('en-IN')}</span>
-                    </div>`;
-            }).join('')}
-            `;
-        }
-
-        historyLookupBtn.addEventListener('click', () => {
-            const phone = custPhoneInput.value.trim();
-            const name = custNameInput.value.trim();
-            if (!phone && (!name || name === 'Walk-in Customer')) {
-                showToast('Customer Name or Phone number', 'error');
-                return;
-            }
-            lookupCustomerHistory(phone, name);
-        });
-
-        custPhoneInput.addEventListener('input', () => {
-            if (custPhoneInput.value.trim().length === 10) {
-                lookupCustomerHistory(custPhoneInput.value.trim(), custNameInput.value.trim());
-            } else if (custPhoneInput.value.trim().length === 0) {
-                customerHistoryBox.style.display = 'none';
-                customerHistoryBox.innerHTML = '';
-            }
-        });
-
-        custNameInput.addEventListener('blur', () => {
-            const name = custNameInput.value.trim();
-            if (name && name !== 'Walk-in Customer' && name.length >= 3) {
-                lookupCustomerHistory(custPhoneInput.value.trim(), name);
-            }
-        });
 
         function escapeHtmlAttr(str) {
-            return String(str || '').replace(/[&<>"']/g, s => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[s]));
+
+            return String(str || '')
+                .replace(
+                    /[&<>"']/g,
+                    s => ({
+
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#39;'
+
+                    }[s])
+                );
+
         }
+
+
+        // ============================================================
+        // LIGHTBOX
+        // ============================================================
+
+        const lightboxOverlay =
+            document.getElementById(
+                'lightboxOverlay'
+            );
+
+        const lightboxImage =
+            document.getElementById(
+                'lightboxImage'
+            );
+
+        const lightboxCaptionText =
+            document.getElementById(
+                'lightboxCaptionText'
+            );
+
+        const lightboxClose =
+            document.getElementById(
+                'lightboxClose'
+            );
+
+
+        function openLightbox(
+            imageUrl,
+            productName
+        ) {
+
+            if (!imageUrl) return;
+
+            lightboxImage.src =
+                imageUrl;
+
+            lightboxCaptionText.textContent =
+                productName ||
+                'Product Image';
+
+            lightboxOverlay.classList.add(
+                'active'
+            );
+
+            document.body.style.overflow =
+                'hidden';
+
+        }
+
+
+        function closeLightbox() {
+
+            lightboxOverlay.classList.remove(
+                'active'
+            );
+
+            lightboxImage.src =
+                '';
+
+            document.body.style.overflow =
+                '';
+
+        }
+
+
+        lightboxClose.addEventListener(
+            'click',
+            (e) => {
+
+                e.stopPropagation();
+
+                closeLightbox();
+
+            }
+        );
+
+
+        lightboxOverlay.addEventListener(
+            'click',
+            (e) => {
+
+                if (
+                    e.target ===
+                    lightboxOverlay
+                ) {
+
+                    closeLightbox();
+
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            'keydown',
+            (e) => {
+
+                if (
+                    e.key === 'Escape' &&
+                    lightboxOverlay.classList.contains(
+                        'active'
+                    )
+                ) {
+
+                    closeLightbox();
+
+                }
+
+            }
+        );
+
+
+        // ============================================================
+        // CUSTOMER HISTORY
+        // ============================================================
+
+        async function lookupCustomerHistory(
+            phone,
+            name
+        ) {
+
+            customerHistoryBox.style.display =
+                'block';
+
+            customerHistoryBox.innerHTML =
+                '<div class="hist-empty">Searching...</div>';
+
+            try {
+
+                let orders = [];
+
+
+                // Search by phone
+                if (
+                    phone &&
+                    phone.length >= 10
+                ) {
+
+                    const q1 = query(
+                        collection(db, 'orders'),
+                        where(
+                            'customerPhone',
+                            '==',
+                            phone
+                        ),
+                        limit(25)
+                    );
+
+                    const snap1 =
+                        await getDocs(q1);
+
+                    orders =
+                        snap1.docs.map(
+                            d => d.data()
+                        );
+
+                }
+
+
+                // Search by name
+                if (
+                    orders.length === 0 &&
+                    name &&
+                    name.trim() &&
+                    name.trim() !==
+                    'Walk-in Customer'
+                ) {
+
+                    const allSnap =
+                        await getDocs(
+                            query(
+                                collection(
+                                    db,
+                                    'orders'
+                                ),
+                                limit(200)
+                            )
+                        );
+
+                    const nameLower =
+                        name.trim().toLowerCase();
+
+                    orders =
+                        allSnap.docs
+                            .map(d => d.data())
+                            .filter(
+                                o =>
+                                    (
+                                        o.customerName ||
+                                        ''
+                                    )
+                                        .toLowerCase()
+                                        .includes(
+                                            nameLower
+                                        )
+                            );
+
+                }
+
+
+                orders.sort(
+                    (a, b) =>
+                        new Date(
+                            b.orderDate || 0
+                        ) -
+                        new Date(
+                            a.orderDate || 0
+                        )
+                );
+
+
+                renderCustomerHistory(
+                    orders,
+                    phone,
+                    name
+                );
+
+            } catch (err) {
+
+                console.error(err);
+
+                customerHistoryBox.innerHTML =
+                    '<div class="hist-empty">⚠️ Search error: ' +
+                    escapeHtmlAttr(err.message) +
+                    '</div>';
+
+            }
+
+        }
+
+
+        function renderCustomerHistory(
+            orders,
+            phone,
+            name
+        ) {
+
+            if (orders.length === 0) {
+
+                customerHistoryBox.innerHTML = `
+
+                <div class="hist-title">
+                    Bill History
+                </div>
+
+                <div class="hist-empty">
+
+                    No previous billing history found
+                    for this number (${escapeHtmlAttr(phone)}).
+
+                    Welcome as a new customer.
+
+                </div>
+
+            `;
+
+                return;
+
+            }
+
+
+            const latestName =
+                orders[0].customerName;
+
+
+            if (
+                latestName &&
+                (
+                    custNameInput.value.trim() === '' ||
+                    custNameInput.value.trim() ===
+                    'Walk-in Customer'
+                )
+            ) {
+
+                custNameInput.value =
+                    latestName;
+
+                saveCustomerToLocalStorage();
+
+            }
+
+
+            const totalSpent =
+                orders.reduce(
+                    (sum, o) =>
+                        sum +
+                        (
+                            Number(
+                                o.totalAmount
+                            ) || 0
+                        ),
+                    0
+                );
+
+
+            customerHistoryBox.innerHTML = `
+
+            <div class="hist-title">
+
+                Bill History —
+                ${orders.length} bills,
+                ₹${totalSpent.toLocaleString('en-IN')}
+                total
+
+            </div>
+
+            ${orders.map(o => {
+
+                const d =
+                    o.orderDate
+                        ? new Date(
+                            o.orderDate
+                        )
+                        : null;
+
+                const dateStr =
+                    d
+                        ? d.toLocaleDateString(
+                            'en-IN',
+                            {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                            }
+                        )
+                        : '-';
+
+                const itemNames =
+                    (o.items || [])
+                        .map(i => i.name)
+                        .join(', ');
+
+                return `
+
+                    <div
+                        class="hist-row"
+                        title="${escapeHtmlAttr(itemNames)}"
+                    >
+
+                        <span>
+
+                            ${escapeHtmlAttr(
+                    o.orderId || '-'
+                )}
+
+                            <span class="hist-meta">
+
+                                · ${dateStr}
+                                · ${o.totalItems || 0}
+                                items
+
+                            </span>
+
+                        </span>
+
+                        <span class="hist-amt">
+
+                            ₹${(
+                        Number(
+                            o.totalAmount
+                        ) || 0
+                    ).toLocaleString('en-IN')}
+
+                        </span>
+
+                    </div>
+
+                `;
+
+            }).join('')}
+
+        `;
+
+        }
+
+
+        historyLookupBtn.addEventListener(
+            'click',
+            () => {
+
+                const phone =
+                    custPhoneInput.value.trim();
+
+                const name =
+                    custNameInput.value.trim();
+
+
+                if (
+                    !phone &&
+                    (
+                        !name ||
+                        name ===
+                        'Walk-in Customer'
+                    )
+                ) {
+
+                    showToast(
+                        'Customer Name or Phone number required',
+                        'error'
+                    );
+
+                    return;
+
+                }
+
+
+                lookupCustomerHistory(
+                    phone,
+                    name
+                );
+
+            }
+        );
+
+
+        custPhoneInput.addEventListener(
+            'input',
+            () => {
+
+                const phone =
+                    custPhoneInput.value.trim();
+
+
+                if (phone.length === 10) {
+
+                    lookupCustomerHistory(
+                        phone,
+                        custNameInput.value.trim()
+                    );
+
+                } else if (
+                    phone.length === 0
+                ) {
+
+                    customerHistoryBox.style.display =
+                        'none';
+
+                    customerHistoryBox.innerHTML =
+                        '';
+
+                }
+
+            }
+        );
+
+
+        custNameInput.addEventListener(
+            'blur',
+            () => {
+
+                const name =
+                    custNameInput.value.trim();
+
+                if (
+                    name &&
+                    name !==
+                    'Walk-in Customer' &&
+                    name.length >= 3
+                ) {
+
+                    lookupCustomerHistory(
+                        custPhoneInput.value.trim(),
+                        name
+                    );
+
+                }
+
+            }
+        );
+
 
         // ============================================================
         // LOAD PRODUCTS
         // ============================================================
+
         function listenToProducts() {
-            const q = query(collection(db, 'products'), orderBy('orderIndex', 'asc'));
-            onSnapshot(q, (snapshot) => {
-                allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                renderProductGrid();
-                renderLowStockWarningBanner();   // ✅ Ithu irukku
-            }, (err) => {
-                console.error('Error loading products:', err);
-                showToast('⚠️ Error loading products', 'error');
-            });
+
+            const q =
+                query(
+                    collection(
+                        db,
+                        'products'
+                    ),
+                    orderBy(
+                        'orderIndex',
+                        'asc'
+                    )
+                );
+
+
+            onSnapshot(
+                q,
+                (snapshot) => {
+
+                    allProducts =
+                        snapshot.docs.map(
+                            d => ({
+                                id: d.id,
+                                ...d.data()
+                            })
+                        );
+
+
+                    renderProductGrid();
+
+                    renderLowStockWarningBanner();
+
+                },
+                (err) => {
+
+                    console.error(
+                        'Error loading products:',
+                        err
+                    );
+
+                    showToast(
+                        '⚠️ Error loading products',
+                        'error'
+                    );
+
+                }
+            );
+
         }
+
+
+        // ============================================================
+        // GET KEYBOARD VISIBLE PRODUCTS
+        // ============================================================
+
+        function getKeyboardProducts() {
+
+            const term =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+
+            const filtered =
+                term
+                    ? allProducts.filter(
+                        p =>
+                            (
+                                p.name || ''
+                            )
+                                .toLowerCase()
+                                .includes(term)
+                    )
+                    : allProducts;
+
+
+            return filtered.filter(
+                p =>
+                    p.inStock !== false
+            );
+
+        }
+
+
+        // ============================================================
+        // PRODUCT GRID
+        // ============================================================
         // ============================================================
         // PRODUCT PICK TABLE
         // ============================================================
         function renderProductGrid() {
+
+            // 🔥 Current product list scroll position save
+            const oldWrap = document.querySelector('.product-table-wrap');
+            const oldScrollTop = oldWrap ? oldWrap.scrollTop : 0;
+
             const term = searchInput.value.trim().toLowerCase();
+
             const list = term
-                ? allProducts.filter(p => (p.name || '').toLowerCase().includes(term))
+                ? allProducts.filter(p =>
+                    (p.name || '').toLowerCase().includes(term)
+                )
                 : allProducts;
 
             if (list.length === 0) {
-                suggestionsBox.innerHTML = '<div class="empty-hint">No products found</div>';
+                suggestionsBox.innerHTML =
+                    '<div class="empty-hint">No products found</div>';
                 return;
             }
 
             suggestionsBox.innerHTML = `
-                <div class="product-table-wrap">
-                <table class="product-pick-table">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th class="num">Price</th>
-                            <th class="num">Stock</th>
-                            <th class="num">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${list.map(p => {
+        <div class="product-table-wrap">
+            <table class="product-pick-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th class="num">Price</th>
+                        <th class="num">Stock</th>
+                        <th class="num">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    ${list.map(p => {
+
                 const inStock = p.inStock !== false;
+
                 const inCart = billItems.find(i => i.id === p.id);
+
                 const qty = inCart ? inCart.qty : 0;
-                const img = p.imageUrl || '../pictures/logo-removebg-preview.png';
+
+                const img =
+                    p.imageUrl ||
+                    '../pictures/logo-removebg-preview.png';
+
                 const safeName = escapeHtmlAttr(p.name);
+
                 return `
-                            <tr class="${!inStock ? 'out-row' : ''} ${qty > 0 ? 'in-cart-row' : ''}" data-id="${p.id}">
-                                <td class="pp-name">
-                                    <div class="pp-product-cell">
-                                        <img class="pp-img"
-                                             src="${img}"
-                                             alt="${safeName}"
-                                             title="Click to view"
-                                             data-name="${safeName}"
-                                             onclick="event.stopPropagation(); window.openLightbox(this.src, this.dataset.name)"
-                                             onerror="this.src='../pictures/logo-removebg-preview.png'">
-                                        <span>${p.name || 'Unnamed'}</span>
-                                    </div>
-                                </td>
-                                <td class="num">₹${p.price || 0}</td>
-                                <td class="num"><span class="pp-stock ${inStock ? 'in' : 'out'}">${inStock ? 'In Stock' : 'Out of Stock'}</span></td>
-                                <td class="num">
-                                    ${qty > 0 ? `<span class="pp-qty-badge" data-id="${p.id}" title="Click to reduce">${qty}</span>` : ''}
-                                    <button type="button" class="pp-add-btn" data-id="${p.id}" ${!inStock ? 'disabled' : ''}>
-                                        <i class="fas fa-plus"></i> Add
-                                    </button>
-                                </td>
-                            </tr>`;
+                        <tr
+                            class="${!inStock ? 'out-row' : ''} ${qty > 0 ? 'in-cart-row' : ''}"
+                            data-id="${p.id}"
+                        >
+
+                            <td class="pp-name">
+                                <div class="pp-product-cell">
+
+                                    <img
+                                        class="pp-img"
+                                        src="${img}"
+                                        alt="${safeName}"
+                                        title="Click to view"
+                                        data-name="${safeName}"
+
+                                        onclick="
+                                            event.stopPropagation();
+                                            window.openLightbox(
+                                                this.src,
+                                                this.dataset.name
+                                            )
+                                        "
+
+                                        onerror="
+                                            this.src='../pictures/logo-removebg-preview.png'
+                                        "
+                                    >
+
+                                    <span>${p.name || 'Unnamed'}</span>
+
+                                </div>
+                            </td>
+
+                            <td class="num">
+                                ₹${p.price || 0}
+                            </td>
+
+                            <td class="num">
+
+                                <span class="pp-stock ${inStock ? 'in' : 'out'}">
+                                    ${inStock ? 'In Stock' : 'Out of Stock'}
+                                </span>
+
+                            </td>
+
+                            <td class="num">
+
+                                ${qty > 0
+                        ? `
+                                            <span
+                                                class="pp-qty-badge"
+                                                data-id="${p.id}"
+                                                title="Click to reduce"
+                                            >
+                                                ${qty}
+                                            </span>
+                                          `
+                        : ''
+                    }
+
+                                <button
+                                    type="button"
+                                    class="pp-add-btn"
+                                    data-id="${p.id}"
+                                    ${!inStock ? 'disabled' : ''}
+                                >
+                                    <i class="fas fa-plus"></i>
+                                    Add
+                                </button>
+
+                            </td>
+
+                        </tr>
+                        `;
             }).join('')}
-                    </tbody>
-                </table>
-                </div>
-            `;
+
+                </tbody>
+
+            </table>
+        </div>
+    `;
+
+            // ========================================================
+            // 🔥 RESTORE PREVIOUS SCROLL POSITION
+            // ========================================================
+            const newWrap = document.querySelector('.product-table-wrap');
+
+            if (newWrap) {
+                newWrap.scrollTop = oldScrollTop;
+            }
         }
 
-        searchInput.addEventListener('input', renderProductGrid);
+        // ============================================================
+        // PRODUCT CLICK HANDLERS
+        // ============================================================
 
-        // ============================================================
-        // PRODUCT PICK TABLE — CLICK HANDLERS
-        // ============================================================
-        suggestionsBox.addEventListener('click', (e) => {
-            // 1. Yellow qty badge → reduce quantity by 1
-            const qtyBadge = e.target.closest('.pp-qty-badge');
-            if (qtyBadge) {
-                e.stopPropagation();
-                decreaseFromBill(qtyBadge.dataset.id);
-                return;
+        suggestionsBox.addEventListener(
+            'click',
+            (e) => {
+
+
+                // Quantity badge
+                const qtyBadge =
+                    e.target.closest(
+                        '.pp-qty-badge'
+                    );
+
+
+                if (qtyBadge) {
+
+                    e.stopPropagation();
+
+                    decreaseFromBill(
+                        qtyBadge.dataset.id
+                    );
+
+                    return;
+
+                }
+
+
+                // Add button
+                const addBtn =
+                    e.target.closest(
+                        '.pp-add-btn'
+                    );
+
+
+                if (
+                    addBtn &&
+                    !addBtn.disabled
+                ) {
+
+                    e.stopPropagation();
+
+
+                    const product =
+                        allProducts.find(
+                            p =>
+                                p.id ===
+                                addBtn.dataset.id
+                        );
+
+
+                    if (!product) return;
+
+
+                    addToBill(product);
+
+                    return;
+
+                }
+
+
+                // Product image
+                const img =
+                    e.target.closest(
+                        '.pp-img'
+                    );
+
+
+                if (img) {
+
+                    e.stopPropagation();
+
+                    openLightbox(
+                        img.src,
+                        img.dataset.name ||
+                        'Product'
+                    );
+
+                    return;
+
+                }
+
+
+                // Row click does nothing
+
             }
+        );
 
-            // 2. ONLY "Add" button click → add to bill
-            const addBtn = e.target.closest('.pp-add-btn');
-            if (addBtn && !addBtn.disabled) {
-                e.stopPropagation();
-                const product = allProducts.find(p => p.id === addBtn.dataset.id);
-                if (!product) return;
-                addToBill(product);
-                return;
-            }
-
-            // 3. Image click → open lightbox
-            const img = e.target.closest('.pp-img');
-            if (img) {
-                e.stopPropagation();
-                openLightbox(img.src, img.dataset.name || 'Product');
-                return;
-            }
-
-            // 4. Row click → DO NOTHING
-        });
 
         // ============================================================
-        // BILL / CART LOGIC
+        // ADD PRODUCT TO BILL
         // ============================================================
+
         function addToBill(product) {
-            const existing = billItems.find(i => i.id === product.id);
+
+            const existing =
+                billItems.find(
+                    i =>
+                        i.id ===
+                        product.id
+                );
+
+
             if (existing) {
+
                 existing.qty += 1;
+
             } else {
+
                 billItems.push({
-                    id: product.id,
-                    name: product.name || 'Unnamed',
-                    price: product.price || 0,
-                    oldPrice: product.oldPrice || product.price || 0,
+
+                    id:
+                        product.id,
+
+                    name:
+                        product.name ||
+                        'Unnamed',
+
+                    price:
+                        Number(
+                            product.price
+                        ) || 0,
+
+                    oldPrice:
+                        Number(
+                            product.oldPrice
+                        ) ||
+                        Number(
+                            product.price
+                        ) ||
+                        0,
+
                     qty: 1,
+
                     included: true
+
                 });
+
             }
+
+
             renderCart();
+
         }
 
-        function addManualItem(name, rate, qty) {
+
+        // ============================================================
+        // ADD MANUAL ITEM
+        // ============================================================
+
+        function addManualItem(
+            name,
+            rate,
+            qty
+        ) {
+
             billItems.push({
-                id: 'manual-' + Date.now(),
-                name: name || 'Item',
-                price: rate || 0,
-                oldPrice: rate || 0,
-                qty: qty || 1,
+
+                id:
+                    'manual-' +
+                    Date.now(),
+
+                name:
+                    name ||
+                    'Item',
+
+                price:
+                    Number(rate) ||
+                    0,
+
+                oldPrice:
+                    Number(rate) ||
+                    0,
+
+                qty:
+                    Number(qty) ||
+                    1,
+
                 included: true,
+
                 manual: true
+
             });
+
+
             renderCart();
+
         }
 
-        function decreaseFromBill(productId) {
-            const idx = billItems.findIndex(i => i.id === productId);
+
+        // ============================================================
+        // DECREASE PRODUCT QUANTITY
+        // ============================================================
+
+        function decreaseFromBill(
+            productId
+        ) {
+
+            const idx =
+                billItems.findIndex(
+                    i =>
+                        i.id ===
+                        productId
+                );
+
+
             if (idx === -1) return;
 
-            const item = billItems[idx];
+
+            const item =
+                billItems[idx];
+
 
             if (item.qty <= 1) {
-                askRemoveConfirm(item, idx);
+
+                askRemoveConfirm(
+                    item,
+                    idx
+                );
+
                 return;
+
             }
+
 
             item.qty -= 1;
+
             renderCart();
+
         }
 
+
         // ============================================================
-        // CONFIRMATION OVERLAY — Remove Item
+        // REMOVE CONFIRMATION
         // ============================================================
-        let pendingRemoveIdx = null;
 
-        function askRemoveConfirm(item, idx) {
-            pendingRemoveIdx = idx;
+        function askRemoveConfirm(
+            item,
+            idx
+        ) {
 
-            const overlay = document.getElementById('confirmOverlay');
-            const msg = document.getElementById('confirmMessage');
+            pendingRemoveIdx =
+                idx;
 
-            msg.innerHTML = `Are you sure you want to remove <strong>${escapeHtmlAttr(item.name)}</strong> from the bill?`;
 
-            overlay.classList.add('active');
+            const overlay =
+                document.getElementById(
+                    'confirmOverlay'
+                );
+
+            const msg =
+                document.getElementById(
+                    'confirmMessage'
+                );
+
+
+            msg.innerHTML =
+                `Are you sure you want to remove <strong>${escapeHtmlAttr(item.name)}</strong> from the bill?`;
+
+
+            overlay.classList.add(
+                'active'
+            );
+
         }
 
-        document.getElementById('confirmCancelBtn').addEventListener('click', () => {
-            document.getElementById('confirmOverlay').classList.remove('active');
-            pendingRemoveIdx = null;
-        });
 
-        document.getElementById('confirmRemoveBtn').addEventListener('click', () => {
-            if (pendingRemoveIdx !== null && billItems[pendingRemoveIdx]) {
-                billItems.splice(pendingRemoveIdx, 1);
-                pendingRemoveIdx = null;
-                renderCart();
-                showToast('🗑️ Item removed from bill', 'info');
-            }
-            document.getElementById('confirmOverlay').classList.remove('active');
-        });
+        document
+            .getElementById(
+                'confirmCancelBtn'
+            )
+            .addEventListener(
+                'click',
+                () => {
 
-        document.getElementById('confirmOverlay').addEventListener('click', function (e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-                pendingRemoveIdx = null;
-            }
-        });
+                    document
+                        .getElementById(
+                            'confirmOverlay'
+                        )
+                        .classList.remove(
+                            'active'
+                        );
+
+                    pendingRemoveIdx =
+                        null;
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                'confirmRemoveBtn'
+            )
+            .addEventListener(
+                'click',
+                () => {
+
+                    if (
+                        pendingRemoveIdx !== null &&
+                        billItems[
+                        pendingRemoveIdx
+                        ]
+                    ) {
+
+                        billItems.splice(
+                            pendingRemoveIdx,
+                            1
+                        );
+
+                        pendingRemoveIdx =
+                            null;
+
+                        renderCart();
+
+                        showToast(
+                            '🗑️ Item removed from bill',
+                            'info'
+                        );
+
+                    }
+
+
+                    document
+                        .getElementById(
+                            'confirmOverlay'
+                        )
+                        .classList.remove(
+                            'active'
+                        );
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                'confirmOverlay'
+            )
+            .addEventListener(
+                'click',
+                function (e) {
+
+                    if (
+                        e.target === this
+                    ) {
+
+                        this.classList.remove(
+                            'active'
+                        );
+
+                        pendingRemoveIdx =
+                            null;
+
+                    }
+
+                }
+            );
+
 
         // ============================================================
-        // ADD ITEM ROW
+        // ADD ITEM ROW HTML
         // ============================================================
+
         function addItemRowHtml() {
-            if (!addItemRowOpen) return '';
+
+            if (!addItemRowOpen)
+                return '';
+
+
             return `
-                <tr class="add-item-row">
-                    <td></td>
-                    <td><input type="text" id="newItemName" placeholder="Item name"></td>
-                    <td><input type="number" id="newItemRate" placeholder="₹" min="0" style="text-align:right;"></td>
-                    <td><input type="number" id="newItemQty" placeholder="Qty" min="1" value="1" style="text-align:right;"></td>
-                    <td colspan="2" style="display:flex;gap:6px;">
-                        <button class="add-item-btn" id="confirmAddItem" style="border-style:solid;"><i class="fas fa-check"></i></button>
-                        <button class="add-item-btn" id="cancelAddItem"><i class="fas fa-times"></i></button>
-                    </td>
-                </tr>`;
+
+            <tr class="add-item-row">
+
+                <td></td>
+
+                <td>
+
+                    <input
+
+                        type="text"
+
+                        id="newItemName"
+
+                        placeholder="Item name"
+
+                    >
+
+                </td>
+
+
+                <td>
+
+                    <input
+
+                        type="number"
+
+                        id="newItemRate"
+
+                        placeholder="₹"
+
+                        min="0"
+
+                        style="text-align:right;"
+
+                    >
+
+                </td>
+
+
+                <td>
+
+                    <input
+
+                        type="number"
+
+                        id="newItemQty"
+
+                        placeholder="Qty"
+
+                        min="1"
+
+                        value="1"
+
+                        style="text-align:right;"
+
+                    >
+
+                </td>
+
+
+                <td
+                    colspan="2"
+                    style="display:flex;gap:6px;"
+                >
+
+                    <button
+
+                        class="add-item-btn"
+
+                        id="confirmAddItem"
+
+                        style="border-style:solid;"
+
+                    >
+
+                        <i
+                            class="fas fa-check"
+                        ></i>
+
+                    </button>
+
+
+                    <button
+
+                        class="add-item-btn"
+
+                        id="cancelAddItem"
+
+                    >
+
+                        <i
+                            class="fas fa-times"
+                        ></i>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
         }
+
+
+        // ============================================================
+        // RENDER CART
+        // ============================================================
 
         function renderCart() {
-            if (billItems.length === 0 && !addItemRowOpen) {
-                cartTableOuter.style.display = 'none';
-                cartEmptyMsg.style.display = 'block';
-                itemCountEl.textContent = '0';
-                saveAndDownloadBtn.disabled = true;
+
+            if (
+                billItems.length === 0 &&
+                !addItemRowOpen
+            ) {
+
+                cartTableOuter.style.display =
+                    'none';
+
+                cartEmptyMsg.style.display =
+                    'block';
+
+                itemCountEl.textContent =
+                    '0';
+
+                saveAndDownloadBtn.disabled =
+                    true;
+
                 updateTotals();
+
                 renderProductGrid();
+
                 saveBillToLocalStorage();
+
                 return;
+
             }
 
-            cartTableOuter.style.display = 'block';
 
-            cartEmptyMsg.style.display = 'none';
-            saveAndDownloadBtn.disabled = billItems.filter(i => i.included !== false).length === 0;
+            cartTableOuter.style.display =
+                'block';
 
-            cartTbody.innerHTML = billItems.map((item, index) => {
-                const included = item.included !== false;
-                return `
-                <tr data-index="${index}" class="${included ? '' : 'row-excluded'}">
-                    <td><input type="checkbox" class="row-check" data-index="${index}" ${included ? 'checked' : ''} title="Include in bill"></td>
-                    <td>${item.name}${item.manual ? ' <span style="color:var(--text-dim);font-size:0.7rem;">(manual)</span>' : ''}</td>
-                    <td class="num"><input type="number" class="rate-input" min="0" value="${item.price}" data-index="${index}"></td>
-                    <td class="num">
-                        <div class="qty-stepper" data-index="${index}">
-                            <button type="button" class="qty-minus">−</button>
-                            <input type="number" class="qty-input" min="1" value="${item.qty}" data-index="${index}">
-                            <button type="button" class="qty-plus">+</button>
-                        </div>
-                    </td>
-                    <td class="num">₹${(item.price * item.qty).toLocaleString('en-IN')}</td>
-                    <td><button class="remove-row" data-index="${index}"><i class="fas fa-times"></i></button></td>
-                </tr>`;
-            }).join('') + addItemRowHtml();
+            cartEmptyMsg.style.display =
+                'none';
 
-            itemCountEl.textContent = billItems.reduce((sum, i) => sum + (i.included !== false ? i.qty : 0), 0);
+
+            saveAndDownloadBtn.disabled =
+                billItems.filter(
+                    i =>
+                        i.included !== false
+                ).length === 0;
+
+
+            cartTbody.innerHTML =
+                billItems.map(
+                    (item, index) => {
+
+                        const included =
+                            item.included !== false;
+
+
+                        return `
+
+                        <tr
+
+                            data-index="${index}"
+
+                            class="
+                                ${included
+                                ? ''
+                                : 'row-excluded'
+                            }
+                            "
+
+                        >
+
+                            <td>
+
+                                <input
+
+                                    type="checkbox"
+
+                                    class="row-check"
+
+                                    data-index="${index}"
+
+                                    ${included
+                                ? 'checked'
+                                : ''
+                            }
+
+                                    title="Include in bill"
+
+                                >
+
+                            </td>
+
+
+                            <td>
+
+                                ${escapeHtmlAttr(
+                                item.name
+                            )}
+
+                                ${item.manual
+
+                                ? `
+                                            <span
+                                                style="
+                                                    color:var(--text-dim);
+                                                    font-size:0.7rem;
+                                                "
+                                            >
+                                                (manual)
+                                            </span>
+                                        `
+
+                                : ''
+                            }
+
+                            </td>
+
+
+                            <td class="num">
+
+                                <input
+
+                                    type="number"
+
+                                    class="rate-input"
+
+                                    min="0"
+
+                                    value="${item.price}"
+
+                                    data-index="${index}"
+
+                                >
+
+                            </td>
+
+
+                            <td class="num">
+
+                                <div
+
+                                    class="qty-stepper"
+
+                                    data-index="${index}"
+
+                                >
+
+                                    <button
+
+                                        type="button"
+
+                                        class="qty-minus"
+
+                                    >
+                                        −
+                                    </button>
+
+
+                                    <input
+
+                                        type="number"
+
+                                        class="qty-input"
+
+                                        min="1"
+
+                                        value="${item.qty}"
+
+                                        data-index="${index}"
+
+                                    >
+
+
+                                    <button
+
+                                        type="button"
+
+                                        class="qty-plus"
+
+                                    >
+                                        +
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+
+                            <td class="num">
+
+                                ₹${(
+                                item.price *
+                                item.qty
+                            ).toLocaleString('en-IN')}
+
+                            </td>
+
+
+                            <td>
+
+                                <button
+
+                                    class="remove-row"
+
+                                    data-index="${index}"
+
+                                >
+
+                                    <i
+                                        class="fas fa-times"
+                                    ></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                    }
+                ).join('') +
+                addItemRowHtml();
+
+
+            itemCountEl.textContent =
+                billItems.reduce(
+                    (sum, i) =>
+                        sum +
+                        (
+                            i.included !== false
+                                ? i.qty
+                                : 0
+                        ),
+                    0
+                );
+
+
             updateTotals();
+
             renderProductGrid();
+
             saveBillToLocalStorage();
 
+
+            // Manual item focus
             if (addItemRowOpen) {
-                document.getElementById('newItemName')?.focus();
-                document.getElementById('confirmAddItem')?.addEventListener('click', () => {
-                    const name = document.getElementById('newItemName').value.trim();
-                    const rate = parseFloat(document.getElementById('newItemRate').value) || 0;
-                    const qty = parseInt(document.getElementById('newItemQty').value, 10) || 1;
-                    if (!name) { showToast('Please enter item name', 'error'); return; }
-                    addManualItem(name, rate, qty);
-                    addItemRowOpen = false;
-                    renderCart();
-                });
-                document.getElementById('cancelAddItem')?.addEventListener('click', () => {
-                    addItemRowOpen = false;
-                    renderCart();
-                });
+
+                const nameInput =
+                    document.getElementById(
+                        'newItemName'
+                    );
+
+                nameInput?.focus();
+
+
+                document
+                    .getElementById(
+                        'confirmAddItem'
+                    )
+                    ?.addEventListener(
+                        'click',
+                        () => {
+
+                            const name =
+                                document
+                                    .getElementById(
+                                        'newItemName'
+                                    )
+                                    .value
+                                    .trim();
+
+
+                            const rate =
+                                parseFloat(
+                                    document
+                                        .getElementById(
+                                            'newItemRate'
+                                        )
+                                        .value
+                                ) || 0;
+
+
+                            const qty =
+                                parseInt(
+                                    document
+                                        .getElementById(
+                                            'newItemQty'
+                                        )
+                                        .value,
+                                    10
+                                ) || 1;
+
+
+                            if (!name) {
+
+                                showToast(
+                                    'Please enter item name',
+                                    'error'
+                                );
+
+                                return;
+
+                            }
+
+
+                            addManualItem(
+                                name,
+                                rate,
+                                qty
+                            );
+
+
+                            addItemRowOpen =
+                                false;
+
+                            renderCart();
+
+                        }
+                    );
+
+
+                document
+                    .getElementById(
+                        'cancelAddItem'
+                    )
+                    ?.addEventListener(
+                        'click',
+                        () => {
+
+                            addItemRowOpen =
+                                false;
+
+                            renderCart();
+
+                        }
+                    );
+
             }
+
         }
 
-        addItemBtn.addEventListener('click', () => {
-            addItemRowOpen = true;
-            renderCart();
-        });
 
-        cartTbody.addEventListener('input', (e) => {
-            const qtyInput = e.target.closest('.qty-input');
-            const rateInput = e.target.closest('.rate-input');
-            if (qtyInput) {
-                const idx = parseInt(qtyInput.dataset.index, 10);
-                let qty = parseInt(qtyInput.value, 10) || 1;
-                if (qty < 1) qty = 1;
-                billItems[idx].qty = qty;
+        // ============================================================
+        // ADD ITEM BUTTON
+        // ============================================================
+
+        addItemBtn.addEventListener(
+            'click',
+            () => {
+
+                addItemRowOpen =
+                    true;
+
                 renderCart();
-                return;
+
             }
-            if (rateInput) {
-                const idx = parseInt(rateInput.dataset.index, 10);
-                let rate = parseFloat(rateInput.value);
-                if (isNaN(rate) || rate < 0) rate = 0;
-                billItems[idx].price = rate;
-                renderCart();
-            }
-        });
+        );
 
-        cartTbody.addEventListener('keydown', (e) => {
-            const currentRow = e.target.closest('tr');
 
-            // ✅ LEFT ARROW → Search box-ku back
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                focusProductPane();
-                return;
-            }
+        // ============================================================
+        // CART INPUT
+        // ============================================================
 
-            // ✅ RIGHT ARROW → Customer Details-ku move
-            if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                focusCustomerPane();
-                return;
-            }
+        cartTbody.addEventListener(
+            'input',
+            (e) => {
 
-            // ✅ DOWN ARROW → next row-ku move
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                const nextRow = currentRow?.nextElementSibling;
-                const nextInput = nextRow?.querySelector('.qty-input')
-                    || nextRow?.querySelector('.rate-input');
-                if (nextInput) {
-                    nextInput.focus();
-                    nextInput.select();
-                } else {
-                    // ✅ Last row → Customer Name field-ku move
-                    focusCustomerPane();
-                }
-                return;
-            }
+                const qtyInput =
+                    e.target.closest(
+                        '.qty-input'
+                    );
 
-            // ✅ UP ARROW → previous row-ku move
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                const prevRow = currentRow?.previousElementSibling;
-                const prevInput = prevRow?.querySelector('.qty-input')
-                    || prevRow?.querySelector('.rate-input');
-                if (prevInput) {
-                    prevInput.focus();
-                    prevInput.select();
-                } else {
-                    // ✅ First row → Search box-ku back
-                    focusProductPane();
-                }
-                return;
-            }
-        });
+                const rateInput =
+                    e.target.closest(
+                        '.rate-input'
+                    );
 
-        function focusCustomerPane() {
-            // Customer Name field-ku focus
-            custNameInput.focus();
-            custNameInput.select();
-            custNameInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        }
 
-        cartTbody.addEventListener('change', (e) => {
-            const check = e.target.closest('.row-check');
-            if (!check) return;
-            const idx = parseInt(check.dataset.index, 10);
-            billItems[idx].included = check.checked;
-            renderCart();
-        });
+                if (qtyInput) {
 
-        cartTbody.addEventListener('click', (e) => {
-            const minusBtn = e.target.closest('.qty-minus');
-            const plusBtn = e.target.closest('.qty-plus');
+                    const idx =
+                        parseInt(
+                            qtyInput.dataset.index,
+                            10
+                        );
 
-            if (minusBtn) {
-                const idx = parseInt(minusBtn.closest('.qty-stepper').dataset.index, 10);
-                const item = billItems[idx];
 
-                if (item.qty <= 1) {
-                    askRemoveConfirm(item, idx);
+                    if (!billItems[idx])
+                        return;
+
+
+                    let qty =
+                        parseInt(
+                            qtyInput.value,
+                            10
+                        ) || 1;
+
+
+                    if (qty < 1)
+                        qty = 1;
+
+
+                    billItems[idx].qty =
+                        qty;
+
+
+                    renderCart();
+
                     return;
+
                 }
 
-                billItems[idx].qty = Math.max(1, billItems[idx].qty - 1);
-                renderCart();
-                return;
-            }
 
-            if (plusBtn) {
-                const idx = parseInt(plusBtn.closest('.qty-stepper').dataset.index, 10);
-                billItems[idx].qty += 1;
-                renderCart();
-                return;
-            }
+                if (rateInput) {
 
-            const btn = e.target.closest('.remove-row');
-            if (!btn) return;
-            const idx = parseInt(btn.dataset.index, 10);
-            askRemoveConfirm(billItems[idx], idx);
-        });
+                    const idx =
+                        parseInt(
+                            rateInput.dataset.index,
+                            10
+                        );
+
+
+                    if (!billItems[idx])
+                        return;
+
+
+                    let rate =
+                        parseFloat(
+                            rateInput.value
+                        );
+
+
+                    if (
+                        isNaN(rate) ||
+                        rate < 0
+                    ) {
+
+                        rate = 0;
+
+                    }
+
+
+                    billItems[idx].price =
+                        rate;
+
+
+                    renderCart();
+
+                }
+
+            }
+        );
+
+
+        // ============================================================
+        // CART CHECKBOX
+        // ============================================================
+
+        cartTbody.addEventListener(
+            'change',
+            (e) => {
+
+                const check =
+                    e.target.closest(
+                        '.row-check'
+                    );
+
+
+                if (!check) return;
+
+
+                const idx =
+                    parseInt(
+                        check.dataset.index,
+                        10
+                    );
+
+
+                if (!billItems[idx])
+                    return;
+
+
+                billItems[idx].included =
+                    check.checked;
+
+
+                renderCart();
+
+            }
+        );
+
+
+        // ============================================================
+        // CART BUTTONS
+        // ============================================================
+
+        cartTbody.addEventListener(
+            'click',
+            (e) => {
+
+                const minusBtn =
+                    e.target.closest(
+                        '.qty-minus'
+                    );
+
+                const plusBtn =
+                    e.target.closest(
+                        '.qty-plus'
+                    );
+
+
+                if (minusBtn) {
+
+                    const stepper =
+                        minusBtn.closest(
+                            '.qty-stepper'
+                        );
+
+
+                    const idx =
+                        parseInt(
+                            stepper.dataset.index,
+                            10
+                        );
+
+
+                    const item =
+                        billItems[idx];
+
+
+                    if (!item) return;
+
+
+                    if (item.qty <= 1) {
+
+                        askRemoveConfirm(
+                            item,
+                            idx
+                        );
+
+                        return;
+
+                    }
+
+
+                    item.qty =
+                        Math.max(
+                            1,
+                            item.qty - 1
+                        );
+
+
+                    renderCart();
+
+                    return;
+
+                }
+
+
+                if (plusBtn) {
+
+                    const stepper =
+                        plusBtn.closest(
+                            '.qty-stepper'
+                        );
+
+
+                    const idx =
+                        parseInt(
+                            stepper.dataset.index,
+                            10
+                        );
+
+
+                    if (!billItems[idx])
+                        return;
+
+
+                    billItems[idx].qty += 1;
+
+                    renderCart();
+
+                    return;
+
+                }
+
+
+                const btn =
+                    e.target.closest(
+                        '.remove-row'
+                    );
+
+
+                if (!btn) return;
+
+
+                const idx =
+                    parseInt(
+                        btn.dataset.index,
+                        10
+                    );
+
+
+                if (!billItems[idx])
+                    return;
+
+
+                askRemoveConfirm(
+                    billItems[idx],
+                    idx
+                );
+
+            }
+        );
+
+
+        // ============================================================
+        // UPDATE TOTALS
+        // ============================================================
 
         function updateTotals() {
-            const activeItems = billItems.filter(i => i.included !== false);
-            const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
-            const mrpTotal = activeItems.reduce((sum, i) => sum + (i.oldPrice * i.qty), 0);
-            const grandTotal = activeItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            const discount = mrpTotal - grandTotal;
 
-            document.getElementById('sumItems').textContent = totalItems;
-            document.getElementById('sumMrp').textContent = '₹' + mrpTotal.toLocaleString('en-IN');
-            document.getElementById('sumDiscount').textContent = '₹' + discount.toLocaleString('en-IN');
-            document.getElementById('sumTotal').textContent = '₹' + grandTotal.toLocaleString('en-IN');
+            const activeItems =
+                billItems.filter(
+                    i =>
+                        i.included !== false
+                );
+
+
+            const totalItems =
+                activeItems.reduce(
+                    (sum, i) =>
+                        sum + i.qty,
+                    0
+                );
+
+
+            const mrpTotal =
+                activeItems.reduce(
+                    (sum, i) =>
+                        sum +
+                        (
+                            i.oldPrice *
+                            i.qty
+                        ),
+                    0
+                );
+
+
+            const grandTotal =
+                activeItems.reduce(
+                    (sum, i) =>
+                        sum +
+                        (
+                            i.price *
+                            i.qty
+                        ),
+                    0
+                );
+
+
+            const discount =
+                mrpTotal -
+                grandTotal;
+
+
+            document
+                .getElementById(
+                    'sumItems'
+                )
+                .textContent =
+                totalItems;
+
+
+            document
+                .getElementById(
+                    'sumMrp'
+                )
+                .textContent =
+                '₹' +
+                mrpTotal.toLocaleString(
+                    'en-IN'
+                );
+
+
+            document
+                .getElementById(
+                    'sumDiscount'
+                )
+                .textContent =
+                '₹' +
+                discount.toLocaleString(
+                    'en-IN'
+                );
+
+
+            document
+                .getElementById(
+                    'sumTotal'
+                )
+                .textContent =
+                '₹' +
+                grandTotal.toLocaleString(
+                    'en-IN'
+                );
+
         }
 
-        document.getElementById('clearBillBtn').addEventListener('click', () => {
-            if (billItems.length && !confirm('Clear the current bill?')) return;
-            billItems = [];
-            addItemRowOpen = false;
-            custNameInput.value = 'Walk-in Customer';
-            custPhoneInput.value = '';
-            document.getElementById('payMethod').value = 'Cash';
-            customerHistoryBox.style.display = 'none';
-            customerHistoryBox.innerHTML = '';
-            clearBillFromLocalStorage();
-            clearCustomerFromLocalStorage();
-            renderCart();
-        });
+
+        // ============================================================
+        // CLEAR BILL
+        // ============================================================
+
+        document
+            .getElementById(
+                'clearBillBtn'
+            )
+            .addEventListener(
+                'click',
+                () => {
+
+                    if (
+                        billItems.length &&
+                        !confirm(
+                            'Clear the current bill?'
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    billItems = [];
+
+                    addItemRowOpen =
+                        false;
+
+
+                    custNameInput.value =
+                        'Walk-in Customer';
+
+                    custPhoneInput.value =
+                        '';
+
+                    payMethodInput.value =
+                        'Cash';
+
+
+                    customerHistoryBox.style.display =
+                        'none';
+
+                    customerHistoryBox.innerHTML =
+                        '';
+
+
+                    clearBillFromLocalStorage();
+
+                    clearCustomerFromLocalStorage();
+
+                    renderCart();
+
+                    searchInput.focus();
+
+                }
+            );
+
+
+        // ============================================================
+        // SAVE BILL TO FIREBASE
+        // ============================================================
 
         async function saveBillToFirebase() {
-            const activeItems = billItems.filter(i => i.included !== false);
-            const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
-            const totalAmount = activeItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
-            // ✅ STOCK VALIDATION
+            const activeItems =
+                billItems.filter(
+                    i =>
+                        i.included !== false
+                );
+
+
+            const totalItems =
+                activeItems.reduce(
+                    (sum, i) =>
+                        sum + i.qty,
+                    0
+                );
+
+
+            const totalAmount =
+                activeItems.reduce(
+                    (sum, i) =>
+                        sum +
+                        (
+                            i.price *
+                            i.qty
+                        ),
+                    0
+                );
+
+
+            // --------------------------------------------------------
+            // STOCK VALIDATION
+            // --------------------------------------------------------
+
             const stockErrors = [];
-            for (const item of activeItems) {
-                if (item.manual) continue;
 
-                const product = allProducts.find(p => p.id === item.id);
-                if (product && typeof product.stockQty === 'number') {
-                    if (product.stockQty < item.qty) {
-                        stockErrors.push(`${product.name}: ${product.stockQty} in stock, ${item.qty} requested`);
+
+            for (
+                const item of activeItems
+            ) {
+
+                if (item.manual)
+                    continue;
+
+
+                const product =
+                    allProducts.find(
+                        p =>
+                            p.id ===
+                            item.id
+                    );
+
+
+                if (
+                    product &&
+                    typeof product.stockQty ===
+                    'number'
+                ) {
+
+                    if (
+                        product.stockQty <
+                        item.qty
+                    ) {
+
+                        stockErrors.push(
+                            `${product.name}: ${product.stockQty} in stock, ${item.qty} requested`
+                        );
+
                     }
+
                 }
+
             }
 
-            if (stockErrors.length > 0) {
-                throw new Error('Stock insufficient:\n' + stockErrors.join('\n'));
+
+            if (
+                stockErrors.length > 0
+            ) {
+
+                throw new Error(
+                    'Stock insufficient:\n' +
+                    stockErrors.join('\n')
+                );
+
             }
 
-            // Order number generate
+
+            // --------------------------------------------------------
+            // ORDER NUMBER
+            // --------------------------------------------------------
+
             let orderNumber = 1;
+
+
             try {
-                const counterRef = doc(db, 'settings', 'orderCounter');
-                const counterSnap = await getDoc(counterRef);
-                if (counterSnap.exists()) {
-                    orderNumber = (counterSnap.data().lastOrderNumber || 0) + 1;
+
+                const counterRef =
+                    doc(
+                        db,
+                        'settings',
+                        'orderCounter'
+                    );
+
+
+                const counterSnap =
+                    await getDoc(
+                        counterRef
+                    );
+
+
+                if (
+                    counterSnap.exists()
+                ) {
+
+                    orderNumber =
+                        (
+                            counterSnap.data()
+                                .lastOrderNumber ||
+                            0
+                        ) + 1;
+
                 }
-                await setDoc(counterRef, { lastOrderNumber: orderNumber }, { merge: true });
+
+
+                await setDoc(
+                    counterRef,
+                    {
+                        lastOrderNumber:
+                            orderNumber
+                    },
+                    {
+                        merge: true
+                    }
+                );
+
+
             } catch (e) {
-                orderNumber = Math.floor(Date.now() / 1000) % 100000;
+
+                console.warn(
+                    'Order counter error:',
+                    e
+                );
+
+
+                orderNumber =
+                    Math.floor(
+                        Date.now() /
+                        1000
+                    ) % 100000;
+
             }
 
-            const orderId = 'HC' + String(orderNumber).padStart(3, '0');
+
+            const orderId =
+                'HC' +
+                String(
+                    orderNumber
+                ).padStart(
+                    3,
+                    '0'
+                );
+
+
+            // --------------------------------------------------------
+            // ORDER DATA
+            // --------------------------------------------------------
 
             const orderData = {
+
                 orderId,
+
                 orderNumber,
-                customerName: custNameInput.value.trim() || 'Walk-in Customer',
-                customerPhone: custPhoneInput.value.trim() || '',
-                paymentMethod: document.getElementById('payMethod').value,
-                items: activeItems.map(i => ({
-                    productId: i.id,
-                    name: i.name,
-                    qty: i.qty,
-                    price: i.price,
-                    amount: i.price * i.qty,
-                    isManual: !!i.manual
-                })),
+
+                customerName:
+                    custNameInput.value.trim() ||
+                    'Walk-in Customer',
+
+                customerPhone:
+                    custPhoneInput.value.trim() ||
+                    '',
+
+                paymentMethod:
+                    payMethodInput.value,
+
+                items:
+                    activeItems.map(
+                        i => ({
+
+                            productId:
+                                i.id,
+
+                            name:
+                                i.name,
+
+                            qty:
+                                i.qty,
+
+                            price:
+                                i.price,
+
+                            amount:
+                                i.price *
+                                i.qty,
+
+                            isManual:
+                                !!i.manual
+
+                        })
+                    ),
+
                 totalItems,
+
                 totalAmount,
-                orderDate: new Date().toISOString(),
-                createdAt: serverTimestamp(),
-                timestamp: serverTimestamp(),
-                status: 'completed',
-                source: 'walk-in',
-                createdBy: auth.currentUser?.email || 'unknown',
-                stockDeducted: true
+
+                orderDate:
+                    new Date().toISOString(),
+
+                createdAt:
+                    serverTimestamp(),
+
+                timestamp:
+                    serverTimestamp(),
+
+                status:
+                    'completed',
+
+                source:
+                    'walk-in',
+
+                createdBy:
+                    auth.currentUser?.email ||
+                    'unknown',
+
+                stockDeducted:
+                    true
+
             };
 
-            // ✅ BATCH WRITE — Order + Stock deduction
-            const batch = writeBatch(db);
-            const orderRef = doc(collection(db, 'orders'));
-            batch.set(orderRef, orderData);
 
-            // Stock deduct for each product
-            for (const item of activeItems) {
-                if (item.manual) continue;
+            // --------------------------------------------------------
+            // BATCH WRITE
+            // --------------------------------------------------------
 
-                const product = allProducts.find(p => p.id === item.id);
-                if (!product) continue;
+            const batch =
+                writeBatch(db);
 
-                const currentStock = typeof product.stockQty === 'number' ? product.stockQty : 0;
-                const newStock = Math.max(0, currentStock - item.qty);
 
-                const productRef = doc(db, 'products', item.id);
-                batch.update(productRef, {
-                    stockQty: newStock,
-                    inStock: newStock > 0,
-                    updatedAt: new Date().toISOString(),
-                    lastSoldAt: new Date().toISOString()
-                });
+            const orderRef =
+                doc(
+                    collection(
+                        db,
+                        'orders'
+                    )
+                );
 
-                // Low stock alert
-                if (newStock <= (product.lowStockThreshold || 5)) {
-                    const alertRef = doc(collection(db, 'stockAlerts'));
-                    batch.set(alertRef, {
-                        productId: item.id,
-                        productName: item.name,
-                        currentStock: newStock,
-                        threshold: product.lowStockThreshold || 5,
-                        type: newStock <= 0 ? 'out_of_stock' : 'low_stock',
-                        message: newStock <= 0
-                            ? `❌ OUT OF STOCK: ${item.name}`
-                            : `⚠️ LOW STOCK: ${item.name} — Only ${newStock} left`,
-                        status: 'unread',
-                        createdAt: serverTimestamp()
-                    });
+
+            batch.set(
+                orderRef,
+                orderData
+            );
+
+
+            // --------------------------------------------------------
+            // STOCK DEDUCTION
+            // --------------------------------------------------------
+
+            for (
+                const item of activeItems
+            ) {
+
+                if (item.manual)
+                    continue;
+
+
+                const product =
+                    allProducts.find(
+                        p =>
+                            p.id ===
+                            item.id
+                    );
+
+
+                if (!product)
+                    continue;
+
+
+                const currentStock =
+                    typeof product.stockQty ===
+                        'number'
+                        ? product.stockQty
+                        : 0;
+
+
+                const newStock =
+                    Math.max(
+                        0,
+                        currentStock -
+                        item.qty
+                    );
+
+
+                const productRef =
+                    doc(
+                        db,
+                        'products',
+                        item.id
+                    );
+
+
+                batch.update(
+                    productRef,
+                    {
+
+                        stockQty:
+                            newStock,
+
+                        inStock:
+                            newStock > 0,
+
+                        updatedAt:
+                            new Date().toISOString(),
+
+                        lastSoldAt:
+                            new Date().toISOString()
+
+                    }
+                );
+
+
+                // ----------------------------------------------------
+                // LOW STOCK ALERT
+                // ----------------------------------------------------
+
+                const threshold =
+                    product.lowStockThreshold ||
+                    5;
+
+
+                if (
+                    newStock <=
+                    threshold
+                ) {
+
+                    const alertRef =
+                        doc(
+                            collection(
+                                db,
+                                'stockAlerts'
+                            )
+                        );
+
+
+                    batch.set(
+                        alertRef,
+                        {
+
+                            productId:
+                                item.id,
+
+                            productName:
+                                item.name,
+
+                            currentStock:
+                                newStock,
+
+                            threshold,
+
+                            type:
+                                newStock <= 0
+                                    ? 'out_of_stock'
+                                    : 'low_stock',
+
+                            message:
+                                newStock <= 0
+
+                                    ? `❌ OUT OF STOCK: ${item.name}`
+
+                                    : `⚠️ LOW STOCK: ${item.name} — Only ${newStock} left`,
+
+                            status:
+                                'unread',
+
+                            createdAt:
+                                serverTimestamp()
+
+                        }
+                    );
+
                 }
+
             }
 
+
             await batch.commit();
+
+
             return orderId;
+
         }
 
 
         // ============================================================
-        // ✅ SAVE & DOWNLOAD BILL — Rendu action oru button la
-        // ============================================================
-        saveAndDownloadBtn.addEventListener('click', async () => {
-            const activeItems = billItems.filter(i => i.included !== false);
-            if (activeItems.length === 0) {
-                showToast('⚠️ No items in bill', 'error');
-                return;
-            }
-
-            // ✅ CONFIRM DIALOG
-            const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
-            const totalAmount = activeItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            const customerName = custNameInput.value.trim() || 'Walk-in Customer';
-
-            const confirmMsg =
-                `💾 Save & Download Bill?\n\n` +
-                `Customer: ${customerName}\n` +
-                `Items: ${totalItems}\n` +
-                `Total: ₹${totalAmount.toLocaleString('en-IN')}\n\n` +
-                `✅ Bill will be saved to history\n` +
-                `✅ Stock will be deducted\n` +
-                `✅ PDF will be downloaded`;
-
-            if (!confirm(confirmMsg)) return;
-
-            saveAndDownloadBtn.disabled = true;
-
-            try {
-                // ✅ STEP 1: SAVE TO FIREBASE (with stock deduction)
-                const orderId = await saveBillToFirebase();
-
-                // ✅ STEP 2: BUILD INVOICE HTML
-                const dateTimeStr = new Date().toLocaleString('en-IN', {
-                    day: '2-digit', month: 'short', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', hour12: true
-                });
-
-                const html = buildInvoiceHtml({
-                    orderId,                    // ✅ Real order ID (HC007 etc.)
-                    customerName: customerName,
-                    customerPhone: custPhoneInput.value.trim(),
-                    payMethod: document.getElementById('payMethod').value,
-                    items: activeItems,
-                    totalItems,
-                    subtotal: totalAmount,
-                    grandTotal: totalAmount,
-                    dateTimeStr,
-                    orderStatus: 'Completed'
-                });
-
-                // ✅ STEP 3: OPEN INVOICE + PRINT
-                openInvoiceAndPrint(html);
-
-                // ✅ SUCCESS TOAST
-                showToast(`✅ Bill ${orderId} saved & downloading...`, 'success');
-
-                // ✅ STEP 4: CLEAR BILL DATA
-                billItems = [];
-                addItemRowOpen = false;
-                custNameInput.value = 'Walk-in Customer';
-                custPhoneInput.value = '';
-                customerHistoryBox.style.display = 'none';
-                customerHistoryBox.innerHTML = '';
-                clearBillFromLocalStorage();
-                clearCustomerFromLocalStorage();
-                renderCart();
-
-                // ✅ STEP 5: AUTO REFRESH (2 seconds la)
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-
-            } catch (err) {
-                console.error('Save & Download error:', err);
-                showToast('❌ Error: ' + err.message, 'error');
-                saveAndDownloadBtn.disabled = false;
-            }
-        });
-
-        // ============================================================
-        // ⌨️ CUSTOMER DETAILS — KEYBOARD FLOW
-        // ============================================================
-        // Name → Phone → Payment → Save button (Enter vachu move)
+        // SAVE & DOWNLOAD BILL
         // ============================================================
 
-        var payMethodSelect = document.getElementById('payMethod');
-        // ----------------- CUSTOMER NAME -----------------
-        custNameInput.addEventListener('keydown', (e) => {
-            // ✅ ENTER → Phone field-ku move
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                custPhoneInput.focus();
-                custPhoneInput.select();
-                return;
-            }
+        saveAndDownloadBtn.addEventListener(
+            'click',
+            async () => {
 
-            // ✅ SHIFT + ENTER → Search box-ku back
-            if (e.key === 'Enter' && e.shiftKey) {
-                e.preventDefault();
-                searchInput.focus();
-                return;
-            }
+                const activeItems =
+                    billItems.filter(
+                        i =>
+                            i.included !== false
+                    );
 
-            // ✅ BACKSPACE (empty name) → Search box-ku back
-            if (e.key === 'Backspace' && custNameInput.value === '') {
-                e.preventDefault();
-                searchInput.focus();
-                return;
-            }
-        });
 
-        // ----------------- PHONE NUMBER -----------------
-        custPhoneInput.addEventListener('keydown', (e) => {
-            // ✅ ENTER → Payment dropdown-ku move
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                payMethodSelect.focus();
-                return;
-            }
+                if (
+                    activeItems.length === 0
+                ) {
 
-            // ✅ SHIFT + ENTER → Name field-ku back
-            if (e.key === 'Enter' && e.shiftKey) {
-                e.preventDefault();
-                custNameInput.focus();
-                return;
-            }
+                    showToast(
+                        '⚠️ No items in bill',
+                        'error'
+                    );
 
-            // ✅ BACKSPACE (empty phone) → Name field-ku back
-            if (e.key === 'Backspace' && custPhoneInput.value === '') {
-                e.preventDefault();
-                custNameInput.focus();
-                return;
-            }
-        });
+                    return;
 
-        // ----------------- PAYMENT METHOD -----------------
-        payMethodSelect.addEventListener('keydown', (e) => {
-            // ✅ ENTER → Save & Download button-ku move
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (!saveAndDownloadBtn.disabled) {
-                    saveAndDownloadBtn.focus();
-                } else {
-                    showToast('⚠️ Add items first', 'error');
                 }
-                return;
-            }
 
-            // ✅ SHIFT + ENTER → Phone field-ku back
-            if (e.key === 'Enter' && e.shiftKey) {
-                e.preventDefault();
-                custPhoneInput.focus();
-                return;
-            }
 
-            // ✅ BACKSPACE → Phone field-ku back
-            if (e.key === 'Backspace') {
-                e.preventDefault();
-                custPhoneInput.focus();
-                return;
-            }
-        });
+                const totalItems =
+                    activeItems.reduce(
+                        (sum, i) =>
+                            sum + i.qty,
+                        0
+                    );
 
-        // ----------------- SAVE BUTTON -----------------
-        saveAndDownloadBtn.addEventListener('keydown', (e) => {
-            // ✅ ENTER → save trigger
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                saveAndDownloadBtn.click();
-                return;
-            }
 
-            // ✅ BACKSPACE → Payment dropdown-ku back
-            if (e.key === 'Backspace') {
-                e.preventDefault();
-                payMethodSelect.focus();
-                return;
+                const totalAmount =
+                    activeItems.reduce(
+                        (sum, i) =>
+                            sum +
+                            (
+                                i.price *
+                                i.qty
+                            ),
+                        0
+                    );
+
+
+                const customerName =
+                    custNameInput.value.trim() ||
+                    'Walk-in Customer';
+
+
+                const confirmMsg =
+
+                    `💾 Save & Download Bill?\n\n` +
+
+                    `Customer: ${customerName}\n` +
+
+                    `Items: ${totalItems}\n` +
+
+                    `Total: ₹${totalAmount.toLocaleString('en-IN')}\n\n` +
+
+                    `✅ Bill will be saved to history\n` +
+
+                    `✅ Stock will be deducted\n` +
+
+                    `✅ PDF will be downloaded`;
+
+
+                if (
+                    !confirm(confirmMsg)
+                ) {
+
+                    return;
+
+                }
+
+
+                saveAndDownloadBtn.disabled =
+                    true;
+
+
+                try {
+
+                    // STEP 1
+                    const orderId =
+                        await saveBillToFirebase();
+
+
+                    // STEP 2
+                    const dateTimeStr =
+                        new Date().toLocaleString(
+                            'en-IN',
+                            {
+
+                                day: '2-digit',
+
+                                month: 'short',
+
+                                year: 'numeric',
+
+                                hour: '2-digit',
+
+                                minute: '2-digit',
+
+                                hour12: true
+
+                            }
+                        );
+
+
+                    const html =
+                        buildInvoiceHtml({
+
+                            orderId,
+
+                            customerName,
+
+                            customerPhone:
+                                custPhoneInput
+                                    .value
+                                    .trim(),
+
+                            payMethod:
+                                payMethodInput
+                                    .value,
+
+                            items:
+                                activeItems,
+
+                            totalItems,
+
+                            subtotal:
+                                totalAmount,
+
+                            grandTotal:
+                                totalAmount,
+
+                            dateTimeStr,
+
+                            orderStatus:
+                                'Completed'
+
+                        });
+
+
+                    // STEP 3
+                    openInvoiceAndPrint(
+                        html
+                    );
+
+
+                    showToast(
+                        `✅ Bill ${orderId} saved & downloading...`,
+                        'success'
+                    );
+
+
+                    // STEP 4
+                    billItems = [];
+
+                    addItemRowOpen =
+                        false;
+
+
+                    custNameInput.value =
+                        'Walk-in Customer';
+
+                    custPhoneInput.value =
+                        '';
+
+                    customerHistoryBox.style.display =
+                        'none';
+
+                    customerHistoryBox.innerHTML =
+                        '';
+
+
+                    clearBillFromLocalStorage();
+
+                    clearCustomerFromLocalStorage();
+
+                    renderCart();
+
+
+                    // STEP 5
+                    setTimeout(
+                        () => {
+
+                            window.location.reload();
+
+                        },
+                        2000
+                    );
+
+
+                } catch (err) {
+
+                    console.error(
+                        'Save & Download error:',
+                        err
+                    );
+
+
+                    showToast(
+                        '❌ Error: ' +
+                        err.message,
+                        'error'
+                    );
+
+
+                    saveAndDownloadBtn.disabled =
+                        false;
+
+                }
+
             }
-        });
+        );
+
 
         // ============================================================
-        // INVOICE HTML — Orders Page Theme
+        // INVOICE HTML
         // ============================================================
+
         function buildInvoiceHtml({
+
             orderId,
             customerName,
             customerPhone,
@@ -2589,529 +4535,2049 @@
             grandTotal,
             dateTimeStr,
             orderStatus
+
         }) {
 
-            const logoUrl = new URL('../pictures/logo-removebg-preview.png', window.location.href).href;
 
-            const rowsHtml = items.map((item, i) => `
-        <tr>
-            <td>${i + 1}. ${escapeHtmlAttr(item.name)}</td>
-            <td style="text-align:center;">${item.qty}</td>
-            <td style="text-align:right;">₹${item.price.toLocaleString('en-IN')}</td>
-            <td style="text-align:right;">₹${(item.price * item.qty).toLocaleString('en-IN')}</td>
-        </tr>
-    `).join('');
+            const logoUrl =
+                new URL(
+                    '../pictures/logo-removebg-preview.png',
+                    window.location.href
+                ).href;
 
-            return `<!DOCTYPE html>
+
+            const rowsHtml =
+                items.map(
+                    (item, i) => `
+
+                    <tr>
+
+                        <td>
+
+                            ${i + 1}.
+                            ${escapeHtmlAttr(
+                        item.name
+                    )}
+
+                        </td>
+
+                        <td
+                            style="text-align:center;"
+                        >
+                            ${item.qty}
+                        </td>
+
+                        <td
+                            style="text-align:right;"
+                        >
+                            ₹${Number(
+                        item.price
+                    ).toLocaleString(
+                        'en-IN'
+                    )}
+                        </td>
+
+                        <td
+                            style="text-align:right;"
+                        >
+                            ₹${(
+                            item.price *
+                            item.qty
+                        ).toLocaleString(
+                            'en-IN'
+                        )}
+                        </td>
+
+                    </tr>
+
+                `
+                ).join('');
+
+
+            return `
+
+<!DOCTYPE html>
+
 <html>
+
 <head>
+
 <meta charset="UTF-8">
-<title>Invoice ${escapeHtmlAttr(orderId)}</title>
+
+<title>
+    Invoice ${escapeHtmlAttr(orderId)}
+</title>
+
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
-html,body{height:100%;}
-body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;padding:30px 35px;max-width:800px;margin:auto;display:flex;flex-direction:column;min-height:100vh;}
-.inv-content{flex:1;}
-.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
-.inv-brand{display:flex;align-items:center;gap:14px;}
-.inv-brand img{width:60px;height:60px;object-fit:contain;}
-.inv-brand-name{font-size:28px;font-weight:800;color:#6a1b9a;}
-.inv-brand-tag{font-size:11px;color:#777;letter-spacing:1px;text-transform:uppercase;}
-.inv-brand-sub{font-size:13px;color:#555;margin-top:4px;}
-.inv-right{text-align:right;}
-.inv-title{font-size:24px;font-weight:800;color:#6a1b9a;}
-.inv-id{font-size:14px;font-weight:700;margin-top:4px;}
-.inv-date{font-size:12px;color:#777;margin-top:4px;}
-.inv-hr{border:none;border-top:3px solid #6a1b9a;margin:16px 0 22px;}
-.inv-info-box{display:flex;border:1px solid #e8dff0;border-radius:8px;overflow:hidden;margin-bottom:24px;}
-.inv-info-col{flex:1;padding:16px 18px;}
-.inv-info-col:first-child{background:#faf5ff;}
-.inv-info-col:last-child{border-left:1px solid #e8dff0;}
-.inv-info-label{font-size:11px;font-weight:700;color:#ffc107;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
-.inv-info-col strong{display:block;font-size:16px;margin-bottom:4px;}
-.inv-info-col span{display:block;font-size:13px;color:#555;}
-.inv-status-row{font-size:13px;margin-bottom:6px;}
-.inv-status-row b{color:#6a1b9a;}
-.inv-table{width:100%;border-collapse:collapse;margin-bottom:18px;}
-.inv-table th{background:#6a1b9a !important;color:#fff !important;padding:12px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border:1px solid #6a1b9a;border-right:1px solid rgba(255,255,255,0.35);}
-.inv-table th:last-child{border-right:1px solid #6a1b9a;}
-.inv-table td{padding:11px 12px;border-bottom:1px solid #eee;font-size:13px;border-right:1px solid #e8dff0;}
-.inv-table td:last-child{border-right:none;}
-.inv-table tbody tr:nth-child(even){background:#faf5ff;}
-.inv-totals{display:flex;justify-content:flex-end;}
-.inv-totals table{min-width:260px;border-collapse:collapse;}
-.inv-totals td{padding:8px 10px;font-size:14px;text-align:right;}
-.inv-totals .grand td{background:#6a1b9a !important;color:#fff !important;font-size:18px;font-weight:800;padding:12px;}
-.inv-footer{text-align:center;margin-top:auto;padding-top:30px;color:#6a1b9a;font-size:14px;line-height:1.7;border-top:1px solid #eee;}
-@media print{
-    body{padding:18px;min-height:100vh;display:flex;flex-direction:column;}
-    .inv-content{flex:1;}
-    .inv-footer{margin-top:auto;}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
 }
+
+
+html,
+body{
+    height:100%;
+}
+
+
+body{
+
+    font-family:
+        'Segoe UI',
+        Arial,
+        sans-serif;
+
+    color:#1f1f1f;
+
+    background:#fff;
+
+    padding:30px 35px;
+
+    max-width:800px;
+
+    margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:100vh;
+
+}
+
+
+.inv-content{
+    flex:1;
+}
+
+
+.inv-header{
+
+    display:flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-start;
+
+    margin-bottom:12px;
+
+}
+
+
+.inv-brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+
+.inv-brand img{
+
+    width:60px;
+    height:60px;
+
+    object-fit:contain;
+
+}
+
+
+.inv-brand-name{
+
+    font-size:28px;
+
+    font-weight:800;
+
+    color:#6a1b9a;
+
+}
+
+
+.inv-brand-tag{
+
+    font-size:11px;
+
+    color:#777;
+
+    letter-spacing:1px;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+.inv-brand-sub{
+
+    font-size:13px;
+
+    color:#555;
+
+    margin-top:4px;
+
+}
+
+
+.inv-right{
+    text-align:right;
+}
+
+
+.inv-title{
+
+    font-size:24px;
+
+    font-weight:800;
+
+    color:#6a1b9a;
+
+}
+
+
+.inv-id{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    margin-top:4px;
+
+}
+
+
+.inv-date{
+
+    font-size:12px;
+
+    color:#777;
+
+    margin-top:4px;
+
+}
+
+
+.inv-hr{
+
+    border:none;
+
+    border-top:
+        3px solid #6a1b9a;
+
+    margin:
+        16px 0 22px;
+
+}
+
+
+.inv-info-box{
+
+    display:flex;
+
+    border:
+        1px solid #e8dff0;
+
+    border-radius:8px;
+
+    overflow:hidden;
+
+    margin-bottom:24px;
+
+}
+
+
+.inv-info-col{
+
+    flex:1;
+
+    padding:
+        16px 18px;
+
+}
+
+
+.inv-info-col:first-child{
+
+    background:#faf5ff;
+
+}
+
+
+.inv-info-col:last-child{
+
+    border-left:
+        1px solid #e8dff0;
+
+}
+
+
+.inv-info-label{
+
+    font-size:11px;
+
+    font-weight:700;
+
+    color:#ffc107;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:1px;
+
+    margin-bottom:8px;
+
+}
+
+
+.inv-info-col strong{
+
+    display:block;
+
+    font-size:16px;
+
+    margin-bottom:4px;
+
+}
+
+
+.inv-info-col span{
+
+    display:block;
+
+    font-size:13px;
+
+    color:#555;
+
+}
+
+
+.inv-status-row{
+
+    font-size:13px;
+
+    margin-bottom:6px;
+
+}
+
+
+.inv-status-row b{
+
+    color:#6a1b9a;
+
+}
+
+
+.inv-table{
+
+    width:100%;
+
+    border-collapse:
+        collapse;
+
+    margin-bottom:18px;
+
+}
+
+
+.inv-table th{
+
+    background:#6a1b9a !important;
+
+    color:#fff !important;
+
+    padding:12px;
+
+    font-size:12px;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:.5px;
+
+    border:
+        1px solid #6a1b9a;
+
+    border-right:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.35
+        );
+
+}
+
+
+.inv-table th:last-child{
+
+    border-right:
+        1px solid #6a1b9a;
+
+}
+
+
+.inv-table td{
+
+    padding:
+        11px 12px;
+
+    border-bottom:
+        1px solid #eee;
+
+    font-size:13px;
+
+    border-right:
+        1px solid #e8dff0;
+
+}
+
+
+.inv-table td:last-child{
+
+    border-right:none;
+
+}
+
+
+.inv-table tbody tr:nth-child(even){
+
+    background:#faf5ff;
+
+}
+
+
+.inv-totals{
+
+    display:flex;
+
+    justify-content:
+        flex-end;
+
+}
+
+
+.inv-totals table{
+
+    min-width:260px;
+
+    border-collapse:
+        collapse;
+
+}
+
+
+.inv-totals td{
+
+    padding:
+        8px 10px;
+
+    font-size:14px;
+
+    text-align:right;
+
+}
+
+
+.inv-totals .grand td{
+
+    background:#6a1b9a !important;
+
+    color:#fff !important;
+
+    font-size:18px;
+
+    font-weight:800;
+
+    padding:12px;
+
+}
+
+
+.inv-footer{
+
+    text-align:center;
+
+    margin-top:auto;
+
+    padding-top:30px;
+
+    color:#6a1b9a;
+
+    font-size:14px;
+
+    line-height:1.7;
+
+    border-top:
+        1px solid #eee;
+
+}
+
+
+@media print{
+
+    body{
+
+        padding:18px;
+
+        min-height:100vh;
+
+        display:flex;
+
+        flex-direction:column;
+
+    }
+
+
+    .inv-content{
+        flex:1;
+    }
+
+
+    .inv-footer{
+        margin-top:auto;
+    }
+
+}
+
 </style>
+
 </head>
+
+
 <body>
 
+
 <div class="inv-content">
+
+
     <div class="inv-header">
+
+
         <div class="inv-brand">
-            <img src="${logoUrl}" alt="Hari Crackers">
+
+
+            <img
+                src="${logoUrl}"
+                alt="Hari Crackers"
+            >
+
+
             <div>
-                <div class="inv-brand-name">HARI CRACKERS</div>
-                <div class="inv-brand-tag">Light Up Every Celebration</div>
-                <div class="inv-brand-sub">Ranjankudi, Perambalur(d.t), Tamil Nadu | +91 86677 25665</div>
+
+                <div
+                    class="inv-brand-name"
+                >
+                    HARI CRACKERS
+                </div>
+
+
+                <div
+                    class="inv-brand-tag"
+                >
+                    Light Up Every Celebration
+                </div>
+
+
+                <div
+                    class="inv-brand-sub"
+                >
+                    Ranjankudi, Perambalur(d.t), Tamil Nadu
+                    | +91 86677 25665
+                </div>
+
             </div>
+
+
         </div>
+
+
         <div class="inv-right">
-            <div class="inv-title">INVOICE</div>
-            <div class="inv-id">#${escapeHtmlAttr(orderId)}</div>
-            <div class="inv-date">${escapeHtmlAttr(dateTimeStr)}</div>
+
+            <div class="inv-title">
+                INVOICE
+            </div>
+
+
+            <div class="inv-id">
+
+                #${escapeHtmlAttr(
+                orderId
+            )}
+
+            </div>
+
+
+            <div class="inv-date">
+
+                ${escapeHtmlAttr(
+                dateTimeStr
+            )}
+
+            </div>
+
         </div>
+
+
     </div>
+
 
     <hr class="inv-hr">
 
+
     <div class="inv-info-box">
+
+
         <div class="inv-info-col">
-            <div class="inv-info-label">Bill To</div>
-            <strong>${escapeHtmlAttr(customerName)}</strong>
-            ${customerPhone ? `<span>${escapeHtmlAttr(customerPhone)}</span>` : ''}
+
+
+            <div class="inv-info-label">
+                Bill To
+            </div>
+
+
+            <strong>
+
+                ${escapeHtmlAttr(
+                customerName
+            )}
+
+            </strong>
+
+
+            ${customerPhone
+
+                    ? `
+                        <span>
+                            ${escapeHtmlAttr(
+                        customerPhone
+                    )}
+                        </span>
+                    `
+
+                    : ''
+                }
+
+
         </div>
+
+
         <div class="inv-info-col">
-            <div class="inv-info-label">Status</div>
-            <div class="inv-status-row">Order: <b>${escapeHtmlAttr(orderStatus || 'Completed')}</b></div>
-            <div class="inv-status-row">Payment: <b>${escapeHtmlAttr(payMethod || '-')}</b></div>
-            <div class="inv-status-row">Total Items: <b>${totalItems}</b></div>
+
+
+            <div class="inv-info-label">
+                Status
+            </div>
+
+
+            <div class="inv-status-row">
+
+                Order:
+
+                <b>
+                    ${escapeHtmlAttr(
+                    orderStatus ||
+                    'Completed'
+                )}
+                </b>
+
+            </div>
+
+
+            <div class="inv-status-row">
+
+                Payment:
+
+                <b>
+                    ${escapeHtmlAttr(
+                    payMethod || '-'
+                )}
+                </b>
+
+            </div>
+
+
+            <div class="inv-status-row">
+
+                Total Items:
+
+                <b>
+                    ${totalItems}
+                </b>
+
+            </div>
+
+
         </div>
+
+
     </div>
+
 
     <table class="inv-table">
-    <thead>
-    <tr>
-    <th>Product</th>
-    <th style="text-align:center;">Qty</th>
-    <th style="text-align:right;">Price</th>
-    <th style="text-align:right;">Amount</th>
-    </tr>
-    </thead>
-    <tbody>${rowsHtml}</tbody>
+
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Product
+                </th>
+
+                <th
+                    style="text-align:center;"
+                >
+                    Qty
+                </th>
+
+                <th
+                    style="text-align:right;"
+                >
+                    Price
+                </th>
+
+                <th
+                    style="text-align:right;"
+                >
+                    Amount
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            ${rowsHtml}
+
+        </tbody>
+
+
     </table>
+
 
     <div class="inv-totals">
-    <table>
-    <tr><td>Subtotal:</td><td>₹${subtotal.toLocaleString('en-IN')}</td></tr>
-    <tr class="grand"><td>Grand Total:</td><td>₹${grandTotal.toLocaleString('en-IN')}</td></tr>
-    </table>
+
+
+        <table>
+
+
+            <tr>
+
+                <td>
+                    Subtotal:
+                </td>
+
+                <td>
+
+                    ₹${subtotal.toLocaleString(
+                    'en-IN'
+                )}
+
+                </td>
+
+            </tr>
+
+
+            <tr class="grand">
+
+                <td>
+                    Grand Total:
+                </td>
+
+                <td>
+
+                    ₹${grandTotal.toLocaleString(
+                    'en-IN'
+                )}
+
+                </td>
+
+            </tr>
+
+
+        </table>
+
+
     </div>
+
+
 </div>
+
 
 <div class="inv-footer">
+
     ✨ Thank you for choosing Hari Crackers.<br>
+
     Wishing you a Safe, Bright & Joyful Celebration!
+
 </div>
 
+
 </body>
-</html>`;
+
+</html>
+
+        `;
+
         }
+
+
+        // ============================================================
+        // OPEN INVOICE + PRINT
+        // ============================================================
 
         function openInvoiceAndPrint(html) {
-            const win = window.open('', '_blank');
+
+            const win =
+                window.open(
+                    '',
+                    '_blank'
+                );
+
+
             if (!win) {
-                showToast('⚠️ Popup blocked — allow popups for this site to print the bill', 'error');
+
+                showToast(
+                    '⚠️ Popup blocked — allow popups for this site to print the bill',
+                    'error'
+                );
+
                 return;
+
             }
+
+
             win.document.open();
-            win.document.write(html);
+
+            win.document.write(
+                html
+            );
+
             win.document.close();
+
             win.focus();
-            setTimeout(() => {
-                try { win.print(); } catch (e) { }
-            }, 400);
+
+
+            setTimeout(
+                () => {
+
+                    try {
+
+                        win.print();
+
+                    } catch (e) { }
+
+                },
+                400
+            );
+
         }
 
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast ${type} show`;
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+
+        // ============================================================
+        // TOAST
+        // ============================================================
+
+        function showToast(
+            message,
+            type = 'info'
+        ) {
+
+            const toast =
+                document.getElementById(
+                    'toast'
+                );
+
+
+            if (!toast) return;
+
+
+            toast.textContent =
+                message;
+
+
+            toast.className =
+                `toast ${type} show`;
+
+
+            clearTimeout(
+                toast._timeout
+            );
+
+
+            toast._timeout =
+                setTimeout(
+                    () => {
+
+                        toast.classList.remove(
+                            'show'
+                        );
+
+                    },
+                    3000
+                );
+
+        }
+
+
+        // ============================================================
+        // KEYBOARD NAVIGATION
+        // ============================================================
+
+        function updateKeyboardHighlight() {
+
+            const visible =
+                getKeyboardProducts();
+
+
+            if (
+                visible.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            // Keep index inside valid range
+            highlightIndex =
+                Math.max(
+                    0,
+                    Math.min(
+                        highlightIndex,
+                        visible.length - 1
+                    )
+                );
+
+
+            const product =
+                visible[
+                highlightIndex
+                ];
+
+
+            if (product) {
+
+                highlightProductRow(
+                    product.id
+                );
+
+            }
+
+        }
+
+
+        // ============================================================
+        // PREVIOUS PRODUCT
+        // ============================================================
+
+        function moveProductPrevious() {
+
+            const visible =
+                getKeyboardProducts();
+
+
+            if (
+                visible.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            highlightIndex--;
+
+
+            if (
+                highlightIndex < 0
+            ) {
+
+                highlightIndex =
+                    visible.length - 1;
+
+            }
+
+
+            updateKeyboardHighlight();
+
+        }
+
+
+        // ============================================================
+        // NEXT PRODUCT
+        // ============================================================
+
+        function moveProductNext() {
+
+            const visible =
+                getKeyboardProducts();
+
+
+            if (
+                visible.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            highlightIndex++;
+
+
+            if (
+                highlightIndex >=
+                visible.length
+            ) {
+
+                highlightIndex = 0;
+
+            }
+
+
+            updateKeyboardHighlight();
+
+        }
+
+
+        // ============================================================
+        // KEYBOARD EVENT
+        // ============================================================
+
+        searchInput.addEventListener(
+            'keydown',
+            (e) => {
+
+                const visible =
+                    getKeyboardProducts();
+
+
+                // ----------------------------------------------------
+                // UP
+                // ----------------------------------------------------
+
+                if (
+                    e.key ===
+                    'ArrowUp'
+                ) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+                    moveProductPrevious();
+
+                    return;
+
+                }
+
+
+                // ----------------------------------------------------
+                // DOWN
+                // ----------------------------------------------------
+
+                if (
+                    e.key ===
+                    'ArrowDown'
+                ) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+                    moveProductNext();
+
+                    return;
+
+                }
+
+
+                // ----------------------------------------------------
+                // LEFT
+                // ----------------------------------------------------
+
+                if (
+                    e.key ===
+                    'ArrowLeft'
+                ) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+                    moveProductPrevious();
+
+                    return;
+
+                }
+
+
+                // ----------------------------------------------------
+                // RIGHT
+                // ----------------------------------------------------
+
+                if (
+                    e.key ===
+                    'ArrowRight'
+                ) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+                    moveProductNext();
+
+                    return;
+
+                }
+
+
+                // ----------------------------------------------------
+                // ENTER
+                // ----------------------------------------------------
+
+                if (
+                    e.key ===
+                    'Enter'
+                ) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+
+                    if (
+                        visible.length === 0
+                    ) {
+
+                        showToast(
+                            '⚠️ No matching product found',
+                            'error'
+                        );
+
+                        return;
+
+                    }
+
+
+                    const selectedProduct =
+                        visible[
+                        Math.min(
+                            highlightIndex,
+                            visible.length - 1
+                        )
+                        ];
+
+
+                    if (
+                        !selectedProduct
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    // Add product
+                    addToBill(
+                        selectedProduct
+                    );
+
+
+                    showToast(
+                        `✅ Added: ${selectedProduct.name}`,
+                        'success'
+                    );
+
+
+                    // Keep search focused
+                    searchInput.focus();
+
+
+                    // Move to next product
+                    if (
+                        highlightIndex <
+                        visible.length - 1
+                    ) {
+
+                        highlightIndex++;
+
+                    } else {
+
+                        // Last product -> first product
+                        highlightIndex = 0;
+
+                    }
+
+
+                    // Restore highlight
+                    setTimeout(
+                        () => {
+
+                            updateKeyboardHighlight();
+
+                            searchInput.focus();
+
+
+                            searchInput.setSelectionRange(
+                                searchInput.value.length,
+                                searchInput.value.length
+                            );
+
+                        },
+                        50
+                    );
+
+
+                    return;
+
+                }
+
+
+                // ----------------------------------------------------
+                // ESCAPE
+                // ----------------------------------------------------
+
+                if (
+                    e.key ===
+                    'Escape'
+                ) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+
+                    searchInput.value =
+                        '';
+
+                    highlightIndex =
+                        0;
+
+
+                    renderProductGrid();
+
+                    searchInput.focus();
+
+                    return;
+
+                }
+
+
+                // ----------------------------------------------------
+                // BACKSPACE
+                // ----------------------------------------------------
+
+                if (
+                    e.key ===
+                    'Backspace' &&
+                    searchInput.value === ''
+                ) {
+
+                    e.preventDefault();
+
+                    e.stopPropagation();
+
+
+                    removeLastBillItem();
+
+                    return;
+
+                }
+
+            }
+        );
+
+
+        // ============================================================
+        // SEARCH INPUT
+        // ============================================================
+
+        searchInput.addEventListener(
+            'input',
+            () => {
+
+                highlightIndex =
+                    0;
+
+
+                renderProductGrid();
+
+
+                setTimeout(
+                    () => {
+
+                        const visible =
+                            getKeyboardProducts();
+
+
+                        if (
+                            visible.length > 0
+                        ) {
+
+                            highlightProductRow(
+                                visible[0].id
+                            );
+
+                        }
+
+                    },
+                    50
+                );
+
+            }
+        );
+
+
+        function highlightProductRow(productId) {
+
+            // Remove old highlight
+            document
+                .querySelectorAll('.product-pick-table tbody tr')
+                .forEach(tr => {
+                    tr.classList.remove('kb-highlight');
+                });
+
+            const row = document.querySelector(
+                `.product-pick-table tbody tr[data-id="${productId}"]`
+            );
+
+            if (!row) return;
+
+            // Highlight current product
+            row.classList.add('kb-highlight');
+
+            const productWrap =
+                document.querySelector('.product-table-wrap');
+
+            if (!productWrap) return;
+
+            // ========================================================
+            // ONLY SCROLL IF ROW IS ACTUALLY OUTSIDE VIEW
+            // ========================================================
+
+            const rowTop = row.offsetTop;
+            const rowBottom = rowTop + row.offsetHeight;
+
+            const visibleTop = productWrap.scrollTop;
+            const visibleBottom =
+                visibleTop + productWrap.clientHeight;
+
+            // Product above visible area
+            if (rowTop < visibleTop) {
+
+                productWrap.scrollTop = rowTop - 10;
+
+            }
+
+            // Product below visible area
+            else if (rowBottom > visibleBottom) {
+
+                productWrap.scrollTop =
+                    rowBottom - productWrap.clientHeight + 10;
+
+            }
+
+            // 🔥 NO scrollIntoView()
+            // 🔥 NO smooth scrolling
         }
 
         // ============================================================
-        // UI
+        // FOCUS QTY FIELD
         // ============================================================
-        document.getElementById('hamburgerBtn').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('active');
-        });
-        document.getElementById('sidebarOverlay').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        });
+
+        function focusQtyFieldForProduct(
+            productId
+        ) {
+
+            const rows =
+                cartTbody.querySelectorAll(
+                    'tr[data-index]'
+                );
+
+
+            for (
+                const row of rows
+            ) {
+
+                const idx =
+                    parseInt(
+                        row.dataset.index,
+                        10
+                    );
+
+
+                const item =
+                    billItems[idx];
+
+
+                if (
+                    item &&
+                    item.id ===
+                    productId
+                ) {
+
+                    const qtyInput =
+                        row.querySelector(
+                            '.qty-input'
+                        );
+
+
+                    if (qtyInput) {
+
+                        qtyInput.focus();
+
+                        qtyInput.select();
+
+                        qtyInput.scrollIntoView({
+
+                            block:
+                                'nearest',
+
+                            behavior:
+                                'smooth'
+
+                        });
+
+
+                        return;
+
+                    }
+
+                }
+
+            }
+
+
+            searchInput.focus();
+
+        }
+
+
+        // ============================================================
+        // REMOVE LAST BILL ITEM
+        // ============================================================
+
+        function removeLastBillItem() {
+
+            if (
+                billItems.length === 0
+            ) {
+
+                showToast(
+                    'Bill empty',
+                    'info'
+                );
+
+                return;
+
+            }
+
+
+            const lastItem =
+                billItems[
+                billItems.length - 1
+                ];
+
+
+            billItems.pop();
+
+
+            renderCart();
+
+
+            showToast(
+                `🗑️ Removed: ${lastItem.name}`,
+                'info'
+            );
+
+        }
+
+
+        // ============================================================
+        // AUTO FOCUS SEARCH
+        // ============================================================
+
+        window.addEventListener(
+            'load',
+            () => {
+
+                setTimeout(
+                    () => {
+
+                        searchInput.focus();
+
+                        updateKeyboardHighlight();
+
+                    },
+                    300
+                );
+
+            }
+        );
+
+
+        // ============================================================
+        // BADGES
+        // ============================================================
+
+        function listenToBadges() {
+
+
+            // --------------------------------------------------------
+            // ORDERS BADGE
+            // --------------------------------------------------------
+
+            const ordersRef =
+                collection(
+                    db,
+                    'orders'
+                );
+
+
+            onSnapshot(
+                ordersRef,
+                (snapshot) => {
+
+                    const orderBadge =
+                        document.getElementById(
+                            'orderBadge'
+                        );
+
+
+                    if (orderBadge) {
+
+                        orderBadge.textContent =
+                            snapshot.size;
+
+
+                        orderBadge.style.display =
+                            snapshot.size > 0
+                                ? 'inline-block'
+                                : 'none';
+
+                    }
+
+                },
+                (error) => {
+
+                    console.error(
+                        'Error listening to orders:',
+                        error
+                    );
+
+                }
+            );
+
+
+            // --------------------------------------------------------
+            // PRODUCTS BADGE
+            // --------------------------------------------------------
+
+            const productsRef =
+                collection(
+                    db,
+                    'products'
+                );
+
+
+            onSnapshot(
+                productsRef,
+                (snapshot) => {
+
+                    const productBadge =
+                        document.getElementById(
+                            'productBadge'
+                        );
+
+
+                    if (productBadge) {
+
+                        productBadge.textContent =
+                            snapshot.size;
+
+
+                        productBadge.style.display =
+                            snapshot.size > 0
+                                ? 'inline-block'
+                                : 'none';
+
+                    }
+
+                },
+                (error) => {
+
+                    console.error(
+                        'Error listening to products:',
+                        error
+                    );
+
+                }
+            );
+
+
+            // --------------------------------------------------------
+            // STOCK ALERT BADGE
+            // --------------------------------------------------------
+
+            const productsBadgeRef =
+                collection(
+                    db,
+                    'products'
+                );
+
+
+            onSnapshot(
+                productsBadgeRef,
+                (snapshot) => {
+
+                    let lowStockCount =
+                        0;
+
+
+                    snapshot.docs.forEach(
+                        productDoc => {
+
+                            const data =
+                                productDoc.data();
+
+
+                            const stockQty =
+                                data.stockQty;
+
+
+                            const threshold =
+                                data.lowStockThreshold ||
+                                5;
+
+
+                            if (
+                                typeof stockQty ===
+                                'number' &&
+                                stockQty <=
+                                threshold
+                            ) {
+
+                                lowStockCount++;
+
+                            }
+
+                        }
+                    );
+
+
+                    const badge =
+                        document.getElementById(
+                            'stockAlertBadge'
+                        );
+
+
+                    if (badge) {
+
+                        badge.textContent =
+                            lowStockCount;
+
+
+                        badge.style.display =
+                            lowStockCount > 0
+                                ? 'inline-block'
+                                : 'none';
+
+                    }
+
+                },
+                (error) => {
+
+                    console.error(
+                        'Stock alert badge error:',
+                        error
+                    );
+
+                }
+            );
+
+        }
+
+
+        listenToBadges();
+
+
+        // ============================================================
+        // LOW STOCK WARNING BANNER
+        // ============================================================
+
+        function renderLowStockWarningBanner() {
+
+            const banner =
+                document.getElementById(
+                    'lowStockWarningBanner'
+                );
+
+            const countEl =
+                document.getElementById(
+                    'lowStockCount'
+                );
+
+            const listEl =
+                document.getElementById(
+                    'lowStockWarningList'
+                );
+
+
+            if (
+                !banner ||
+                !countEl ||
+                !listEl
+            ) {
+
+                return;
+
+            }
+
+
+            const lowStock =
+                allProducts
+
+                    .filter(
+                        p =>
+                            typeof p.stockQty ===
+                            'number'
+                    )
+
+                    .filter(
+                        p =>
+                            p.stockQty <=
+                            (
+                                p.lowStockThreshold ||
+                                5
+                            )
+                    )
+
+                    .sort(
+                        (a, b) =>
+                            (
+                                a.stockQty || 0
+                            ) -
+                            (
+                                b.stockQty || 0
+                            )
+                    );
+
+
+            if (
+                lowStock.length === 0
+            ) {
+
+                banner.style.display =
+                    'none';
+
+                return;
+
+            }
+
+
+            countEl.textContent =
+                lowStock.length;
+
+
+            listEl.innerHTML =
+                lowStock
+                    .slice(0, 8)
+                    .map(
+                        p => {
+
+                            const isOut =
+                                (
+                                    p.stockQty ||
+                                    0
+                                ) <= 0;
+
+
+                            return `
+
+                            <span
+
+                                class="
+                                    warning-item
+                                    ${isOut
+                                    ? 'out-of-stock'
+                                    : ''
+                                }
+                                "
+
+                                onclick="
+                                    scrollToProduct('${escapeHtmlAttr(p.id)}')
+                                "
+
+                                title="Click to view product"
+
+                            >
+
+                                ${escapeHtmlAttr(
+                                    p.name
+                                )}
+
+                                <span
+                                    class="qty-badge"
+                                >
+
+                                    ${isOut
+                                    ? 'OUT'
+                                    : (
+                                        p.stockQty +
+                                        ' left'
+                                    )
+                                }
+
+                                </span>
+
+                            </span>
+
+                        `;
+
+                        }
+                    )
+                    .join('');
+
+
+            banner.style.display =
+                'flex';
+
+        }
+
+
+        // ============================================================
+        // SCROLL TO LOW STOCK PRODUCT
+        // ============================================================
+
+        window.scrollToProduct =
+            function (productId) {
+
+                const product =
+                    allProducts.find(
+                        p =>
+                            p.id ===
+                            productId
+                    );
+
+
+                if (!product)
+                    return;
+
+
+                searchInput.value =
+                    product.name;
+
+
+                highlightIndex =
+                    0;
+
+
+                renderProductGrid();
+
+
+                setTimeout(
+                    () => {
+
+                        const visible =
+                            getKeyboardProducts();
+
+
+                        const index =
+                            visible.findIndex(
+                                p =>
+                                    p.id ===
+                                    productId
+                            );
+
+
+                        if (index >= 0) {
+
+                            highlightIndex =
+                                index;
+
+                            updateKeyboardHighlight();
+
+                        }
+
+                    },
+                    50
+                );
+
+
+                document
+                    .querySelector(
+                        '.product-pick-table'
+                    )
+                    ?.scrollIntoView({
+
+                        behavior:
+                            'smooth',
+
+                        block:
+                            'center'
+
+                    });
+
+            };
+
+
+        // ============================================================
+        // UI - HAMBURGER
+        // ============================================================
+
+        document
+            .getElementById(
+                'hamburgerBtn'
+            )
+            .addEventListener(
+                'click',
+                () => {
+
+                    document
+                        .getElementById(
+                            'sidebar'
+                        )
+                        .classList.toggle(
+                            'open'
+                        );
+
+
+                    document
+                        .getElementById(
+                            'sidebarOverlay'
+                        )
+                        .classList.toggle(
+                            'active'
+                        );
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                'sidebarOverlay'
+            )
+            .addEventListener(
+                'click',
+                () => {
+
+                    document
+                        .getElementById(
+                            'sidebar'
+                        )
+                        .classList.remove(
+                            'open'
+                        );
+
+
+                    document
+                        .getElementById(
+                            'sidebarOverlay'
+                        )
+                        .classList.remove(
+                            'active'
+                        );
+
+                }
+            );
+
 
         // ============================================================
         // INIT
         // ============================================================
-        billItems = loadBillFromLocalStorage();
+
+        billItems =
+            loadBillFromLocalStorage();
+
+
         loadCustomerFromLocalStorage();
+
+
         renderCart();
+
+
         listenToProducts();
 
-        // ============================================================
-        // ⌨️ KEYBOARD-FIRST NAVIGATION
-        // ============================================================
-        // POS counter-ku mouse illama keyboard vachu bill build panna
-        // ============================================================
-
-        let highlightIndex = 0;   // ↑ ↓ navigate panna current highlighted row
-
-        // ----------------- SEARCH BOX KEYBOARD -----------------
-        searchInput.addEventListener('keydown', (e) => {
-            const term = searchInput.value.trim().toLowerCase();
-            const filtered = term
-                ? allProducts.filter(p => (p.name || '').toLowerCase().includes(term))
-                : allProducts;
-            const visible = filtered.filter(p => p.inStock !== false); // only in-stock
-
-            // ✅ ENTER → product add pannu + andha product-oda QTY field-ku focus
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                if (visible.length === 0) {
-                    showToast('⚠️ No matching product found', 'error');
-                    return;
-                }
-
-                const pick = visible[Math.min(highlightIndex, visible.length - 1)];
-
-                // Search box clear pannu
-                searchInput.value = '';
-                highlightIndex = 0;
-
-                // Product-ah bill la add pannu
-                addToBill(pick);
-                showToast(`✅ Added: ${pick.name} — qty edit pannunga`, 'success');
-
-                // ✅ Andha product-oda qty field-ku focus move
-                setTimeout(() => {
-                    focusQtyFieldForProduct(pick.id);
-                }, 100);
-
-                return;
-            }
-
-            // ✅ ARROW DOWN → next product highlight
-            // Last product-la irundha → Customer Name field-ku move
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                if (visible.length === 0) return;
-
-                // Last product-ah already highlight pannirundha → Customer field-ku move
-                if (highlightIndex >= visible.length - 1) {
-                    focusCustomerPane();
-                    return;
-                }
-
-                highlightIndex = Math.min(highlightIndex + 1, visible.length - 1);
-                highlightProductRow(visible[highlightIndex].id);
-                return;
-            }
-
-            // ✅ ARROW UP → previous product highlight
-            // First product-la irundha → Search box-ku thirumba focus
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                if (visible.length === 0) return;
-
-                // First product-la irundha → Search box-ku thirumba focus
-                if (highlightIndex <= 0) {
-                    highlightIndex = 0;
-                    // Ellaa highlight-um remove pannu
-                    document.querySelectorAll('.product-pick-table tbody tr.kb-highlight').forEach(tr => {
-                        tr.classList.remove('kb-highlight');
-                    });
-                    searchInput.focus();
-                    return;
-                }
-
-                highlightIndex = Math.max(highlightIndex - 1, 0);
-                highlightProductRow(visible[highlightIndex].id);
-                return;
-            }
-
-            // ✅ ESC → clear search
-            if (e.key === 'Escape') {
-                searchInput.value = '';
-                highlightIndex = 0;
-                renderProductGrid();
-                return;
-            }
-
-            // ✅ BACKSPACE → search box empty-ah irundha, LAST ITEM remove pannum
-            // (idhu standard POS behaviour — search box khali-la backspace = undo)
-            if (e.key === 'Backspace' && searchInput.value === '') {
-                e.preventDefault();
-                removeLastBillItem();
-                return;
-            }
-
-            // ✅ RIGHT ARROW → Bill Items pane-ku move
-            if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                focusBillPane();
-                return;
-            }
-        });
-
-
-        
-            // ----------------- FOCUS QTY FIELD FOR SPECIFIC PRODUCT -----------------
-            // Bill Items la andha product-oda qty input-ku focus
-            function focusQtyFieldForProduct(productId) {
-                // Bill la irukkura rows-ah paaru
-                const rows = cartTbody.querySelectorAll('tr[data-index]');
-
-                for (const row of rows) {
-                    const idx = parseInt(row.dataset.index, 10);
-                    const item = billItems[idx];
-
-                    if (item && item.id === productId) {
-                        const qtyInput = row.querySelector('.qty-input');
-                        if (qtyInput) {
-                            qtyInput.focus();
-                            qtyInput.select();  // Text-ah select pannu (easy edit)
-                            qtyInput.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-                            return;
-                        }
-                    }
-                }
-
-                // Product bill la illena, search box-ku focus thirumba
-                searchInput.focus();
-            }
-
-        // ----------------- HIGHLIGHT PRODUCT ROW -----------------
-        function highlightProductRow(productId) {
-            // Ellaa rows-layum 'kb-highlight' remove pannu
-            document.querySelectorAll('.product-pick-table tbody tr').forEach(tr => {
-                tr.classList.remove('kb-highlight');
-            });
-            // Current row-ku add pannu
-            const row = document.querySelector(`.product-pick-table tbody tr[data-id="${productId}"]`);
-            if (row) {
-                row.classList.add('kb-highlight');
-                row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-            }
-        }
-
-
-        // ----------------- PANE NAVIGATION (Left ↔ Right) -----------------
-        // Search box → Right arrow → Bill Items pane
-        // Bill Items → Left arrow → Search box
-
-        function focusBillPane() {
-            // Bill Items table la first interactive element-ku focus
-            const firstBillElement = document.querySelector('#cartTableOuter .row-check')
-                || document.querySelector('#cartTableOuter .qty-input')
-                || document.querySelector('#cartTableOuter .rate-input')
-                || document.querySelector('#cartTableOuter .remove-row');
-
-            if (firstBillElement) {
-                firstBillElement.focus();
-                if (firstBillElement.select) firstBillElement.select();
-                // Scroll into view
-                firstBillElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-            } else {
-                // Bill empty-ah irundha → search box-ku focus thirumba
-                searchInput.focus();
-                showToast('Bill empty — products add', 'info');
-            }
-        }
-
-        function focusProductPane() {
-            // Search box-ku focus thirumba
-            searchInput.focus();
-            searchInput.select();
-        }
-        // ----------------- REMOVE LAST BILL ITEM -----------------
-        function removeLastBillItem() {
-            if (billItems.length === 0) {
-                showToast('Bill empty', 'info');
-                return;
-            }
-            const lastItem = billItems[billItems.length - 1];
-            billItems.pop();
-            renderCart();
-            showToast(`🗑️ Removed: ${lastItem.name}`, 'info');
-        }
-
-        // ----------------- GLOBAL KEYBOARD (page-wide) -----------------
-        document.addEventListener('keydown', (e) => {
-            // Input/textarea-la type pannumbodhu, intha shortcut skip pannu
-            const tag = (e.target.tagName || '').toLowerCase();
-            const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select';
-
-            // ✅ GLOBAL BACKSPACE (input la illama) → last item remove
-            if (e.key === 'Backspace' && !isTyping) {
-                e.preventDefault();
-                removeLastBillItem();
-                return;
-            }
-
-            // ✅ GLOBAL ENTER (input la illama) → search box-ku focus
-            if (e.key === 'Enter' && !isTyping) {
-                e.preventDefault();
-                searchInput.focus();
-                searchInput.select();
-                return;
-            }
-
-            // ✅ GLOBAL '/' → search box-ku focus (like YouTube)
-            if (e.key === '/' && !isTyping) {
-                e.preventDefault();
-                searchInput.focus();
-                return;
-            }
-        });
-
-        // ----------------- AUTO-FOCUS SEARCH BOX ON LOAD -----------------
-        // Page load aana udanae search box-ku focus
-        window.addEventListener('load', () => {
-            setTimeout(() => searchInput.focus(), 300);
-        });
-
-        function listenToBadges() {
-            // ============================================================
-            // ORDERS BADGE
-            // ============================================================
-            const ordersRef = collection(db, 'orders');
-            onSnapshot(ordersRef, (snapshot) => {
-                const orderBadge = document.getElementById('orderBadge');
-                if (orderBadge) {
-                    orderBadge.textContent = snapshot.size;
-                    orderBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
-                }
-            }, (error) => {
-                console.error('Error listening to orders:', error);
-            });
-
-            // ============================================================
-            // PRODUCTS BADGE
-            // ============================================================
-            const productsRef = collection(db, 'products');
-            onSnapshot(productsRef, (snapshot) => {
-                const productBadge = document.getElementById('productBadge');
-                if (productBadge) {
-                    productBadge.textContent = snapshot.size;
-                    productBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
-                }
-            }, (error) => {
-                console.error('Error listening to products:', error);
-            });
-
-            // ============================================================
-            // ✅ STOCK ALERTS BADGE — Low stock products count
-            // ============================================================
-            const productsBadgeRef = collection(db, 'products');
-
-            onSnapshot(productsBadgeRef, (snapshot) => {
-                let lowStockCount = 0;
-
-                snapshot.docs.forEach(doc => {
-                    const data = doc.data();
-                    const stockQty = data.stockQty;
-                    const threshold = data.lowStockThreshold || 5;
-
-                    // Stock track pannirundha + threshold-ku kuraiya irundha count
-                    if (typeof stockQty === 'number' && stockQty <= threshold) {
-                        lowStockCount++;
-                    }
-                });
-
-                const badge = document.getElementById('stockAlertBadge');
-                if (badge) {
-                    badge.textContent = lowStockCount;
-                    badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
-                }
-            }, (error) => {
-                console.error('Stock alert badge error:', error);
-            });
-        }
-
-        listenToBadges();
 
         // ============================================================
-        // EXPOSE LIGHTBOX GLOBALLY
+        // EXPOSE LIGHTBOX
         // ============================================================
-        window.openLightbox = openLightbox;
-        window.closeLightbox = closeLightbox;
+
+        window.openLightbox =
+            openLightbox;
+
+
+        window.closeLightbox =
+            closeLightbox;
+
 
         // ============================================================
         // LOGOUT
         // ============================================================
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
 
-            if (!confirm('Are you sure you want to logout?')) {
-                return;
-            }
+        document
+            .getElementById(
+                'logoutBtn'
+            )
+            .addEventListener(
+                'click',
+                async () => {
 
-            try {
-                await signOut(auth);
+                    if (
+                        !confirm(
+                            'Are you sure you want to logout?'
+                        )
+                    ) {
 
-                // After logout, always go to admin login
-                window.location.href = '/admin/index.html';
+                        return;
 
-            } catch (error) {
-                console.error('Logout error:', error);
-                alert('Logout failed. Please try again.');
-            }
-        });
+                    }
 
-        function renderLowStockWarningBanner() {
-            const banner = document.getElementById('lowStockWarningBanner');
-            const countEl = document.getElementById('lowStockCount');
-            const listEl = document.getElementById('lowStockWarningList');
 
-            if (!banner || !countEl || !listEl) return;
+                    try {
 
-            const lowStock = allProducts
-                .filter(p => typeof p.stockQty === 'number')
-                .filter(p => p.stockQty <= (p.lowStockThreshold || 5))
-                .sort((a, b) => (a.stockQty || 0) - (b.stockQty || 0));
+                        await signOut(
+                            auth
+                        );
 
-            if (lowStock.length === 0) {
-                banner.style.display = 'none';
-                return;
-            }
 
-            countEl.textContent = lowStock.length;
+                        window.location.href =
+                            '/admin/index.html';
 
-            listEl.innerHTML = lowStock.slice(0, 8).map(p => {
-                const isOut = (p.stockQty || 0) <= 0;
-                return `
-            <span class="warning-item ${isOut ? 'out-of-stock' : ''}" 
-                  onclick="scrollToProduct('${p.id}')"
-                  title="Click to add to bill">
-                ${p.name}
-                <span class="qty-badge">${isOut ? 'OUT' : p.stockQty + ' left'}</span>
-            </span>
-        `;
-            }).join('');
 
-            banner.style.display = 'flex';
-        }
+                    } catch (error) {
 
-        window.scrollToProduct = function (productId) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
+                        console.error(
+                            'Logout error:',
+                            error
+                        );
 
-            searchInput.value = product.name;
-            renderProductGrid();
 
-            document.querySelector('.product-pick-table')?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-        };
+                        alert(
+                            'Logout failed. Please try again.'
+                        );
+
+                    }
+
+                }
+            );
 
 
     </script>

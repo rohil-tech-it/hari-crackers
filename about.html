@@ -10,32 +10,32 @@
   <!-- FAVICON / TAB LOGO -->
   <link rel="icon" type="image/png" href="./pictures/logo-removebg-preview.png">
   <style>
-    /* Force badge to always show */
+    /* =====================================================
+     SMALL PAGE UTILITIES
+  ===================================================== */
+
     .cart-badge {
       position: absolute;
       top: -8px;
       right: -8px;
-      background: var(--ember);
-      color: #fff;
-      font-size: 0.65rem;
-      font-weight: 700;
       width: 18px;
       height: 18px;
       border-radius: 50%;
       display: flex !important;
-      /* ← Force display */
       align-items: center;
       justify-content: center;
+      background: var(--ember);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
       border: 2px solid var(--bg-white);
     }
 
-    /* When cart is empty, show 0 with faded style */
     .cart-badge.empty {
       background: #999;
       font-size: 0.55rem;
     }
 
-    /* Live indicator */
     .live-indicator {
       display: inline-flex;
       align-items: center;
@@ -92,73 +92,259 @@
       }
     }
 
-    /* Story Image Center - Responsive */
+
+    /* =====================================================
+     STORY SECTION - DESKTOP
+  ===================================================== */
+
+    .story-section .story-wrapper {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 50px;
+    }
+
+    .story-section .story-content {
+      min-width: 0;
+    }
+
+    .story-section .story-image {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .story-section .story-image-card {
+      position: relative;
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .story-section .story-image-card .story-img {
+      display: block;
+      width: min(100%, 400px);
+      height: auto;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+
+    /* ================================
+   STORY BADGE
+================================ */
+
+    .story-badge {
+      position: absolute;
+
+      left: 50%;
+      bottom: 10px;
+
+      transform: translateX(-50%);
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      gap: 8px;
+
+      padding: 10px 20px;
+
+      background: #3b0066;
+      color: #ffffff;
+
+      border-radius: 30px;
+
+      font-size: 14px;
+      font-weight: 600;
+
+      white-space: nowrap;
+
+      box-shadow: 0 8px 20px rgba(59, 0, 102, 0.25);
+
+      z-index: 10;
+    }
+
+
+    /* Star Icon */
+
+    .story-badge i {
+      color: #ffc107;
+
+      font-size: 14px;
+
+      flex-shrink: 0;
+    }
+
+
+    /* ================================
+   TABLET
+================================ */
+
     @media (max-width: 768px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
+
+      .story-badge {
+        bottom: 8px;
+
+        padding: 9px 18px;
+
+        font-size: 13px;
+
+        gap: 7px;
       }
 
-      .story-image {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        margin: 30px auto 0;
-        width: 100%;
-      }
-
-      .story-img {
-        display: block;
-        margin: 0 auto;
-        width: 80%;
-        max-width: 280px;
-        height: auto;
+      .story-badge i {
+        font-size: 13px;
       }
     }
+
+
+    /* ================================
+   MOBILE
+================================ */
 
     @media (max-width: 480px) {
-      .story-img {
-        width: 75%;
-        max-width: 220px;
+
+      .story-badge {
+        bottom: 6px;
+
+        padding: 8px 15px;
+
+        font-size: 12px;
+
+        gap: 6px;
+
+        max-width: 90%;
+      }
+
+      .story-badge i {
+        font-size: 12px;
       }
     }
 
-    /* Mobile - Story Image Perfect Center */
-    @media (max-width: 768px) {
-      .story-section .story-image {
-        text-align: center !important;
-        width: 100%;
+
+    /* ================================
+   SMALL MOBILE
+================================ */
+
+    @media (max-width: 380px) {
+
+      .story-badge {
+        padding: 7px 13px;
+
+        font-size: 11px;
+
+        gap: 5px;
       }
 
-      .story-section .story-image .story-img {
-        display: inline-block !important;
+      .story-badge i {
+        font-size: 11px;
+      }
+    }
+
+    /* =====================================================
+     STORY SECTION - TABLET
+  ===================================================== */
+
+    @media (max-width: 768px) {
+
+      .story-section .story-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        gap: 30px !important;
+      }
+
+      .story-section .story-content {
+        width: 100% !important;
+        text-align: center;
+      }
+
+      .story-section .story-image {
+        order: 2;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+      }
+
+      .story-section .story-image-card {
+        position: relative !important;
+        width: 100% !important;
+        max-width: 350px !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+
+      .story-section .story-image-card .story-img {
+        display: block !important;
         width: 300px !important;
-        max-width: 95%;
+        max-width: 85vw !important;
         height: auto !important;
         margin: 0 auto !important;
       }
     }
 
+
+    /* =====================================================
+     STORY SECTION - MOBILE
+  ===================================================== */
+
     @media (max-width: 480px) {
-      .story-section .story-image .story-img {
+
+      .story-section .story-wrapper {
+        gap: 25px !important;
+      }
+
+      .story-section .story-image-card {
+        max-width: 320px !important;
+      }
+
+      .story-section .story-image-card .story-img {
         width: 280px !important;
+        max-width: 80vw !important;
       }
     }
 
-    @media (max-width: 480px) {
-      .story-section .story-img {
-        width: 200px;
+
+    /* =====================================================
+     STORY SECTION - VERY SMALL MOBILE
+  ===================================================== */
+
+    @media (max-width: 380px) {
+
+      .story-section .story-wrapper {
+        gap: 22px !important;
+      }
+
+      .story-section .story-image-card {
+        max-width: 300px !important;
+      }
+
+      .story-section .story-image-card .story-img {
+        width: 250px !important;
+        max-width: 78vw !important;
       }
     }
+
+
+    /* =====================================================
+     FLOATING SOCIAL BUTTONS - MOBILE
+  ===================================================== */
 
     @media (max-width: 768px) {
-      .story-section .hero-grid {
-        justify-items: center !important;
-      }
-    }
 
-    /* ===== SOCIAL FLOAT - MOBILE FIX ===== */
-    @media (max-width: 768px) {
       .social-float {
         display: flex !important;
         flex-direction: column;
@@ -182,6 +368,7 @@
     }
 
     @media (max-width: 480px) {
+
       .social-float {
         left: 10px;
         bottom: 75px;
@@ -411,20 +598,23 @@
           </a>
         </div>
 
-        <!-- Right Visual -->
         <div class="story-image reveal">
+
           <div class="story-image-card">
+
             <span class="glow glow1"></span>
             <span class="glow glow2"></span>
             <span class="glow glow3"></span>
 
-            <img src="./pictures/haricrackers.png" alt="Hari Crackers Gift Box" class="story-img">
+            <img src="./pictures/story-about.png" alt="Hari Crackers Gift Box" class="story-img">
 
             <div class="story-badge">
               <i class="fas fa-star"></i>
               Premium Sivakasi Quality
             </div>
+
           </div>
+
         </div>
       </div>
     </div>
@@ -658,12 +848,16 @@
           <div class="hari-socials">
             <a href="https://www.facebook.com/your-page" target="_blank" rel="noopener">
               <i class="fab fa-facebook-f"></i>
-              <a href="https://www.instagram.com/hari_crackers_/" target="_blank">
-                <i class="fab fa-instagram"></i>
-              </a>
-              <a href="https://www.youtube.com/your-channel" target="_blank" rel="noopener">
-                <i class="fab fa-youtube"></i> <a href="https://wa.me/919597060024" target="_blank" rel="noopener"><i
-                    class="fab fa-whatsapp"></i></a>
+            </a>
+            <a href="https://www.instagram.com/hari_crackers_/" target="_blank" rel="noopener">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/your-channel" target="_blank" rel="noopener">
+              <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://wa.me/919597060024" target="_blank" rel="noopener">
+              <i class="fab fa-whatsapp"></i>
+            </a>
           </div>
         </div>
 

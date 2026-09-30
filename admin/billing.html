@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin — Direct Billing | Hari Crackers</title>
-        <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="icon" type="image/png"
-            href="../pictures/logo-removebg-preview.png">
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Direct Billing | Hari Crackers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
         * {
@@ -889,9 +886,7 @@
             }
         }
 
-        /* ============================================================
-           LIGHTBOX — PRODUCT IMAGE PREVIEW
-           ============================================================ */
+        /* LIGHTBOX */
         .lightbox-overlay {
             display: none;
             position: fixed;
@@ -923,13 +918,9 @@
         .lightbox-overlay img {
             max-width: 90vw;
             max-height: 85vh;
-            width: auto;
-            height: auto;
             object-fit: contain;
             border-radius: 16px;
             box-shadow: 0 30px 80px rgba(45, 0, 80, 0.6);
-            cursor: default;
-            animation: lbZoomIn 0.35s ease;
             background: #ffffff;
             padding: 10px;
         }
@@ -983,10 +974,8 @@
             border-radius: 999px;
             font-size: 0.95rem;
             font-weight: 600;
-            letter-spacing: 0.5px;
             max-width: 90%;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .lightbox-caption i {
@@ -994,9 +983,7 @@
             margin-right: 6px;
         }
 
-        /* ============================================================
-           CONFIRM REMOVE OVERLAY
-           ============================================================ */
+        /* CONFIRM */
         .confirm-overlay {
             display: none;
             position: fixed;
@@ -1022,19 +1009,6 @@
             text-align: center;
             box-shadow: 0 30px 80px rgba(45, 0, 80, 0.45);
             border: 2px solid rgba(106, 27, 154, 0.15);
-            animation: confirmIn 0.3s ease;
-        }
-
-        @keyframes confirmIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
         }
 
         .confirm-box .confirm-icon {
@@ -1048,7 +1022,6 @@
             align-items: center;
             justify-content: center;
             font-size: 1.8rem;
-            box-shadow: 0 8px 24px rgba(231, 76, 60, 0.35);
         }
 
         .confirm-box h3 {
@@ -1056,7 +1029,6 @@
             font-size: 1.2rem;
             color: #6a1b9a;
             margin-bottom: 10px;
-            letter-spacing: 0.5px;
         }
 
         .confirm-box p {
@@ -1064,11 +1036,6 @@
             font-size: 0.9rem;
             line-height: 1.6;
             margin-bottom: 22px;
-        }
-
-        .confirm-box p strong {
-            color: #2d0050;
-            font-weight: 700;
         }
 
         .confirm-actions {
@@ -1088,7 +1055,6 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: all 0.25s ease;
             font-family: inherit;
         }
 
@@ -1098,69 +1064,22 @@
             border: 1px solid rgba(106, 27, 154, 0.20);
         }
 
-        .confirm-actions .btn-cancel:hover {
-            background: #e8d5ff;
-        }
-
         .confirm-actions .btn-remove {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: #fff;
-            box-shadow: 0 4px 16px rgba(231, 76, 60, 0.35);
         }
 
-        .confirm-actions .btn-remove:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(231, 76, 60, 0.5);
-        }
-
-        @media (max-width: 480px) {
-            .lightbox-close {
-                top: 12px;
-                right: 14px;
-                width: 42px;
-                height: 42px;
-                font-size: 1.3rem;
-            }
-
-            .lightbox-caption {
-                bottom: 16px;
-                font-size: 0.8rem;
-                padding: 10px 20px;
-            }
-
-            .lightbox-overlay img {
-                padding: 6px;
-                border-radius: 12px;
-            }
-        }
-
-        /* ============================================================
-   LOW STOCK WARNING BANNER
-   ============================================================ */
+        /* LOW STOCK BANNER */
         .low-stock-warning-banner {
             background: linear-gradient(135deg, #fff3cd, #ffe69c);
             border: 2px solid #ffc107;
             border-radius: 12px;
             padding: 16px 20px;
-            margin-bottom: 20px;
+            margin: 0 30px 20px;
             display: flex;
             align-items: flex-start;
             gap: 16px;
             box-shadow: 0 4px 16px rgba(255, 193, 7, 0.25);
-            animation: warningPulse 2s infinite;
-            position: relative;
-        }
-
-        @keyframes warningPulse {
-
-            0%,
-            100% {
-                box-shadow: 0 4px 16px rgba(255, 193, 7, 0.25);
-            }
-
-            50% {
-                box-shadow: 0 4px 24px rgba(255, 193, 7, 0.5);
-            }
         }
 
         .low-stock-warning-banner .warning-icon {
@@ -1174,24 +1093,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35);
-            animation: warningIconShake 1s infinite;
-        }
-
-        @keyframes warningIconShake {
-
-            0%,
-            100% {
-                transform: rotate(0deg);
-            }
-
-            25% {
-                transform: rotate(-8deg);
-            }
-
-            75% {
-                transform: rotate(8deg);
-            }
         }
 
         .low-stock-warning-banner .warning-content {
@@ -1204,7 +1105,6 @@
             font-weight: 600;
             color: #8a6d00;
             margin-bottom: 10px;
-            line-height: 1.4;
         }
 
         .low-stock-warning-banner .warning-title strong {
@@ -1230,13 +1130,6 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .low-stock-warning-banner .warning-item:hover {
-            border-color: #e74c3c;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
         }
 
         .low-stock-warning-banner .warning-item .qty-badge {
@@ -1264,43 +1157,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
             flex-shrink: 0;
         }
 
-        .low-stock-warning-banner .warning-close:hover {
-            background: #e74c3c;
-            color: #ffffff;
-            transform: rotate(90deg);
-        }
-
-        /* Mobile */
-        @media (max-width: 480px) {
-            .low-stock-warning-banner {
-                padding: 12px 14px;
-                gap: 10px;
-            }
-
-            .low-stock-warning-banner .warning-icon {
-                width: 38px;
-                height: 38px;
-                min-width: 38px;
-                font-size: 1.2rem;
-            }
-
-            .low-stock-warning-banner .warning-title {
-                font-size: 0.82rem;
-            }
-
-            .low-stock-warning-banner .warning-item {
-                font-size: 0.7rem;
-                padding: 4px 10px;
-            }
-        }
-
-        /* ============================================================
-   ⌨️ KEYBOARD NAVIGATION — HIGHLIGHTED ROW
-   ============================================================ */
+        /* KEYBOARD HIGHLIGHT */
         .product-pick-table tbody tr.kb-highlight {
             background: linear-gradient(90deg, #fff3cd, #fff8e1) !important;
             border-left: 4px solid #ffc107;
@@ -1315,7 +1175,11 @@
             transform: scale(1.05);
         }
 
-        /* Focus rings */
+        .cart-table tbody tr.kb-row-active {
+            background: linear-gradient(90deg, #fff3cd, #fff8e1) !important;
+            box-shadow: inset 0 0 0 2px #ffc107;
+        }
+
         .search-box input:focus,
         .customer-fields input:focus,
         .customer-fields select:focus {
@@ -1329,261 +1193,218 @@
             outline-offset: 3px;
         }
     </style>
-    </head>
+</head>
 
-    <body>
+<body>
 
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-brand">
-                <div class="brand-icon">
-                    <img src="../pictures/logo-removebg-preview.png"
-                        alt="Hari Crackers Logo">
-                </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <img src="../pictures/logo-removebg-preview.png" alt="Hari Crackers Logo">
+            </div>
+            <div>
+                <div class="brand-text">Hari <span>Crackers</span></div>
+                <span class="brand-sub">Staff Panel</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-label">Main Menu</div>
+
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="orders.html" class="nav-item">
+                <i class="fas fa-shopping-bag"></i> Orders
+                <span class="badge" id="orderBadge">0</span>
+            </a>
+            <a href="products.html" class="nav-item">
+                <i class="fas fa-box"></i> Products
+                <span class="badge" id="productBadge">0</span>
+            </a>
+
+            <div class="nav-label" style="margin-top:20px;">Direct Billing</div>
+
+            <a href="billing.html" class="nav-item active">
+                <i class="fas fa-cog"></i> Billing
+            </a>
+            <a href="bills-history.html" class="nav-item">
+                <i class="fas fa-file-invoice"></i> Billing History
+            </a>
+
+            <div class="nav-label" style="margin-top:20px;">Inventory</div>
+
+            <a href="stock-management.html" class="nav-item">
+                <i class="fas fa-warehouse"></i> Stock Management
+                <span class="badge" id="stockAlertBadge" style="background:#e74c3c;display:none;">0</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">A</div>
                 <div>
-                    <div class="brand-text">Hari <span>Crackers</span></div>
-                    <span class="brand-sub">Staff Panel</span>
+                    <div class="user-name">Admin</div>
+                    <div class="user-email">haricrackers182@gmail.com</div>
                 </div>
             </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </aside>
 
-            <nav class="sidebar-nav">
-                <div class="nav-label">Main Menu</div>
-
-                <a href="dashboard.html" class="nav-item">
-                    <i class="fas fa-chart-pie"></i> Dashboard
-                </a>
-                <a href="orders.html" class="nav-item">
-                    <i class="fas fa-shopping-bag"></i> Orders
-                    <span class="badge" id="orderBadge">0</span>
-                </a>
-                <a href="products.html" class="nav-item">
-                    <i class="fas fa-box"></i> Products
-                    <span class="badge" id="productBadge">0</span>
-                </a>
-
-                <div class="nav-label" style="margin-top:20px;">Direct
-                    Billing</div>
-
-                <a href="billing.html" class="nav-item active">
-                    <i class="fas fa-cog"></i> Billing
-                </a>
-                <a href="bills-history.html" class="nav-item">
-                    <i class="fas fa-file-invoice"></i> Billing History
-                </a>
-
-                <div class="nav-label" style="margin-top:20px;">Inventory</div>
-
-                <a href="stock-management.html" class="nav-item">
-                    <i class="fas fa-warehouse"></i> Stock Management
-                    <span class="badge" id="stockAlertBadge"
-                        style="background:#e74c3c;display:none;">0</span>
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <div class="user-avatar">A</div>
-                    <div>
-                        <div class="user-name">Admin</div>
-                        <div class="user-email">haricrackers182@gmail.com</div>
-                    </div>
-                </div>
-                <button class="logout-btn" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            <header class="top-header">
-                <div style="display:flex;align-items:center;gap:14px;">
-                    <button class="hamburger-menu" id="hamburgerBtn"><i
-                            class="fas fa-bars"></i></button>
-                    <div class="page-title">
-                        <h2>Direct Billing <span>— walk-in / shop counter
-                                customers</span></h2>
-                    </div>
-                </div>
-            </header>
-
-            <!-- ============================================================
-     LOW STOCK WARNING BANNER
-============================================================ -->
-            <div class="low-stock-warning-banner" id="lowStockWarningBanner"
-                style="display: none;">
-                <div class="warning-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <div class="warning-content">
-                    <div class="warning-title">
-                        ⚠️ <strong>Stock குறைவா இருக்கு!</strong> — <span
-                            id="lowStockCount">0</span> product(s) கவனிக்கவும்
-                    </div>
-                    <div class="warning-list" id="lowStockWarningList"></div>
-                </div>
-                <button class="warning-close"
-                    onclick="document.getElementById('lowStockWarningBanner').style.display='none'">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="page-content">
-                <div class="billing-grid">
-
-                    <div>
-                        <div class="panel">
-                            <h3><i class="fas fa-boxes"></i> All Products —
-                                Click "Add" to Include in Bill</h3>
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" id="productSearch"
-                                    placeholder="Filter products by name (optional)...">
-                            </div>
-                            <div id="productSuggestions">
-                                <div class="empty-hint">Loading
-                                    products...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="panel" style="align-self:start;">
-                        <div
-                            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                            <h3 style="margin-bottom:0;"><i
-                                    class="fas fa-shopping-basket"></i> Bill
-                                Items (<span
-                                    id="itemCount">0</span>)</h3>
-                            <button class="add-item-btn" id="addItemBtn"><i
-                                    class="fas fa-plus"></i> Add Item</button>
-                        </div>
-                        <div id="cartTableWrap" style="margin-bottom:20px;">
-                            <p class="cart-empty" id="cartEmptyMsg">No items
-                                added yet. Click products on the left to add.
-                            </p>
-                            <div class="cart-table-wrap" id="cartTableOuter"
-                                style="display:none;">
-                                <table class="cart-table" id="cartTable">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:36px;"></th>
-                                            <th>Item</th>
-                                            <th class="num">Rate</th>
-                                            <th class="num">Qty</th>
-                                            <th class="num">Total</th>
-                                            <th style="width:36px;"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cartTbody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <h3><i class="fas fa-user"></i> Customer Details</h3>
-                        <div class="customer-fields">
-                            <div>
-                                <label
-                                    style="display:block;font-size:0.75rem;font-weight:600;color:#6a1b9a;margin-bottom:4px;text-transform:uppercase;">
-                                    Customer Name
-                                </label>
-                                <input type="text" id="custName"
-                                    placeholder="Enter customer name">
-                            </div>
-                            <div>
-                                <label
-                                    style="display:block;font-size:0.75rem;font-weight:600;color:#6a1b9a;margin-bottom:4px;text-transform:uppercase;">
-                                    Phone Number
-                                </label>
-                                <div style="display:flex;gap:8px;">
-                                    <input type="tel" id="custPhone"
-                                        placeholder="10-digit mobile number"
-                                        maxlength="10"
-                                        inputmode="numeric" style="flex:1;"
-                                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
-                                    <button class="add-item-btn"
-                                        id="historyLookupBtn"
-                                        style="white-space:nowrap;">
-                                        <i class="fas fa-history"></i> History
-                                    </button>
-                                </div>
-                            </div>
-                            <div id="customerHistoryBox"
-                                style="display:none;"></div>
-                            <select id="payMethod">
-                                <option value="Cash">Cash</option>
-                                <option value="UPI">UPI</option>
-                                <option value="Card">Card</option>
-                            </select>
-                        </div>
-
-                        <div class="totals-box">
-                            <div class="totals-row"><span>Total
-                                    Items</span><strong
-                                    id="sumItems">0</strong></div>
-                            <div class="totals-row"><span>MRP
-                                    Total</span><strong
-                                    id="sumMrp">₹0</strong></div>
-                            <div class="totals-row"><span>Discount</span><strong
-                                    id="sumDiscount">₹0</strong></div>
-                            <div class="totals-row grand"><span>Grand
-                                    Total</span><strong
-                                    id="sumTotal">₹0</strong></div>
-                        </div>
-                        <button class="btn-primary" id="saveAndDownloadBtn"
-                            disabled>
-                            <i class="fas fa-check-circle"></i> Save & Download
-                            Bill
-                        </button>
-                        <button class="btn-secondary" id="clearBillBtn"
-                            style="margin-top:10px;">
-                            <i class="fas fa-trash-alt"></i> Clear Bill
-                        </button>
-                    </div>
-
+    <main class="main-content">
+        <header class="top-header">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+                <div class="page-title">
+                    <h2>Direct Billing <span>— walk-in / shop counter customers</span></h2>
                 </div>
             </div>
-        </main>
+        </header>
 
-        <!-- ============================================================
-         LIGHTBOX — PRODUCT IMAGE PREVIEW
-    ============================================================ -->
-        <div class="lightbox-overlay" id="lightboxOverlay">
-            <button class="lightbox-close" id="lightboxClose"
-                aria-label="Close">
+        <div class="low-stock-warning-banner" id="lowStockWarningBanner" style="display: none;">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="warning-content">
+                <div class="warning-title">
+                    ⚠️ <strong>Stock குறைவா இருக்கு!</strong> — <span id="lowStockCount">0</span> product(s) கவனிக்கவும்
+                </div>
+                <div class="warning-list" id="lowStockWarningList"></div>
+            </div>
+            <button class="warning-close"
+                onclick="document.getElementById('lowStockWarningBanner').style.display='none'">
                 <i class="fas fa-times"></i>
             </button>
-            <img id="lightboxImage" src alt="Product Image">
-            <div class="lightbox-caption" id="lightboxCaption">
-                <i class="fas fa-image"></i> <span
-                    id="lightboxCaptionText">Product</span>
-            </div>
         </div>
 
-        <!-- ============================================================
-         CONFIRM REMOVE OVERLAY
-    ============================================================ -->
-        <div class="confirm-overlay" id="confirmOverlay">
-            <div class="confirm-box">
-                <div class="confirm-icon">
-                    <i class="fas fa-trash-alt"></i>
+        <div class="page-content">
+            <div class="billing-grid">
+
+                <div>
+                    <div class="panel">
+                        <h3><i class="fas fa-boxes"></i> All Products — Click "Add" to Include in Bill</h3>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="productSearch" placeholder="Filter products by name (optional)...">
+                        </div>
+                        <div id="productSuggestions">
+                            <div class="empty-hint">Loading products...</div>
+                        </div>
+                    </div>
                 </div>
-                <h3>Remove Item?</h3>
-                <p id="confirmMessage">Are you sure you want to remove
-                    <strong>this item</strong> from the bill?</p>
-                <div class="confirm-actions">
-                    <button class="btn-cancel" id="confirmCancelBtn">
-                        <i class="fas fa-times"></i> Cancel
+
+                <div class="panel" style="align-self:start;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                        <h3 style="margin-bottom:0;"><i class="fas fa-shopping-basket"></i> Bill Items (<span
+                                id="itemCount">0</span>)</h3>
+                        <button class="add-item-btn" id="addItemBtn"><i class="fas fa-plus"></i> Add Item</button>
+                    </div>
+                    <div id="cartTableWrap" style="margin-bottom:20px;">
+                        <p class="cart-empty" id="cartEmptyMsg">No items added yet. Click products on the left to add.
+                        </p>
+                        <div class="cart-table-wrap" id="cartTableOuter" style="display:none;">
+                            <table class="cart-table" id="cartTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:36px;"></th>
+                                        <th>Item</th>
+                                        <th class="num">Rate</th>
+                                        <th class="num">Qty</th>
+                                        <th class="num">Total</th>
+                                        <th style="width:36px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cartTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h3><i class="fas fa-user"></i> Customer Details</h3>
+                    <div class="customer-fields">
+                        <div>
+                            <label
+                                style="display:block;font-size:0.75rem;font-weight:600;color:#6a1b9a;margin-bottom:4px;text-transform:uppercase;">
+                                Customer Name
+                            </label>
+                            <input type="text" id="custName" placeholder="Enter customer name">
+                        </div>
+                        <div>
+                            <label
+                                style="display:block;font-size:0.75rem;font-weight:600;color:#6a1b9a;margin-bottom:4px;text-transform:uppercase;">
+                                Phone Number
+                            </label>
+                            <div style="display:flex;gap:8px;">
+                                <input type="tel" id="custPhone" placeholder="10-digit mobile number" maxlength="10"
+                                    inputmode="numeric" style="flex:1;"
+                                    oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                                <button class="add-item-btn" id="historyLookupBtn" style="white-space:nowrap;">
+                                    <i class="fas fa-history"></i> History
+                                </button>
+                            </div>
+                        </div>
+                        <div id="customerHistoryBox" style="display:none;"></div>
+                        <select id="payMethod">
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Card">Card</option>
+                        </select>
+                    </div>
+
+                    <div class="totals-box">
+                        <div class="totals-row"><span>Total Items</span><strong id="sumItems">0</strong></div>
+                        <div class="totals-row"><span>MRP Total</span><strong id="sumMrp">₹0</strong></div>
+                        <div class="totals-row"><span>Discount</span><strong id="sumDiscount">₹0</strong></div>
+                        <div class="totals-row grand"><span>Grand Total</span><strong id="sumTotal">₹0</strong></div>
+                    </div>
+
+                    <button class="btn-primary" id="saveAndDownloadBtn" disabled>
+                        <i class="fas fa-check-circle"></i> Save & Download Bill
                     </button>
-                    <button class="btn-remove" id="confirmRemoveBtn">
-                        <i class="fas fa-trash-alt"></i> Remove
+                    <button class="btn-secondary" id="clearBillBtn" style="margin-top:10px;">
+                        <i class="fas fa-trash-alt"></i> Clear Bill
                     </button>
                 </div>
+
             </div>
         </div>
+    </main>
 
-        <div id="toast" class="toast"></div>
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="lightboxImage" src="" alt="Product Image">
+        <div class="lightbox-caption" id="lightboxCaption">
+            <i class="fas fa-image"></i> <span id="lightboxCaptionText">Product</span>
+        </div>
+    </div>
 
-        <script type="importmap">
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-box">
+            <div class="confirm-icon">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3>Remove Item?</h3>
+            <p id="confirmMessage">Are you sure you want to remove <strong>this item</strong> from the bill?</p>
+            <div class="confirm-actions">
+                <button class="btn-cancel" id="confirmCancelBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn-remove" id="confirmRemoveBtn">
+                    <i class="fas fa-trash-alt"></i> Remove
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="importmap">
 {
     "imports": {
         "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
@@ -1593,14 +1414,14 @@
 }
 </script>
 
-        <script type="module">
+    <script type="module">
         import { initializeApp } from "firebase/app";
         import {
             getFirestore, collection, onSnapshot, query, orderBy,
             addDoc, doc, getDoc, setDoc, serverTimestamp,
             where, limit, getDocs,
             writeBatch,
-            enableIndexedDbPersistence  // ✅ NEW
+            enableIndexedDbPersistence
         } from "firebase/firestore";
         import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
@@ -1616,12 +1437,10 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const auth = getAuth(app);   // ✅ INTHA LINE ADD PANNUNGA
+        const auth = getAuth(app);
 
-        // ✅ OFFLINE PERSISTENCE ENABLE
         enableIndexedDbPersistence(db).catch((err) => {
             if (err.code === 'failed-precondition') {
-                // Multiple tabs open — offline only in one tab
                 console.warn('⚠️ Offline: only works in single tab');
             } else if (err.code === 'unimplemented') {
                 console.warn('⚠️ Browser does not support offline');
@@ -1632,6 +1451,8 @@
 
         let allProducts = [];
         let billItems = [];
+        let addItemRowOpen = false;
+        let highlightIndex = 0;
 
         const searchInput = document.getElementById('productSearch');
         const suggestionsBox = document.getElementById('productSuggestions');
@@ -1639,28 +1460,24 @@
         const cartTableOuter = document.getElementById('cartTableOuter');
         const cartEmptyMsg = document.getElementById('cartEmptyMsg');
         const itemCountEl = document.getElementById('itemCount');
-        // ✅ NEW button
         const saveAndDownloadBtn = document.getElementById('saveAndDownloadBtn');
         const addItemBtn = document.getElementById('addItemBtn');
         const historyLookupBtn = document.getElementById('historyLookupBtn');
         const custPhoneInput = document.getElementById('custPhone');
         const custNameInput = document.getElementById('custName');
         const customerHistoryBox = document.getElementById('customerHistoryBox');
-        const payMethodSelect = document.getElementById('payMethod');   // ← ADD THIS
-        let addItemRowOpen = false;
+        const payMethodSelect = document.getElementById('payMethod');
+        const clearBillBtn = document.getElementById('clearBillBtn');
 
         // ============================================================
-        // LOCALSTORAGE — BILL + CUSTOMER PERSISTENCE
+        // LOCAL STORAGE
         // ============================================================
         const BILL_STORAGE_KEY = 'haricrackers_billing_draft_v1';
         const CUSTOMER_STORAGE_KEY = 'haricrackers_billing_customer_v1';
 
         function saveBillToLocalStorage() {
-            try {
-                localStorage.setItem(BILL_STORAGE_KEY, JSON.stringify(billItems));
-            } catch (e) {
-                console.warn('Could not save bill to localStorage:', e);
-            }
+            try { localStorage.setItem(BILL_STORAGE_KEY, JSON.stringify(billItems)); }
+            catch (e) { console.warn('Could not save bill:', e); }
         }
 
         function loadBillFromLocalStorage() {
@@ -1680,16 +1497,11 @@
                         included: i.included !== false,
                         manual: !!i.manual
                     }));
-            } catch (e) {
-                console.warn('Could not load bill from localStorage:', e);
-                return [];
-            }
+            } catch (e) { return []; }
         }
 
         function clearBillFromLocalStorage() {
-            try {
-                localStorage.removeItem(BILL_STORAGE_KEY);
-            } catch (e) { }
+            try { localStorage.removeItem(BILL_STORAGE_KEY); } catch (e) { }
         }
 
         function saveCustomerToLocalStorage() {
@@ -1697,7 +1509,7 @@
                 localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify({
                     name: custNameInput.value,
                     phone: custPhoneInput.value,
-                    payMethod: document.getElementById('payMethod').value
+                    payMethod: payMethodSelect.value
                 }));
             } catch (e) { }
         }
@@ -1709,22 +1521,20 @@
                 const c = JSON.parse(raw);
                 if (c.name) custNameInput.value = c.name;
                 if (c.phone) custPhoneInput.value = c.phone;
-                if (c.payMethod) document.getElementById('payMethod').value = c.payMethod;
+                if (c.payMethod) payMethodSelect.value = c.payMethod;
             } catch (e) { }
         }
 
         function clearCustomerFromLocalStorage() {
-            try {
-                localStorage.removeItem(CUSTOMER_STORAGE_KEY);
-            } catch (e) { }
+            try { localStorage.removeItem(CUSTOMER_STORAGE_KEY); } catch (e) { }
         }
 
         custNameInput.addEventListener('input', saveCustomerToLocalStorage);
         custPhoneInput.addEventListener('input', saveCustomerToLocalStorage);
-        document.getElementById('payMethod').addEventListener('change', saveCustomerToLocalStorage);
+        payMethodSelect.addEventListener('change', saveCustomerToLocalStorage);
 
         // ============================================================
-        // LIGHTBOX — PRODUCT IMAGE PREVIEW
+        // LIGHTBOX
         // ============================================================
         const lightboxOverlay = document.getElementById('lightboxOverlay');
         const lightboxImage = document.getElementById('lightboxImage');
@@ -1754,14 +1564,8 @@
             if (e.target === lightboxOverlay) closeLightbox();
         });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) {
-                closeLightbox();
-            }
-        });
-
         // ============================================================
-        // CUSTOMER HISTORY LOOKUP BY NAME OR MOBILE
+        // CUSTOMER HISTORY
         // ============================================================
         async function lookupCustomerHistory(phone, name) {
             customerHistoryBox.style.display = 'block';
@@ -1789,7 +1593,7 @@
 
             } catch (err) {
                 console.error(err);
-                customerHistoryBox.innerHTML = '<div class="hist-empty">⚠️ Search error: ' + err.message + '</div>';
+                customerHistoryBox.innerHTML = '<div class="hist-empty">⚠️ Search error: ' + escapeHtmlAttr(err.message) + '</div>';
             }
         }
 
@@ -1798,7 +1602,7 @@
                 customerHistoryBox.innerHTML = `
                     <div class="hist-title">Bill History</div>
                     <div class="hist-empty">
-                        No previous billing history found for this number (${phone}). Welcome as a new customer.
+                        No previous billing history found for this number (${escapeHtmlAttr(phone)}). Welcome as a new customer.
                     </div>`;
                 return;
             }
@@ -1809,7 +1613,7 @@
                 saveCustomerToLocalStorage();
             }
 
-            const totalSpent = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+            const totalSpent = orders.reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
 
             customerHistoryBox.innerHTML = `
                 <div class="hist-title">Bill History — ${orders.length} bills, ₹${totalSpent.toLocaleString('en-IN')} total</div>
@@ -1819,8 +1623,8 @@
                 const itemNames = (o.items || []).map(i => i.name).join(', ');
                 return `
                     <div class="hist-row" title="${escapeHtmlAttr(itemNames)}">
-                        <span>${o.orderId || '-'} <span class="hist-meta">· ${dateStr} · ${o.totalItems || 0} items</span></span>
-                        <span class="hist-amt">₹${(o.totalAmount || 0).toLocaleString('en-IN')}</span>
+                        <span>${escapeHtmlAttr(o.orderId || '-')} <span class="hist-meta">· ${dateStr} · ${o.totalItems || 0} items</span></span>
+                        <span class="hist-amt">₹${(Number(o.totalAmount) || 0).toLocaleString('en-IN')}</span>
                     </div>`;
             }).join('')}
             `;
@@ -1830,7 +1634,7 @@
             const phone = custPhoneInput.value.trim();
             const name = custNameInput.value.trim();
             if (!phone && (!name || name === 'Walk-in Customer')) {
-                showToast('Customer Name or Phone number', 'error');
+                showToast('Customer Name or Phone number required', 'error');
                 return;
             }
             lookupCustomerHistory(phone, name);
@@ -1866,16 +1670,20 @@
             onSnapshot(q, (snapshot) => {
                 allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderProductGrid();
-                renderLowStockWarningBanner();   // ✅ Ithu irukku
+                renderLowStockWarningBanner();
             }, (err) => {
                 console.error('Error loading products:', err);
                 showToast('⚠️ Error loading products', 'error');
             });
         }
+
         // ============================================================
-        // PRODUCT PICK TABLE
+        // PRODUCT GRID RENDER (with scroll preservation)
         // ============================================================
         function renderProductGrid() {
+            const oldWrap = document.querySelector('.product-table-wrap');
+            const oldScrollTop = oldWrap ? oldWrap.scrollTop : 0;
+
             const term = searchInput.value.trim().toLowerCase();
             const list = term
                 ? allProducts.filter(p => (p.name || '').toLowerCase().includes(term))
@@ -1932,111 +1740,76 @@
                 </table>
                 </div>
             `;
+
+            const newWrap = document.querySelector('.product-table-wrap');
+            if (newWrap) newWrap.scrollTop = oldScrollTop;
         }
 
-        searchInput.addEventListener('input', renderProductGrid);
-
         // ============================================================
-        // ⌨️ KEYBOARD-FIRST NAVIGATION — POS MODE
+        // KEYBOARD NAVIGATION HELPERS
         // ============================================================
-        let highlightIndex = 0;
-
-        // ----------------- SEARCH BOX KEYBOARD -----------------
-        searchInput.addEventListener('keydown', (e) => {
+        function getKeyboardProducts() {
             const term = searchInput.value.trim().toLowerCase();
             const filtered = term
                 ? allProducts.filter(p => (p.name || '').toLowerCase().includes(term))
                 : allProducts;
-            const visible = filtered.filter(p => p.inStock !== false);
+            return filtered.filter(p => p.inStock !== false);
+        }
 
-            // ✅ ENTER → product add + qty field-ku focus
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                if (visible.length === 0) {
-                    showToast('⚠️ No matching product found', 'error');
-                    return;
-                }
-                const pick = visible[Math.min(highlightIndex, visible.length - 1)];
+        function updateKeyboardHighlight() {
+            const visible = getKeyboardProducts();
+            if (visible.length === 0) return;
+            highlightIndex = Math.max(0, Math.min(highlightIndex, visible.length - 1));
+            const product = visible[highlightIndex];
+            if (product) highlightProductRow(product.id);
+        }
 
-                searchInput.value = '';
-                highlightIndex = 0;
+        function moveProductPrevious() {
+            const visible = getKeyboardProducts();
+            if (visible.length === 0) return;
+            highlightIndex--;
+            if (highlightIndex < 0) highlightIndex = visible.length - 1;
+            updateKeyboardHighlight();
+        }
 
-                addToBill(pick);
-                showToast(`✅ Added: ${pick.name} — qty edit pannunga`, 'success');
+        function moveProductNext() {
+            const visible = getKeyboardProducts();
+            if (visible.length === 0) return;
+            highlightIndex++;
+            if (highlightIndex >= visible.length) highlightIndex = 0;
+            updateKeyboardHighlight();
+        }
 
-                // ✅ Andha product-oda qty field-ku focus
-                setTimeout(() => {
-                    focusQtyFieldForProduct(pick.id);
-                }, 100);
+        function highlightProductRow(productId) {
+            document.querySelectorAll('.product-pick-table tbody tr').forEach(tr => {
+                tr.classList.remove('kb-highlight');
+            });
 
-                return;
+            const row = document.querySelector(`.product-pick-table tbody tr[data-id="${productId}"]`);
+            if (!row) return;
+
+            row.classList.add('kb-highlight');
+
+            const productWrap = document.querySelector('.product-table-wrap');
+            if (!productWrap) return;
+
+            const rowTop = row.offsetTop;
+            const rowBottom = rowTop + row.offsetHeight;
+            const visibleTop = productWrap.scrollTop;
+            const visibleBottom = visibleTop + productWrap.clientHeight;
+
+            if (rowTop < visibleTop) {
+                productWrap.scrollTop = rowTop - 10;
+            } else if (rowBottom > visibleBottom) {
+                productWrap.scrollTop = rowBottom - productWrap.clientHeight + 10;
             }
+        }
 
-            // ✅ ARROW DOWN → next highlight / last la Customer field
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                if (visible.length === 0) return;
-
-                if (highlightIndex >= visible.length - 1) {
-                    focusCustomerPane();
-                    return;
-                }
-
-                highlightIndex = Math.min(highlightIndex + 1, visible.length - 1);
-                highlightProductRow(visible[highlightIndex].id);
-                return;
-            }
-
-            // ✅ ARROW UP → previous highlight / first la search box focus
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                if (visible.length === 0) return;
-
-                if (highlightIndex <= 0) {
-                    highlightIndex = 0;
-                    document.querySelectorAll('.product-pick-table tbody tr.kb-highlight').forEach(tr => {
-                        tr.classList.remove('kb-highlight');
-                    });
-                    searchInput.focus();
-                    return;
-                }
-
-                highlightIndex = Math.max(highlightIndex - 1, 0);
-                highlightProductRow(visible[highlightIndex].id);
-                return;
-            }
-
-            // ✅ ESC → clear
-            if (e.key === 'Escape') {
-                searchInput.value = '';
-                highlightIndex = 0;
-                renderProductGrid();
-                return;
-            }
-
-            // ✅ BACKSPACE (empty) → last item remove
-            if (e.key === 'Backspace' && searchInput.value === '') {
-                e.preventDefault();
-                removeLastBillItem();
-                return;
-            }
-
-            // ✅ RIGHT ARROW → Bill Items pane
-            if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                focusBillPane();
-                return;
-            }
-        });
-
-        // ----------------- FOCUS QTY FIELD FOR SPECIFIC PRODUCT -----------------
         function focusQtyFieldForProduct(productId) {
             const rows = cartTbody.querySelectorAll('tr[data-index]');
-
             for (const row of rows) {
                 const idx = parseInt(row.dataset.index, 10);
                 const item = billItems[idx];
-
                 if (item && item.id === productId) {
                     const qtyInput = row.querySelector('.qty-input');
                     if (qtyInput) {
@@ -2047,51 +1820,9 @@
                     }
                 }
             }
-
             searchInput.focus();
         }
 
-        // ----------------- HIGHLIGHT PRODUCT ROW -----------------
-        function highlightProductRow(productId) {
-            document.querySelectorAll('.product-pick-table tbody tr').forEach(tr => {
-                tr.classList.remove('kb-highlight');
-            });
-            const row = document.querySelector(`.product-pick-table tbody tr[data-id="${productId}"]`);
-            if (row) {
-                row.classList.add('kb-highlight');
-                row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-            }
-        }
-
-        // ----------------- PANE NAVIGATION -----------------
-        function focusBillPane() {
-            const firstBillElement = document.querySelector('#cartTableOuter .row-check')
-                || document.querySelector('#cartTableOuter .qty-input')
-                || document.querySelector('#cartTableOuter .rate-input')
-                || document.querySelector('#cartTableOuter .remove-row');
-
-            if (firstBillElement) {
-                firstBillElement.focus();
-                if (firstBillElement.select) firstBillElement.select();
-                firstBillElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-            } else {
-                searchInput.focus();
-                showToast('Bill empty — products add', 'info');
-            }
-        }
-
-        function focusProductPane() {
-            searchInput.focus();
-            searchInput.select();
-        }
-
-        function focusCustomerPane() {
-            custNameInput.focus();
-            custNameInput.select();
-            custNameInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        }
-
-        // ----------------- REMOVE LAST BILL ITEM -----------------
         function removeLastBillItem() {
             if (billItems.length === 0) {
                 showToast('Bill empty', 'info');
@@ -2102,11 +1833,142 @@
             renderCart();
             showToast(`🗑️ Removed: ${lastItem.name}`, 'info');
         }
+
+        function focusProductPane() {
+            searchInput.focus();
+            searchInput.select();
+            const productList = document.querySelector('.product-pick-table');
+            if (productList) {
+                productList.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+        }
+
+        function focusCustomerPane() {
+            custNameInput.focus();
+            custNameInput.select();
+            custNameInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+
+        function focusBillPane() {
+            const firstBillElement =
+                document.querySelector('#cartTableOuter .row-check') ||
+                document.querySelector('#cartTableOuter .qty-input') ||
+                document.querySelector('#cartTableOuter .rate-input');
+
+            if (firstBillElement) {
+                firstBillElement.focus();
+                if (firstBillElement.select) firstBillElement.select();
+                firstBillElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                const row = firstBillElement.closest('tr');
+                if (row) {
+                    document.querySelectorAll('.cart-table tbody tr').forEach(tr => tr.classList.remove('kb-row-active'));
+                    row.classList.add('kb-row-active');
+                }
+            } else {
+                searchInput.focus();
+                showToast('Bill empty — products add', 'info');
+            }
+        }
+
         // ============================================================
-        // PRODUCT PICK TABLE — CLICK HANDLERS
+        // SEARCH BOX KEYBOARD
+        // ============================================================
+        searchInput.addEventListener('keydown', (e) => {
+            const visible = getKeyboardProducts();
+
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                e.stopPropagation();
+                moveProductPrevious();
+                return;
+            }
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                e.stopPropagation();
+                moveProductNext();
+                return;
+            }
+
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                e.stopPropagation();
+                moveProductPrevious();
+                return;
+            }
+
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                e.stopPropagation();
+                moveProductNext();
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (visible.length === 0) {
+                    showToast('⚠️ No matching product found', 'error');
+                    return;
+                }
+
+                const selectedProduct = visible[Math.min(highlightIndex, visible.length - 1)];
+                if (!selectedProduct) return;
+
+                addToBill(selectedProduct);
+                showToast(`✅ Added: ${selectedProduct.name}`, 'success');
+
+                searchInput.focus();
+
+                if (highlightIndex < visible.length - 1) {
+                    highlightIndex++;
+                } else {
+                    highlightIndex = 0;
+                }
+
+                setTimeout(() => {
+                    updateKeyboardHighlight();
+                    searchInput.focus();
+                    searchInput.setSelectionRange(searchInput.value.length, searchInput.value.length);
+                }, 50);
+                return;
+            }
+
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                searchInput.value = '';
+                highlightIndex = 0;
+                renderProductGrid();
+                searchInput.focus();
+                return;
+            }
+
+            if (e.key === 'Backspace' && searchInput.value === '') {
+                e.preventDefault();
+                e.stopPropagation();
+                removeLastBillItem();
+                return;
+            }
+        });
+
+        // Search input event
+        searchInput.addEventListener('input', () => {
+            highlightIndex = 0;
+            renderProductGrid();
+            setTimeout(() => {
+                const visible = getKeyboardProducts();
+                if (visible.length > 0) {
+                    highlightProductRow(visible[0].id);
+                }
+            }, 50);
+        });
+
+        // ============================================================
+        // PRODUCT CLICK HANDLERS
         // ============================================================
         suggestionsBox.addEventListener('click', (e) => {
-            // 1. Yellow qty badge → reduce quantity by 1
             const qtyBadge = e.target.closest('.pp-qty-badge');
             if (qtyBadge) {
                 e.stopPropagation();
@@ -2114,7 +1976,6 @@
                 return;
             }
 
-            // 2. ONLY "Add" button click → add to bill
             const addBtn = e.target.closest('.pp-add-btn');
             if (addBtn && !addBtn.disabled) {
                 e.stopPropagation();
@@ -2124,19 +1985,16 @@
                 return;
             }
 
-            // 3. Image click → open lightbox
             const img = e.target.closest('.pp-img');
             if (img) {
                 e.stopPropagation();
                 openLightbox(img.src, img.dataset.name || 'Product');
                 return;
             }
-
-            // 4. Row click → DO NOTHING
         });
 
         // ============================================================
-        // BILL / CART LOGIC
+        // BILL LOGIC
         // ============================================================
         function addToBill(product) {
             const existing = billItems.find(i => i.id === product.id);
@@ -2146,8 +2004,8 @@
                 billItems.push({
                     id: product.id,
                     name: product.name || 'Unnamed',
-                    price: product.price || 0,
-                    oldPrice: product.oldPrice || product.price || 0,
+                    price: Number(product.price) || 0,
+                    oldPrice: Number(product.oldPrice) || Number(product.price) || 0,
                     qty: 1,
                     included: true
                 });
@@ -2159,9 +2017,9 @@
             billItems.push({
                 id: 'manual-' + Date.now(),
                 name: name || 'Item',
-                price: rate || 0,
-                oldPrice: rate || 0,
-                qty: qty || 1,
+                price: Number(rate) || 0,
+                oldPrice: Number(rate) || 0,
+                qty: Number(qty) || 1,
                 included: true,
                 manual: true
             });
@@ -2184,18 +2042,15 @@
         }
 
         // ============================================================
-        // CONFIRMATION OVERLAY — Remove Item
+        // CONFIRMATION
         // ============================================================
         let pendingRemoveIdx = null;
 
         function askRemoveConfirm(item, idx) {
             pendingRemoveIdx = idx;
-
             const overlay = document.getElementById('confirmOverlay');
             const msg = document.getElementById('confirmMessage');
-
             msg.innerHTML = `Are you sure you want to remove <strong>${escapeHtmlAttr(item.name)}</strong> from the bill?`;
-
             overlay.classList.add('active');
         }
 
@@ -2238,12 +2093,16 @@
                     </td>
                 </tr>`;
         }
+
+        // ============================================================
+        // RENDER CART
+        // ============================================================
         function renderCart() {
             if (billItems.length === 0 && !addItemRowOpen) {
                 cartTableOuter.style.display = 'none';
                 cartEmptyMsg.style.display = 'block';
                 itemCountEl.textContent = '0';
-                saveAndDownloadBtn.disabled = true;         // ✅
+                saveAndDownloadBtn.disabled = true;
                 updateTotals();
                 renderProductGrid();
                 saveBillToLocalStorage();
@@ -2252,14 +2111,14 @@
 
             cartTableOuter.style.display = 'block';
             cartEmptyMsg.style.display = 'none';
-            saveAndDownloadBtn.disabled = billItems.filter(i => i.included !== false).length === 0;  // ✅
+            saveAndDownloadBtn.disabled = billItems.filter(i => i.included !== false).length === 0;
 
             cartTbody.innerHTML = billItems.map((item, index) => {
                 const included = item.included !== false;
                 return `
                 <tr data-index="${index}" class="${included ? '' : 'row-excluded'}">
                     <td><input type="checkbox" class="row-check" data-index="${index}" ${included ? 'checked' : ''} title="Include in bill"></td>
-                    <td>${item.name}${item.manual ? ' <span style="color:var(--text-dim);font-size:0.7rem;">(manual)</span>' : ''}</td>
+                    <td>${escapeHtmlAttr(item.name)}${item.manual ? ' <span style="color:var(--text-dim);font-size:0.7rem;">(manual)</span>' : ''}</td>
                     <td class="num"><input type="number" class="rate-input" min="0" value="${item.price}" data-index="${index}"></td>
                     <td class="num">
                         <div class="qty-stepper" data-index="${index}">
@@ -2321,57 +2180,6 @@
             }
         });
 
-        // ============================================================
-        // ⌨️ BILL ITEMS — ARROW KEY NAVIGATION
-        // ============================================================
-        cartTbody.addEventListener('keydown', (e) => {
-            const currentRow = e.target.closest('tr');
-
-            // ✅ LEFT ARROW → Search box-ku back
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                focusProductPane();
-                return;
-            }
-
-            // ✅ RIGHT ARROW → Customer Details-ku move
-            if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                focusCustomerPane();
-                return;
-            }
-
-            // ✅ DOWN ARROW → next row
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                const nextRow = currentRow?.nextElementSibling;
-                const nextInput = nextRow?.querySelector('.qty-input')
-                    || nextRow?.querySelector('.rate-input');
-                if (nextInput) {
-                    nextInput.focus();
-                    nextInput.select();
-                } else {
-                    focusCustomerPane();
-                }
-                return;
-            }
-
-            // ✅ UP ARROW → previous row
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                const prevRow = currentRow?.previousElementSibling;
-                const prevInput = prevRow?.querySelector('.qty-input')
-                    || prevRow?.querySelector('.rate-input');
-                if (prevInput) {
-                    prevInput.focus();
-                    prevInput.select();
-                } else {
-                    focusProductPane();
-                }
-                return;
-            }
-        });
-
         cartTbody.addEventListener('change', (e) => {
             const check = e.target.closest('.row-check');
             if (!check) return;
@@ -2387,12 +2195,10 @@
             if (minusBtn) {
                 const idx = parseInt(minusBtn.closest('.qty-stepper').dataset.index, 10);
                 const item = billItems[idx];
-
                 if (item.qty <= 1) {
                     askRemoveConfirm(item, idx);
                     return;
                 }
-
                 billItems[idx].qty = Math.max(1, billItems[idx].qty - 1);
                 renderCart();
                 return;
@@ -2411,6 +2217,238 @@
             askRemoveConfirm(billItems[idx], idx);
         });
 
+        // ============================================================
+        // BILL PANE KEYBOARD
+        // ============================================================
+        cartTbody.addEventListener('keydown', (e) => {
+            const currentRow = e.target.closest('tr[data-index]');
+            if (!currentRow) return;
+
+            if (e.key === 'ArrowLeft') {
+                const input = e.target.closest('input');
+                if (input && input.selectionStart > 0 && input.value.length > 0) return;
+                e.preventDefault();
+                focusProductPane();
+                showToast('⬅️ Products pane', 'info');
+                return;
+            }
+
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                focusCustomerPane();
+                showToast('➡️ Customer pane', 'info');
+                return;
+            }
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextRow = currentRow.nextElementSibling;
+                if (nextRow && nextRow.querySelector('input, button')) {
+                    const nextInput = nextRow.querySelector('.qty-input') || nextRow.querySelector('.rate-input');
+                    if (nextInput) {
+                        nextInput.focus();
+                        nextInput.select();
+                        currentRow.classList.remove('kb-row-active');
+                        nextRow.classList.add('kb-row-active');
+                    }
+                } else {
+                    focusCustomerPane();
+                }
+                return;
+            }
+
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevRow = currentRow.previousElementSibling;
+                if (prevRow && prevRow.querySelector('input, button')) {
+                    const prevInput = prevRow.querySelector('.qty-input') || prevRow.querySelector('.rate-input');
+                    if (prevInput) {
+                        prevInput.focus();
+                        prevInput.select();
+                        currentRow.classList.remove('kb-row-active');
+                        prevRow.classList.add('kb-row-active');
+                    }
+                } else {
+                    focusProductPane();
+                }
+                return;
+            }
+
+            if (e.key === 'Delete') {
+                const row = e.target.closest('tr[data-index]');
+                if (row) {
+                    e.preventDefault();
+                    const idx = parseInt(row.dataset.index, 10);
+                    if (billItems[idx]) askRemoveConfirm(billItems[idx], idx);
+                }
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                const row = e.target.closest('tr[data-index]');
+                if (row) {
+                    const qtyInput = row.querySelector('.qty-input');
+                    if (qtyInput && document.activeElement !== qtyInput) {
+                        e.preventDefault();
+                        qtyInput.focus();
+                        qtyInput.select();
+                    }
+                }
+                return;
+            }
+        });
+
+        // ============================================================
+        // CUSTOMER PANE KEYBOARD
+        // ============================================================
+        function getActivePane() {
+            const el = document.activeElement;
+            if (!el) return 'search';
+
+            if (el.closest('#cartTableOuter') || el.closest('.cart-table-wrap')) return 'bill';
+
+            if (
+                el.closest('.customer-fields') ||
+                el.closest('#customerHistoryBox') ||
+                el.closest('.totals-box') ||
+                el === custNameInput ||
+                el === custPhoneInput ||
+                el === payMethodSelect ||
+                el === saveAndDownloadBtn ||
+                el === clearBillBtn ||
+                el === historyLookupBtn
+            ) return 'customer';
+
+            if (
+                el === searchInput ||
+                el.closest('.product-pick-table') ||
+                el.closest('#productSuggestions') ||
+                el.closest('.product-table-wrap')
+            ) return 'search';
+
+            return 'search';
+        }
+
+        const customerFieldOrder = [
+            custNameInput,
+            custPhoneInput,
+            historyLookupBtn,
+            payMethodSelect,
+            saveAndDownloadBtn,
+            clearBillBtn
+        ].filter(Boolean);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) {
+                closeLightbox();
+                return;
+            }
+
+            const currentPane = getActivePane();
+            if (currentPane !== 'customer') return;
+
+            const currentIdx = customerFieldOrder.indexOf(document.activeElement);
+
+            if (e.key === 'ArrowLeft') {
+                const el = document.activeElement;
+                if (el && el.tagName === 'INPUT' && el.selectionStart > 0 && el.value.length > 0) return;
+                e.preventDefault();
+                if (billItems.length > 0) {
+                    focusBillPane();
+                    showToast('⬅️ Bill pane', 'info');
+                } else {
+                    focusProductPane();
+                    showToast('⬅️ Products pane', 'info');
+                }
+                return;
+            }
+
+            if (e.key === 'ArrowDown') {
+                const el = document.activeElement;
+                if (el && el.tagName === 'SELECT') return;
+                e.preventDefault();
+                let nextIdx = currentIdx === -1 ? 0 : Math.min(currentIdx + 1, customerFieldOrder.length - 1);
+                const nextField = customerFieldOrder[nextIdx];
+                if (nextField) {
+                    if (nextField === saveAndDownloadBtn && saveAndDownloadBtn.disabled) {
+                        showToast('⚠️ Add items first', 'info');
+                        return;
+                    }
+                    nextField.focus();
+                    if (nextField.select && nextField.tagName === 'INPUT') nextField.select();
+                    nextField.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+                return;
+            }
+
+            if (e.key === 'ArrowUp') {
+                const el = document.activeElement;
+                if (el && el.tagName === 'SELECT') return;
+                e.preventDefault();
+                let prevIdx = currentIdx === -1 ? customerFieldOrder.length - 1 : Math.max(currentIdx - 1, 0);
+                const prevField = customerFieldOrder[prevIdx];
+                if (prevField) {
+                    prevField.focus();
+                    if (prevField.select && prevField.tagName === 'INPUT') prevField.select();
+                    prevField.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+                return;
+            }
+
+            if (e.key === 'Enter' && !e.shiftKey) {
+                const el = document.activeElement;
+                if (el === saveAndDownloadBtn) return;
+                if (el && el.tagName === 'SELECT') return;
+                e.preventDefault();
+                if (currentIdx >= 0 && currentIdx < customerFieldOrder.length - 1) {
+                    const nextField = customerFieldOrder[currentIdx + 1];
+                    if (nextField === saveAndDownloadBtn && saveAndDownloadBtn.disabled) {
+                        showToast('⚠️ Add items first', 'error');
+                        return;
+                    }
+                    nextField.focus();
+                    if (nextField.select && nextField.tagName === 'INPUT') nextField.select();
+                }
+                return;
+            }
+
+            if (e.key === 'Enter' && e.shiftKey) {
+                e.preventDefault();
+                if (currentIdx > 0) {
+                    const prevField = customerFieldOrder[currentIdx - 1];
+                    prevField.focus();
+                    if (prevField.select && prevField.tagName === 'INPUT') prevField.select();
+                } else {
+                    focusProductPane();
+                }
+                return;
+            }
+        });
+
+        // Global "/" shortcut
+        document.addEventListener('keydown', (e) => {
+            const tag = (e.target.tagName || '').toLowerCase();
+            const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select';
+
+            if (e.key === '/' && !isTyping) {
+                e.preventDefault();
+                searchInput.focus();
+                return;
+            }
+        });
+
+        // Auto-focus search on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                searchInput.focus();
+                const visible = getKeyboardProducts();
+                if (visible.length > 0) highlightProductRow(visible[0].id);
+            }, 300);
+        });
+
+        // ============================================================
+        // TOTALS
+        // ============================================================
         function updateTotals() {
             const activeItems = billItems.filter(i => i.included !== false);
             const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
@@ -2424,33 +2462,32 @@
             document.getElementById('sumTotal').textContent = '₹' + grandTotal.toLocaleString('en-IN');
         }
 
-        document.getElementById('clearBillBtn').addEventListener('click', () => {
+        clearBillBtn.addEventListener('click', () => {
             if (billItems.length && !confirm('Clear the current bill?')) return;
             billItems = [];
             addItemRowOpen = false;
             custNameInput.value = 'Walk-in Customer';
             custPhoneInput.value = '';
-            document.getElementById('payMethod').value = 'Cash';
+            payMethodSelect.value = 'Cash';
             customerHistoryBox.style.display = 'none';
             customerHistoryBox.innerHTML = '';
             clearBillFromLocalStorage();
             clearCustomerFromLocalStorage();
             renderCart();
+            searchInput.focus();
         });
 
         // ============================================================
-        // SAVE BILL TO FIREBASE
+        // SAVE TO FIREBASE
         // ============================================================
         async function saveBillToFirebase() {
             const activeItems = billItems.filter(i => i.included !== false);
             const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
             const totalAmount = activeItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
-            // ✅ STOCK VALIDATION
             const stockErrors = [];
             for (const item of activeItems) {
                 if (item.manual) continue;
-
                 const product = allProducts.find(p => p.id === item.id);
                 if (product && typeof product.stockQty === 'number') {
                     if (product.stockQty < item.qty) {
@@ -2463,7 +2500,6 @@
                 throw new Error('Stock insufficient:\n' + stockErrors.join('\n'));
             }
 
-            // Order number generate
             let orderNumber = 1;
             try {
                 const counterRef = doc(db, 'settings', 'orderCounter');
@@ -2483,7 +2519,7 @@
                 orderNumber,
                 customerName: custNameInput.value.trim() || 'Walk-in Customer',
                 customerPhone: custPhoneInput.value.trim() || '',
-                paymentMethod: document.getElementById('payMethod').value,
+                paymentMethod: payMethodSelect.value,
                 items: activeItems.map(i => ({
                     productId: i.id,
                     name: i.name,
@@ -2503,15 +2539,12 @@
                 stockDeducted: true
             };
 
-            // ✅ BATCH WRITE — Order + Stock deduction
             const batch = writeBatch(db);
             const orderRef = doc(collection(db, 'orders'));
             batch.set(orderRef, orderData);
 
-            // Stock deduct for each product
             for (const item of activeItems) {
                 if (item.manual) continue;
-
                 const product = allProducts.find(p => p.id === item.id);
                 if (!product) continue;
 
@@ -2526,14 +2559,14 @@
                     lastSoldAt: new Date().toISOString()
                 });
 
-                // Low stock alert
-                if (newStock <= (product.lowStockThreshold || 5)) {
+                const threshold = product.lowStockThreshold || 5;
+                if (newStock <= threshold) {
                     const alertRef = doc(collection(db, 'stockAlerts'));
                     batch.set(alertRef, {
                         productId: item.id,
                         productName: item.name,
                         currentStock: newStock,
-                        threshold: product.lowStockThreshold || 5,
+                        threshold,
                         type: newStock <= 0 ? 'out_of_stock' : 'low_stock',
                         message: newStock <= 0
                             ? `❌ OUT OF STOCK: ${item.name}`
@@ -2549,7 +2582,7 @@
         }
 
         // ============================================================
-        // ✅ SAVE & DOWNLOAD BILL — Rendu action oru button la
+        // SAVE & DOWNLOAD
         // ============================================================
         saveAndDownloadBtn.addEventListener('click', async () => {
             const activeItems = billItems.filter(i => i.included !== false);
@@ -2558,7 +2591,6 @@
                 return;
             }
 
-            // ✅ CONFIRM DIALOG
             const totalItems = activeItems.reduce((sum, i) => sum + i.qty, 0);
             const totalAmount = activeItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
             const customerName = custNameInput.value.trim() || 'Walk-in Customer';
@@ -2577,35 +2609,29 @@
             saveAndDownloadBtn.disabled = true;
 
             try {
-                // ✅ STEP 1: SAVE TO FIREBASE (with stock deduction)
                 const orderId = await saveBillToFirebase();
 
-                // ✅ STEP 2: BUILD INVOICE HTML
                 const dateTimeStr = new Date().toLocaleString('en-IN', {
                     day: '2-digit', month: 'short', year: 'numeric',
                     hour: '2-digit', minute: '2-digit', hour12: true
                 });
 
                 const html = buildInvoiceHtml({
-                    orderId: orderId,
-                    customerName: customerName,
+                    orderId,
+                    customerName,
                     customerPhone: custPhoneInput.value.trim(),
-                    payMethod: document.getElementById('payMethod').value,
+                    payMethod: payMethodSelect.value,
                     items: activeItems,
-                    totalItems: totalItems,
+                    totalItems,
                     subtotal: totalAmount,
                     grandTotal: totalAmount,
-                    dateTimeStr: dateTimeStr,
+                    dateTimeStr,
                     orderStatus: 'Completed'
                 });
 
-                // ✅ STEP 3: OPEN INVOICE + PRINT
                 openInvoiceAndPrint(html);
-
-                // ✅ SUCCESS TOAST
                 showToast(`✅ Bill ${orderId} saved & downloading...`, 'success');
 
-                // ✅ STEP 4: CLEAR BILL DATA
                 billItems = [];
                 addItemRowOpen = false;
                 custNameInput.value = 'Walk-in Customer';
@@ -2616,11 +2642,7 @@
                 clearCustomerFromLocalStorage();
                 renderCart();
 
-                // ✅ STEP 5: AUTO REFRESH (2 seconds la)
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-
+                setTimeout(() => window.location.reload(), 2000);
             } catch (err) {
                 console.error('Save & Download error:', err);
                 showToast('❌ Error: ' + err.message, 'error');
@@ -2629,175 +2651,22 @@
         });
 
         // ============================================================
-        // ⌨️ CUSTOMER FIELDS — KEYBOARD FLOW
-        // ============================================================
-        const customerFieldOrder = [custNameInput, custPhoneInput, payMethodSelect, saveAndDownloadBtn];
-
-        // ↓ / ↑ Arrow → field-to-field move
-        document.addEventListener('keydown', (e) => {
-            const currentIdx = customerFieldOrder.indexOf(e.target);
-            if (currentIdx === -1) return;
-
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                const nextIdx = Math.min(currentIdx + 1, customerFieldOrder.length - 1);
-                const nextField = customerFieldOrder[nextIdx];
-                if (nextField === saveAndDownloadBtn && saveAndDownloadBtn.disabled) {
-                    showToast('⚠️ Add items first', 'info');
-                    return;
-                }
-                nextField.focus();
-                if (nextField.select) nextField.select();
-                return;
-            }
-
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                const prevIdx = Math.max(currentIdx - 1, 0);
-                const prevField = customerFieldOrder[prevIdx];
-                prevField.focus();
-                if (prevField.select) prevField.select();
-                return;
-            }
-        });
-
-        // Customer Name — Enter → Phone
-        custNameInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                custPhoneInput.focus();
-                custPhoneInput.select();
-                return;
-            }
-            if (e.key === 'Enter' && e.shiftKey) {
-                e.preventDefault();
-                searchInput.focus();
-                return;
-            }
-            if (e.key === 'Backspace' && custNameInput.value === '') {
-                e.preventDefault();
-                searchInput.focus();
-                return;
-            }
-        });
-
-        // Phone — Enter → Payment
-        custPhoneInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                payMethodSelect.focus();
-                return;
-            }
-            if (e.key === 'Enter' && e.shiftKey) {
-                e.preventDefault();
-                custNameInput.focus();
-                return;
-            }
-            if (e.key === 'Backspace' && custPhoneInput.value === '') {
-                e.preventDefault();
-                custNameInput.focus();
-                return;
-            }
-        });
-
-        // Payment — Enter → Save button
-        payMethodSelect.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (!saveAndDownloadBtn.disabled) {
-                    saveAndDownloadBtn.focus();
-                } else {
-                    showToast('⚠️ Add items first', 'error');
-                }
-                return;
-            }
-            if (e.key === 'Enter' && e.shiftKey) {
-                e.preventDefault();
-                custPhoneInput.focus();
-                return;
-            }
-            if (e.key === 'Backspace') {
-                e.preventDefault();
-                custPhoneInput.focus();
-                return;
-            }
-        });
-
-        // Save button — Enter → click
-        saveAndDownloadBtn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                saveAndDownloadBtn.click();
-                return;
-            }
-            if (e.key === 'Backspace') {
-                e.preventDefault();
-                payMethodSelect.focus();
-                return;
-            }
-        });
-
-        // ============================================================
-        // ⌨️ GLOBAL KEYBOARD SHORTCUTS
-        // ============================================================
-        document.addEventListener('keydown', (e) => {
-            const tag = (e.target.tagName || '').toLowerCase();
-            const isTyping = tag === 'input' || tag === 'textarea' || tag === 'select';
-
-            // ✅ GLOBAL BACKSPACE (non-input) → last item remove
-            if (e.key === 'Backspace' && !isTyping) {
-                e.preventDefault();
-                removeLastBillItem();
-                return;
-            }
-
-            // ✅ GLOBAL ENTER (non-input) → search box focus
-            if (e.key === 'Enter' && !isTyping) {
-                e.preventDefault();
-                searchInput.focus();
-                searchInput.select();
-                return;
-            }
-
-            // ✅ GLOBAL / → search box focus
-            if (e.key === '/' && !isTyping) {
-                e.preventDefault();
-                searchInput.focus();
-                return;
-            }
-        });
-
-        // Auto-focus search box on load
-        window.addEventListener('load', () => {
-            setTimeout(() => searchInput.focus(), 300);
-        });
-
-        // ============================================================
-        // INVOICE HTML — Orders Page Theme
+        // INVOICE HTML
         // ============================================================
         function buildInvoiceHtml({
-            orderId,
-            customerName,
-            customerPhone,
-            payMethod,
-            items,
-            totalItems,
-            subtotal,
-            grandTotal,
-            dateTimeStr,
-            orderStatus
+            orderId, customerName, customerPhone, payMethod,
+            items, totalItems, subtotal, grandTotal, dateTimeStr, orderStatus
         }) {
-
             const logoUrl = new URL('../pictures/logo-removebg-preview.png', window.location.href).href;
 
             const rowsHtml = items.map((item, i) => `
-        <tr>
-            <td>${i + 1}. ${escapeHtmlAttr(item.name)}</td>
-            <td style="text-align:center;">${item.qty}</td>
-            <td style="text-align:right;">₹${item.price.toLocaleString('en-IN')}</td>
-            <td style="text-align:right;">₹${(item.price * item.qty).toLocaleString('en-IN')}</td>
-        </tr>
-    `).join('');
+                <tr>
+                    <td>${i + 1}. ${escapeHtmlAttr(item.name)}</td>
+                    <td style="text-align:center;">${item.qty}</td>
+                    <td style="text-align:right;">₹${item.price.toLocaleString('en-IN')}</td>
+                    <td style="text-align:right;">₹${(item.price * item.qty).toLocaleString('en-IN')}</td>
+                </tr>
+            `).join('');
 
             return `<!DOCTYPE html>
 <html>
@@ -2830,8 +2699,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
 .inv-status-row{font-size:13px;margin-bottom:6px;}
 .inv-status-row b{color:#6a1b9a;}
 .inv-table{width:100%;border-collapse:collapse;margin-bottom:18px;}
-.inv-table th{background:#6a1b9a !important;color:#fff !important;padding:12px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border:1px solid #6a1b9a;border-right:1px solid rgba(255,255,255,0.35);}
-.inv-table th:last-child{border-right:1px solid #6a1b9a;}
+.inv-table th{background:#6a1b9a !important;color:#fff !important;padding:12px;font-size:12px;text-transform:uppercase;border:1px solid #6a1b9a;}
 .inv-table td{padding:11px 12px;border-bottom:1px solid #eee;font-size:13px;border-right:1px solid #e8dff0;}
 .inv-table td:last-child{border-right:none;}
 .inv-table tbody tr:nth-child(even){background:#faf5ff;}
@@ -2840,11 +2708,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
 .inv-totals td{padding:8px 10px;font-size:14px;text-align:right;}
 .inv-totals .grand td{background:#6a1b9a !important;color:#fff !important;font-size:18px;font-weight:800;padding:12px;}
 .inv-footer{text-align:center;margin-top:auto;padding-top:30px;color:#6a1b9a;font-size:14px;line-height:1.7;border-top:1px solid #eee;}
-@media print{
-    body{padding:18px;min-height:100vh;display:flex;flex-direction:column;}
-    .inv-content{flex:1;}
-    .inv-footer{margin-top:auto;}
-}
+@media print{body{padding:18px;min-height:100vh;display:flex;flex-direction:column;}.inv-content{flex:1;}.inv-footer{margin-top:auto;}}
 </style>
 </head>
 <body>
@@ -2921,14 +2785,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
             win.document.write(html);
             win.document.close();
             win.focus();
-            setTimeout(() => {
-                try { win.print(); } catch (e) { }
-            }, 400);
+            setTimeout(() => { try { win.print(); } catch (e) { } }, 400);
         }
-
 
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
+            if (!toast) return;
             toast.textContent = message;
             toast.className = `toast ${type} show`;
             clearTimeout(toast._timeout);
@@ -2936,7 +2798,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
         }
 
         // ============================================================
-        // UI
+        // UI — HAMBURGER
         // ============================================================
         document.getElementById('hamburgerBtn').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('open');
@@ -2955,10 +2817,10 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
         renderCart();
         listenToProducts();
 
+        // ============================================================
+        // BADGES
+        // ============================================================
         function listenToBadges() {
-            // ============================================================
-            // ORDERS BADGE
-            // ============================================================
             const ordersRef = collection(db, 'orders');
             onSnapshot(ordersRef, (snapshot) => {
                 const orderBadge = document.getElementById('orderBadge');
@@ -2966,13 +2828,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
                     orderBadge.textContent = snapshot.size;
                     orderBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
                 }
-            }, (error) => {
-                console.error('Error listening to orders:', error);
-            });
+            }, (error) => console.error('Orders badge error:', error));
 
-            // ============================================================
-            // PRODUCTS BADGE
-            // ============================================================
             const productsRef = collection(db, 'products');
             onSnapshot(productsRef, (snapshot) => {
                 const productBadge = document.getElementById('productBadge');
@@ -2980,43 +2837,29 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
                     productBadge.textContent = snapshot.size;
                     productBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
                 }
-            }, (error) => {
-                console.error('Error listening to products:', error);
-            });
+            }, (error) => console.error('Products badge error:', error));
 
-            // ============================================================
-            // ✅ STOCK ALERTS BADGE — Low stock products count
-            // ============================================================
             const productsBadgeRef = collection(db, 'products');
-
             onSnapshot(productsBadgeRef, (snapshot) => {
                 let lowStockCount = 0;
-
-                snapshot.docs.forEach(doc => {
-                    const data = doc.data();
+                snapshot.docs.forEach(productDoc => {
+                    const data = productDoc.data();
                     const stockQty = data.stockQty;
                     const threshold = data.lowStockThreshold || 5;
-
-                    // Stock track pannirundha + threshold-ku kuraiya irundha count
-                    if (typeof stockQty === 'number' && stockQty <= threshold) {
-                        lowStockCount++;
-                    }
+                    if (typeof stockQty === 'number' && stockQty <= threshold) lowStockCount++;
                 });
-
                 const badge = document.getElementById('stockAlertBadge');
                 if (badge) {
                     badge.textContent = lowStockCount;
                     badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
                 }
-            }, (error) => {
-                console.error('Stock alert badge error:', error);
-            });
+            }, (error) => console.error('Stock alert badge error:', error));
         }
 
         listenToBadges();
 
         // ============================================================
-        // EXPOSE LIGHTBOX GLOBALLY
+        // EXPOSE LIGHTBOX
         // ============================================================
         window.openLightbox = openLightbox;
         window.closeLightbox = closeLightbox;
@@ -3025,24 +2868,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
         // LOGOUT
         // ============================================================
         document.getElementById('logoutBtn').addEventListener('click', async () => {
-
-            if (!confirm('Are you sure you want to logout?')) {
-                return;
-            }
-
+            if (!confirm('Are you sure you want to logout?')) return;
             try {
                 await signOut(auth);
-
-                // After logout, always go to admin login
                 window.location.href = '/admin/index.html';
-
             } catch (error) {
                 console.error('Logout error:', error);
                 alert('Logout failed. Please try again.');
             }
         });
 
-
+        // ============================================================
+        // LOW STOCK BANNER
+        // ============================================================
         function renderLowStockWarningBanner() {
             const banner = document.getElementById('lowStockWarningBanner');
             const countEl = document.getElementById('lowStockCount');
@@ -3065,13 +2903,13 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
             listEl.innerHTML = lowStock.slice(0, 8).map(p => {
                 const isOut = (p.stockQty || 0) <= 0;
                 return `
-            <span class="warning-item ${isOut ? 'out-of-stock' : ''}" 
-                  onclick="scrollToProduct('${p.id}')"
-                  title="Click to add to bill">
-                ${p.name}
-                <span class="qty-badge">${isOut ? 'OUT' : p.stockQty + ' left'}</span>
-            </span>
-        `;
+                    <span class="warning-item ${isOut ? 'out-of-stock' : ''}" 
+                          onclick="scrollToProduct('${escapeHtmlAttr(p.id)}')"
+                          title="Click to view product">
+                        ${escapeHtmlAttr(p.name)}
+                        <span class="qty-badge">${isOut ? 'OUT' : p.stockQty + ' left'}</span>
+                    </span>
+                `;
             }).join('');
 
             banner.style.display = 'flex';
@@ -3082,7 +2920,17 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
             if (!product) return;
 
             searchInput.value = product.name;
+            highlightIndex = 0;
             renderProductGrid();
+
+            setTimeout(() => {
+                const visible = getKeyboardProducts();
+                const index = visible.findIndex(p => p.id === productId);
+                if (index >= 0) {
+                    highlightIndex = index;
+                    updateKeyboardHighlight();
+                }
+            }, 50);
 
             document.querySelector('.product-pick-table')?.scrollIntoView({
                 behavior: 'smooth',
@@ -3090,6 +2938,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;paddi
             });
         };
     </script>
-    </body>
+</body>
 
 </html>

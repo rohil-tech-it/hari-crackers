@@ -7282,72 +7282,387 @@ textarea:focus-visible {
 }
 
 }
+/* =========================================================
+   RESPONSIVE - PREMIUM ABOUT HERO
+========================================================= */
 
-/* ==============================
-   Responsive
-============================== */
 
-@media(max-width:992px){
+/* ================================
+   TABLET
+================================ */
 
-.hero-floating-cards{
-grid-template-columns:repeat(2,1fr);
-bottom:25px;
+@media (max-width: 992px) {
+
+    .about-premium-hero {
+        min-height: auto;
+        padding: 70px 0 180px;
+    }
+
+    .about-premium-hero .hero-content {
+        width: 100%;
+        max-width: 750px;
+        margin: 0 auto;
+        padding: 70px 20px 40px;
+    }
+
+    .about-premium-hero .hero-floating-cards {
+        width: 90%;
+        grid-template-columns: repeat(2, 1fr);
+
+        bottom: 25px;
+
+        gap: 14px;
+    }
+
+    .about-premium-hero .float-card {
+        padding: 15px;
+    }
 }
 
-.about-premium-hero{
-padding-bottom:160px;
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+
+    .about-premium-hero {
+
+        min-height: auto !important;
+
+        height: auto !important;
+
+        padding: 0 0 40px !important;
+
+        display: block !important;
+
+        overflow: hidden !important;
+    }
+
+
+    /* Main Container */
+
+    .about-premium-hero .container {
+
+        width: 100% !important;
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        align-items: center !important;
+
+        justify-content: flex-start !important;
+
+        position: relative !important;
+        z-index: 5 !important;
+    }
+
+
+    /* =================================
+       HERO CONTENT
+    ================================= */
+
+    .about-premium-hero .hero-content {
+
+        position: relative !important;
+
+        z-index: 20 !important;
+
+        display: flex !important;
+
+        flex-direction: column !important;
+
+        align-items: center !important;
+
+        justify-content: center !important;
+
+        width: 100% !important;
+
+        max-width: 650px !important;
+
+        margin: 0 auto !important;
+
+        padding: 55px 20px 30px !important;
+
+        text-align: center !important;
+
+        visibility: visible !important;
+
+        opacity: 1 !important;
+    }
+
+
+    /* Badge */
+
+    .about-premium-hero .hero-badge {
+
+        display: inline-flex !important;
+
+        align-items: center !important;
+
+        justify-content: center !important;
+
+        width: auto !important;
+
+        max-width: 100% !important;
+
+        margin-bottom: 18px !important;
+
+        font-size: 12px !important;
+
+        padding: 8px 15px !important;
+    }
+
+
+    /* Heading */
+
+    .about-premium-hero .hero-content h1 {
+
+        display: block !important;
+
+        width: 100% !important;
+
+        margin: 0 0 18px !important;
+
+        font-size: clamp(2.2rem, 8vw, 3.2rem) !important;
+
+        line-height: 1.15 !important;
+
+        text-align: center !important;
+
+        visibility: visible !important;
+
+        opacity: 1 !important;
+    }
+
+
+    /* Paragraph */
+
+    .about-premium-hero .hero-content p {
+
+        display: block !important;
+
+        width: 100% !important;
+
+        max-width: 600px !important;
+
+        margin: 0 auto 25px !important;
+
+        font-size: 14px !important;
+
+        line-height: 1.7 !important;
+
+        text-align: center !important;
+
+        visibility: visible !important;
+
+        opacity: 1 !important;
+    }
+
+
+    /* Buttons */
+
+    .about-premium-hero .hero-buttons {
+
+        width: 100% !important;
+
+        display: flex !important;
+
+        flex-direction: row !important;
+
+        justify-content: center !important;
+
+        align-items: center !important;
+
+        flex-wrap: wrap !important;
+
+        gap: 12px !important;
+    }
+
+
+    .about-premium-hero .hero-buttons .btn {
+
+        display: inline-flex !important;
+
+        align-items: center !important;
+
+        justify-content: center !important;
+
+        min-height: 46px !important;
+
+        padding: 0 22px !important;
+    }
+
+
+    /* =================================
+       FLOATING CARDS
+       
+       IMPORTANT:
+       Desktop = absolute
+       Mobile = normal flow
+    ================================= */
+
+    .about-premium-hero .hero-floating-cards {
+
+        position: relative !important;
+
+        left: auto !important;
+
+        right: auto !important;
+
+        bottom: auto !important;
+
+        top: auto !important;
+
+        transform: none !important;
+
+        width: 90% !important;
+
+        max-width: 500px !important;
+
+        margin: 15px auto 0 !important;
+
+        display: grid !important;
+
+        grid-template-columns: 1fr 1fr !important;
+
+        gap: 14px !important;
+
+        z-index: 10 !important;
+    }
+
+
+    .about-premium-hero .float-card {
+        width: 100% !important;
+        min-height: 70px !important;
+        padding: 14px !important;
+
+        margin: 0 !important;
+    }
+
+
+    .about-premium-hero .float-card i {
+        width: 45px !important;
+        height: 45px !important;
+        min-width: 45px !important;
+        font-size: 18px !important;
+    }
 }
 
+/* ================================
+   SMALL MOBILE
+================================ */
+@media (max-width: 480px) {
+    .about-premium-hero {
+        padding-bottom: 30px !important;
+    }
+
+    .about-premium-hero .hero-content {
+        padding: 45px 15px 25px !important;
+    }
+
+    .about-premium-hero .hero-badge {
+        font-size: 10px !important;
+        padding: 7px 12px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .about-premium-hero .hero-content h1 {
+        font-size: 2.3rem !important;
+        line-height: 1.15 !important;
+        margin-bottom: 15px !important;
+    }
+
+    .about-premium-hero .hero-content p {
+        font-size: 13px !important;
+        line-height: 1.65 !important;
+        max-width: 340px !important;
+        margin-bottom: 22px !important;
+    }
+
+    /* Buttons one below another */
+    .about-premium-hero .hero-buttons {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+
+
+    .about-premium-hero .hero-buttons .btn {
+        width: 210px !important;
+        min-height: 45px !important;
+        justify-content: center !important;
+    }
+
+
+    /* Cards one by one */
+
+    .about-premium-hero .hero-floating-cards {
+        width: 88% !important;
+        max-width: 340px !important;
+        grid-template-columns: 1fr !important;
+        gap: 11px !important;
+        margin-top: 15px !important;
+    }
+
+
+    .about-premium-hero .float-card {
+        min-height: 68px !important;
+        padding: 12px 14px !important;
+        border-radius: 15px !important;
+    }
+
+    .about-premium-hero .float-card i {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        font-size: 17px !important;  
+      }
+
+    .about-premium-hero .float-card strong {
+        font-size: 14px !important;   
+     }
+
+    .about-premium-hero .float-card span {
+        font-size: 11px !important;
+    }
 }
 
-@media(max-width:768px){
+/* ================================
+   VERY SMALL MOBILE
+================================ */
 
-.about-premium-hero{
-min-height:80vh;
-padding-bottom:210px;
-}
+@media (max-width: 380px) {
 
-.hero-content{
-padding-top:60px;
-}
+    .about-premium-hero .hero-content {
 
-.hero-content p{
-font-size:.95rem;
-}
+        padding: 40px 12px 22px !important;
+    }
 
-.hero-floating-cards{
-grid-template-columns:1fr;
-width:90%;
-}
+    .about-premium-hero .hero-content h1 {
 
-.float-card{
-padding:15px;
-}
+        font-size: 2.05rem !important;
+    }
 
-}
+    .about-premium-hero .hero-content p {
+        font-size: 12px !important;
+        max-width: 310px !important;
+    }
 
-@media(max-width:480px){
+    .about-premium-hero .hero-badge {
+        font-size: 9px !important;
+        padding: 7px 10px !important;
+    }
 
-.hero-content h1{
-font-size:2.3rem;
-}
-
-.hero-badge{
-font-size:.75rem;
-padding:8px 16px;
-}
-
-.hero-buttons .btn{
-width:100%;
-justify-content:center;
-}
-
-.float-card i{
-width:46px;
-height:46px;
-font-size:18px;
-}
-
+    .about-premium-hero .hero-buttons .btn {
+        width: 195px !important;
+        min-height: 43px !important;
+    }
+    .about-premium-hero .hero-floating-cards {
+        width: 90% !important;
+        max-width: 310px !important;
+    }
 }
 
 /* ============================================================
@@ -9125,9 +9440,6 @@ width:62px;
    FLOATING BUTTONS
 ========================================== */
 
-/* ==========================================
-   LEFT FLOATING SHOP IMAGE (Purple Theme + Animation)
-========================================== */
 
 .floating-shop{
     position: fixed;
@@ -9152,6 +9464,67 @@ width:62px;
 .floating-shop img:hover{
     transform: scale(1.08) rotate(-2deg);
     filter: drop-shadow(0 15px 30px rgba(255, 193, 7, .55)); /* Yellow glow on hover */
+}/* =========================================
+   FLOATING SHOP - MOBILE RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .floating-shop {
+        left: 5px;
+        bottom: 12px;
+
+        width: 250px;
+
+        z-index: 99999;
+    }
+
+    .floating-shop img {
+        width: 220px;
+        max-width: none;
+
+        height: auto;
+
+        display: block;
+    }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+    .floating-shop {
+        left: 3px;
+        bottom: 10px;
+
+        width: 240px;
+    }
+
+    .floating-shop img {
+        width: 210px;
+    }
+}
+
+
+/* =========================================
+   VERY SMALL MOBILE
+========================================= */
+
+@media (max-width: 380px) {
+
+    .floating-shop {
+        left: 2px;
+        bottom: 8px;
+
+        width: 225px;
+    }
+
+    .floating-shop img {
+        width: 200px;
+    }
 }
 
 /* ==========================================
