@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin — Products | Hari Crackers</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin — Products | Hari Crackers</title>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+        <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- FAVICON / TAB LOGO -->
-    <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
-    <style>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- FAVICON / TAB LOGO -->
+        <link rel="icon" type="image/png"
+            href="../pictures/logo-removebg-preview.png">
+        <style>
         /* ============================================================
        COMPLETE STYLES - Admin Panel Style
        PURPLE & YELLOW Theme
@@ -1437,278 +1440,312 @@
             }
         }
     </style>
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <!-- SIDEBAR OVERLAY -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <!-- SIDEBAR OVERLAY -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand-icon">
-                <img src="../pictures/logo-removebg-preview.png" alt="Hari Crackers Logo">
-            </div>
-            <div>
-                <div class="brand-text">Hari <span>Crackers</span></div>
-                <span class="brand-sub">Admin Panel</span>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <div class="nav-label">Main Menu</div>
-
-            <a href="dashboard.html" class="nav-item">
-                <i class="fas fa-chart-pie"></i> Dashboard
-            </a>
-            <a href="orders.html" class="nav-item">
-                <i class="fas fa-shopping-bag"></i> Orders
-                <span class="badge" id="orderBadge">0</span>
-            </a>
-
-            <a href="products.html" class="nav-item active">
-                <i class="fas fa-box"></i> Products
-                <span class="badge" id="productBadge">0</span>
-            </a>
-
-            <div class="nav-label" style="margin-top:20px;">Direct Billing</div>
-
-            <a href="billing.html" class="nav-item">
-                <i class="fas fa-cog"></i> Billing
-            </a>
-            <a href="bills-history.html" class="nav-item">
-                <i class="fas fa-file-invoice"></i> Billing History
-            </a>
-
-            <div class="nav-label" style="margin-top:20px;">Inventory</div>
-
-            <a href="stock-management.html" class="nav-item">
-                <i class="fas fa-warehouse"></i> Stock Management
-                <span class="badge" id="stockAlertBadge" style="background:#e74c3c;display:none;">0</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="user-info">
-                <div class="user-avatar">A</div>
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <img src="../pictures/logo-removebg-preview.png"
+                        alt="Hari Crackers Logo">
+                </div>
                 <div>
-                    <div class="user-name">Admin</div>
-                    <div class="user-email">haricrackers182@gmail.com</div>
+                    <div class="brand-text">Hari <span>Crackers</span></div>
+                    <span class="brand-sub">Admin Panel</span>
                 </div>
             </div>
-            <button class="logout-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </div>
-    </aside>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main-content">
-        <header class="top-header">
-            <div style="display:flex;align-items:center;gap:14px;">
-                <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
-                <div class="page-title">
-                    <h2>Products <span>— admin catalog
-                            management</span></h2>
-                </div>
-            </div>
-            <div class="header-actions">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search products..." id="globalSearch" onkeyup="filterProducts()">
-                </div>
-            </div>
-        </header>
+            <nav class="sidebar-nav">
+                <div class="nav-label">Main Menu</div>
 
-        <div class="page-content">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="orders.html" class="nav-item">
+                    <i class="fas fa-shopping-bag"></i> Orders
+                    <span class="badge" id="orderBadge">0</span>
+                </a>
 
-            <!-- LOW STOCK BANNER -->
-            <div id="lowStockBanner" class="low-stock-banner">
-                <div class="banner-title">
-                    <i class="fas fa-triangle-exclamation"></i>
-                    <span id="lowStockBannerText">Stock குறைவா இருக்கு</span>
-                </div>
-                <div class="low-stock-list" id="lowStockList"></div>
-            </div>
+                <a href="products.html" class="nav-item active">
+                    <i class="fas fa-box"></i> Products
+                    <span class="badge" id="productBadge">0</span>
+                </a>
 
-            <div
-                style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
-                <div>
-                    <h3 style="font-weight:600;font-size:1.1rem;">
-                        All Products
-                        <span id="productCount"
-                            style="font-weight:400;font-size:0.85rem;color:var(--text-muted);"></span>
-                    </h3>
-                    <div class="sync-status">
-                        <i class="fas fa-circle live" id="statusDot"></i>
-                        <span id="statusText">Live from Firebase</span>
-                        <span style="margin-left:8px;font-size:0.65rem;color:var(--text-dim);" id="productTotal"></span>
+                <div class="nav-label" style="margin-top:20px;">Direct
+                    Billing</div>
+
+                <a href="billing.html" class="nav-item">
+                    <i class="fas fa-cog"></i> Billing
+                </a>
+                <a href="bills-history.html" class="nav-item">
+                    <i class="fas fa-file-invoice"></i> Billing History
+                </a>
+
+                <div class="nav-label" style="margin-top:20px;">Inventory</div>
+
+                <a href="stock-management.html" class="nav-item">
+                    <i class="fas fa-warehouse"></i> Stock Management
+                    <span class="badge" id="stockAlertBadge"
+                        style="background:#e74c3c;display:none;">0</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <div>
+                        <div class="user-name">Admin</div>
+                        <div class="user-email">haricrackers182@gmail.com</div>
                     </div>
                 </div>
-                <div class="admin-actions-bar">
-                    <button class="btn-primary" onclick="refreshProducts()">
-                        <i class="fas fa-sync"></i> Sync
-                    </button>
-                    <button class="btn-primary" onclick="renumberProducts()">
-                        <i class="fas fa-list-ol"></i> Fix Order Gaps
-                    </button>
-                    <button class="btn-primary" onclick="openAddModal()">
-                        <i class="fas fa-plus"></i> Add Product
-                    </button>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
 
-                    <button class="btn-danger"
-                        onclick="if(confirm('Delete ALL products? This cannot be undone!')) deleteAllProducts()">
-                        <i class="fas fa-trash"></i> Delete All
-                    </button>
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main-content">
+            <header class="top-header">
+                <div style="display:flex;align-items:center;gap:14px;">
+                    <button class="hamburger-menu" id="hamburgerBtn"><i
+                            class="fas fa-bars"></i></button>
+                    <div class="page-title">
+                        <h2>Products <span>— admin catalog
+                                management</span></h2>
+                    </div>
                 </div>
-            </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search products..."
+                            id="globalSearch" onkeyup="filterProducts()">
+                    </div>
+                </div>
+            </header>
 
-            <div id="loadingState" class="loading-spinner">
-                <i class="fas fa-spinner"></i>
-                <span style="margin-left:12px;color:var(--text-muted);">Loading
-                    products from Firebase...</span>
-            </div>
+            <div class="page-content">
 
-            <div id="productsGrid" class="items-grid" style="display:none;"></div>
+                <!-- LOW STOCK BANNER -->
+                <div id="lowStockBanner" class="low-stock-banner">
+                    <div class="banner-title">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        <span id="lowStockBannerText">Stock குறைவா
+                            இருக்கு</span>
+                    </div>
+                    <div class="low-stock-list" id="lowStockList"></div>
+                </div>
 
-            <div id="emptyState" class="empty-state" style="display:none;">
-                <i class="fas fa-box-open"></i>
-                <h3>No Products Found</h3>
-                <p style="color:var(--text-muted);">Click "Add Product" to
-                    start building your catalog.</p>
-                <button class="btn-primary" onclick="openAddModal()" style="margin-top:16px;">
-                    <i class="fas fa-plus"></i> Add First Product
-                </button>
-            </div>
-        </div>
-    </main>
-
-    <!-- ===== LIGHTBOX ZOOM ===== -->
-    <div class="lightbox-overlay" id="lightboxOverlay">
-        <button class="lightbox-close" id="lightboxClose">&times;</button>
-        <img id="lightboxImage" src alt="Product Image">
-        <div class="lightbox-title" id="lightboxTitle"></div>
-        <div class="lightbox-counter" id="lightboxCounter"></div>
-    </div>
-
-    <!-- ===== EDIT MODAL WITH DYNAMIC CATEGORY ===== -->
-    <div class="edit-modal" id="editModal">
-        <div class="edit-modal-content">
-            <div class="edit-modal-header">
-                <h2><i class="fas fa-pen"></i> Edit Product</h2>
-                <button class="edit-modal-close" onclick="closeEditModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="edit-modal-body">
-                <input type="hidden" id="editProductId">
-
-                <!-- Product Image Upload -->
-                <div class="form-group">
-                    <label>Product Image</label>
-                    <div class="image-upload-container" id="imageUploadContainer">
-                        <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)">
-                        <img id="uploadPreview" class="upload-preview" src alt="Preview">
-                        <div class="upload-placeholder" id="uploadPlaceholder">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Click or drag to upload image</span>
+                <div
+                    style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+                    <div>
+                        <h3 style="font-weight:600;font-size:1.1rem;">
+                            All Products
+                            <span id="productCount"
+                                style="font-weight:400;font-size:0.85rem;color:var(--text-muted);"></span>
+                        </h3>
+                        <div class="sync-status">
+                            <i class="fas fa-circle live" id="statusDot"></i>
+                            <span id="statusText">Live from Firebase</span>
+                            <span
+                                style="margin-left:8px;font-size:0.65rem;color:var(--text-dim);"
+                                id="productTotal"></span>
                         </div>
-                        <button class="remove-image" id="removeImageBtn" onclick="removeImage()">
-                            <i class="fas fa-times"></i>
+                    </div>
+                    <div class="admin-actions-bar">
+                        <button class="btn-primary" onclick="refreshProducts()">
+                            <i class="fas fa-sync"></i> Sync
                         </button>
-                        <div class="upload-progress" id="uploadProgress">
-                            <div class="progress-bar" id="progressBar"></div>
-                        </div>
-                        <div class="uploading-text" id="uploadingText">Uploading image...</div>
-                    </div>
-                    <p style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;">
-                        Supported: JPG, PNG, WEBP (Max 2MB)
-                    </p>
-                </div>
+                        <button class="btn-primary"
+                            onclick="renumberProducts()">
+                            <i class="fas fa-list-ol"></i> Fix Order Gaps
+                        </button>
+                        <button class="btn-primary" onclick="openAddModal()">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
 
-                <!-- Product Name -->
-                <div class="form-group">
-                    <label>Product Name *</label>
-                    <input type="text" id="editProductName" placeholder="Enter product name...">
-                </div>
-
-                <!-- Category with Add New Button -->
-                <div class="form-group">
-                    <label>Category *</label>
-                    <div class="category-input-group">
-                        <select id="editProductCategory">
-                            <!-- Static categories will be populated by JavaScript -->
-                        </select>
-                        <button class="btn-add-category" onclick="addNewCategory()" title="Add new category">
-                            <i class="fas fa-plus"></i> New
+                        <button class="btn-danger"
+                            onclick="if(confirm('Delete ALL products? This cannot be undone!')) deleteAllProducts()">
+                            <i class="fas fa-trash"></i> Delete All
                         </button>
                     </div>
-                    <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;" id="categoryTags">
-                        <!-- Category tags will be shown here -->
-                    </div>
                 </div>
 
-                <!-- Price & MRP Row -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Price (₹) *</label>
-                        <input type="number" id="editProductPrice" placeholder="0" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>MRP / Old Price (₹)</label>
-                        <input type="number" id="editProductOldPrice" placeholder="0" min="0">
-                    </div>
+                <div id="loadingState" class="loading-spinner">
+                    <i class="fas fa-spinner"></i>
+                    <span
+                        style="margin-left:12px;color:var(--text-muted);">Loading
+                        products from Firebase...</span>
                 </div>
 
-                <!-- Sub/Unit -->
-                <div class="form-group">
-                    <label>Unit / Quantity</label>
-                    <input type="text" id="editProductSub" placeholder="e.g., 1 Pkt, 1 Box, 1 Bag">
-                </div>
+                <div id="productsGrid" class="items-grid"
+                    style="display:none;"></div>
 
-                <!-- Stock Quantity & Low Stock Alert -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Stock Quantity</label>
-                        <input type="number" id="editProductStockQty" placeholder="0" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Low Stock Alert At</label>
-                        <input type="number" id="editProductLowStockAt" placeholder="5" min="0">
-                    </div>
-                </div>
-
-                <!-- Order Index -->
-                <div class="form-group">
-                    <label>Order Index</label>
-                    <input type="number" id="editProductOrder" placeholder="0" min="0">
+                <div id="emptyState" class="empty-state" style="display:none;">
+                    <i class="fas fa-box-open"></i>
+                    <h3>No Products Found</h3>
+                    <p style="color:var(--text-muted);">Click "Add Product" to
+                        start building your catalog.</p>
+                    <button class="btn-primary" onclick="openAddModal()"
+                        style="margin-top:16px;">
+                        <i class="fas fa-plus"></i> Add First Product
+                    </button>
                 </div>
             </div>
-            <div class="form-group">
-                <label>Stock Status</label>
-                <div class="stock-toggle">
-                    <span>Out of Stock</span>
-                    <label class="switch">
-                        <input type="checkbox" id="editProductStock" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <span>In Stock</span>
-                </div>
-            </div>
+        </main>
 
-            <div class="edit-modal-footer">
-                <button class="btn btn-cancel" onclick="closeEditModal()">Cancel</button>
-                <button class="btn btn-save" id="saveBtn" onclick="saveProduct()">
-                    <i class="fas fa-save"></i> Save Changes
-                </button>
+        <!-- ===== LIGHTBOX ZOOM ===== -->
+        <div class="lightbox-overlay" id="lightboxOverlay">
+            <button class="lightbox-close" id="lightboxClose">&times;</button>
+            <img id="lightboxImage" src alt="Product Image">
+            <div class="lightbox-title" id="lightboxTitle"></div>
+            <div class="lightbox-counter" id="lightboxCounter"></div>
+        </div>
+
+        <!-- ===== EDIT MODAL WITH DYNAMIC CATEGORY ===== -->
+        <div class="edit-modal" id="editModal">
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h2><i class="fas fa-pen"></i> Edit Product</h2>
+                    <button class="edit-modal-close" onclick="closeEditModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="edit-modal-body">
+                    <input type="hidden" id="editProductId">
+
+                    <!-- Product Image Upload -->
+                    <div class="form-group">
+                        <label>Product Image</label>
+                        <div class="image-upload-container"
+                            id="imageUploadContainer">
+                            <input type="file" id="imageInput" accept="image/*"
+                                onchange="handleImageSelect(event)">
+                            <img id="uploadPreview" class="upload-preview" src
+                                alt="Preview">
+                            <div class="upload-placeholder"
+                                id="uploadPlaceholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Click or drag to upload image</span>
+                            </div>
+                            <button class="remove-image" id="removeImageBtn"
+                                onclick="removeImage()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <div class="upload-progress" id="uploadProgress">
+                                <div class="progress-bar"
+                                    id="progressBar"></div>
+                            </div>
+                            <div class="uploading-text"
+                                id="uploadingText">Uploading image...</div>
+                        </div>
+                        <p
+                            style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;">
+                            Supported: JPG, PNG, WEBP (Max 2MB)
+                        </p>
+                    </div>
+
+                    <!-- Product Name -->
+                    <div class="form-group">
+                        <label>Product Name *</label>
+                        <input type="text" id="editProductName"
+                            placeholder="Enter product name...">
+                    </div>
+
+                    <!-- Category with Add New Button -->
+                    <div class="form-group">
+                        <label>Category *</label>
+                        <div class="category-input-group">
+                            <select id="editProductCategory">
+                                <!-- Static categories will be populated by JavaScript -->
+                            </select>
+                            <button class="btn-add-category"
+                                onclick="addNewCategory()"
+                                title="Add new category">
+                                <i class="fas fa-plus"></i> New
+                            </button>
+                        </div>
+                        <div
+                            style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;"
+                            id="categoryTags">
+                            <!-- Category tags will be shown here -->
+                        </div>
+                    </div>
+
+                    <!-- Price & MRP Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price (₹) *</label>
+                            <input type="number" id="editProductPrice"
+                                placeholder="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>MRP / Old Price (₹)</label>
+                            <input type="number" id="editProductOldPrice"
+                                placeholder="0" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Sub/Unit -->
+                    <div class="form-group">
+                        <label>Unit / Quantity</label>
+                        <input type="text" id="editProductSub"
+                            placeholder="e.g., 1 Pkt, 1 Box, 1 Bag">
+                    </div>
+
+                    <!-- Stock Quantity & Low Stock Alert -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stock Quantity</label>
+                            <input type="number" id="editProductStockQty"
+                                placeholder="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Low Stock Alert At</label>
+                            <input type="number" id="editProductLowStockAt"
+                                placeholder="5" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Order Index -->
+                    <div class="form-group">
+                        <label>Order Index</label>
+                        <input type="number" id="editProductOrder"
+                            placeholder="0" min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Stock Status</label>
+                    <div class="stock-toggle">
+                        <span>Out of Stock</span>
+                        <label class="switch">
+                            <input type="checkbox" id="editProductStock"
+                                checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span>In Stock</span>
+                    </div>
+                </div>
+
+                <div class="edit-modal-footer">
+                    <button class="btn btn-cancel"
+                        onclick="closeEditModal()">Cancel</button>
+                    <button class="btn btn-save" id="saveBtn"
+                        onclick="saveProduct()">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="toast" class="toast"></div>
+        <div id="toast" class="toast"></div>
 
-    <script type="importmap">
+        <script type="importmap">
 {
     "imports": {
         "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
@@ -1719,7 +1756,7 @@
 }
 </script>
 
-    <script type="module">
+        <script type="module">
         // ============================================================
         // FIREBASE IMPORTS
         // ============================================================
@@ -1748,7 +1785,7 @@
             deleteObject
         } from "firebase/storage";
 
-        
+
         const firebaseConfig = {
             apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
             authDomain: "hari-crackers.firebaseapp.com",
@@ -1787,26 +1824,26 @@
         // ============================================================
         // DEFAULT CATEGORIES
         // ============================================================
-     const defaultCategories = [
-    "ONE SOUND CRACKERS",
-    "FLOWER POTS (PANDIYAN, JOKER, NEW EVEREST)",
-    "GROUND CHAKKAR (PANDIYAN, JOKER, JENIS)",
-    "BIJILI & WALA",
-    "ATOM BOMB'S",
-    "TWINKLING STAR",
-    "MATCH BOX COMB",
-    "CHILDREN'S SPECIAL",
-    "PENCIL SPECIAL",
-    "NEW SPECIAL FOUNTAINS [RAVIKANNAN, MOTHERS, VADIVEL]",
-    "NEW WONDERS / RASTKALA WOW STAR",
-    "RAINBOW POP FANCY [VADIVEL, PANDIYAN, ORIENT]",
-    "VOLCANO BLAST [PANDIYAN, RAJKALA, SURYAKALA]",
-    "MULTI COLOUR SHOT [RAVIKANNAN, RHINO, LIYA]",
-    "2026 NEW ELITE FANCY",
-    "MONSTER BEAST COMB [RASKALA, LIYA, SONNY]",
-    "CARNIVAL DISPLAY SETOUT [SONNY, LIYA, PANDIYAN]",
-    "SPARKLERS"
-];
+        const defaultCategories = [
+            "ONE SOUND CRACKERS",
+            "FLOWER POTS (PANDIYAN, JOKER, NEW EVEREST)",
+            "GROUND CHAKKAR (PANDIYAN, JOKER, JENIS)",
+            "BIJILI & WALA",
+            "ATOM BOMB'S",
+            "TWINKLING STAR",
+            "MATCH BOX COMB",
+            "CHILDREN'S SPECIAL",
+            "PENCIL SPECIAL",
+            "NEW SPECIAL FOUNTAINS [RAVIKANNAN, MOTHERS, VADIVEL]",
+            "NEW WONDERS / RAJKALA WOW STAR",
+            "RAINBOW POP FANCY [VADIVEL, PANDIYAN, ORIENT]",
+            "VOLCANO BLAST [PANDIYAN, RAJKALA, SURYAKALA]",
+            "MULTI COLOUR SHOT [RAVIKANNAN, RHINO, LIYA]",
+            "2026 NEW ELITE FANCY",
+            "MONSTER BEAST COMB [RAJKALA, LIYA, SONNY]",
+            "CARNIVAL DISPLAY SETOUT [SONNY, LIYA, PANDIYAN]",
+            "SPARKLERS"
+        ];
         // ============================================================
         // CATEGORY MANAGEMENT
         // ============================================================
@@ -1934,35 +1971,35 @@
                 console.error('Error listening to orders:', error);
             });
         }
-// ============================================================
-// LISTEN TO STOCK ALERTS — Sidebar badge count (Low Stock Products)
-// ============================================================
-function listenToStockAlerts() {
-    const productsRef = collection(db, 'products');
-    
-    onSnapshot(productsRef, (snapshot) => {
-        let lowStockCount = 0;
-        
-        snapshot.docs.forEach(doc => {
-            const data = doc.data();
-            const stockQty = data.stockQty;
-            const threshold = data.lowStockThreshold || 5;
-            
-            // Stock track pannirundha + threshold-ku kuraiya irundha count pannum
-            if (typeof stockQty === 'number' && stockQty <= threshold) {
-                lowStockCount++;
-            }
-        });
-        
-        const badge = document.getElementById('stockAlertBadge');
-        if (badge) {
-            badge.textContent = lowStockCount;
-            badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
+        // ============================================================
+        // LISTEN TO STOCK ALERTS — Sidebar badge count (Low Stock Products)
+        // ============================================================
+        function listenToStockAlerts() {
+            const productsRef = collection(db, 'products');
+
+            onSnapshot(productsRef, (snapshot) => {
+                let lowStockCount = 0;
+
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const stockQty = data.stockQty;
+                    const threshold = data.lowStockThreshold || 5;
+
+                    // Stock track pannirundha + threshold-ku kuraiya irundha count pannum
+                    if (typeof stockQty === 'number' && stockQty <= threshold) {
+                        lowStockCount++;
+                    }
+                });
+
+                const badge = document.getElementById('stockAlertBadge');
+                if (badge) {
+                    badge.textContent = lowStockCount;
+                    badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
+                }
+            }, (error) => {
+                console.error('Stock alert badge error:', error);
+            });
         }
-    }, (error) => {
-        console.error('Stock alert badge error:', error);
-    });
-}
 
         // ============================================================
         // LISTEN TO PRODUCTS (REAL-TIME SYNC)
@@ -3051,6 +3088,6 @@ function listenToStockAlerts() {
             }
         });
     </script>
-</body>
+    </body>
 
 </html>
