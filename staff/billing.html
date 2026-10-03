@@ -1372,7 +1372,8 @@
             <div class="user-info">
                 <div class="user-avatar">S</div> <!-- ← "A" illa -->
                 <div>
-                    <div class="user-name">Staff</div> <!-- ← "Admin" illa -->
+                    <div class="user-name">Staff</div>
+                    <!-- ← "Admin" illa -->
                     <div class="user-email">staffharicrackers@gmail.com</div>
                 </div>
             </div>
@@ -1387,7 +1388,8 @@
             <div style="display:flex;align-items:center;gap:14px;">
                 <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
                 <div class="page-title">
-                    <h2>Direct Billing <span>— walk-in / shop counter customers</span></h2>
+                    <h2>Direct Billing <span>— walk-in / shop counter
+                            customers</span></h2>
                 </div>
             </div>
         </header>
@@ -1414,28 +1416,30 @@
         <div class="page-content">
             <div class="billing-grid">
 
-
                 <div>
                     <div class="panel">
-                        <h3><i class="fas fa-boxes"></i> All Products — Click "Add" to Include in Bill</h3>
+                        <h3><i class="fas fa-boxes"></i> All Products —
+                            Click "Add" to Include in Bill</h3>
                         <div class="search-box">
                             <i class="fas fa-search"></i>
                             <input type="text" id="productSearch" placeholder="Filter products by name (optional)...">
                         </div>
                         <div id="productSuggestions">
-                            <div class="empty-hint">Loading products...</div>
+                            <div class="empty-hint">Loading
+                                products...</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="panel" style="align-self:start;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                        <h3 style="margin-bottom:0;"><i class="fas fa-shopping-basket"></i> Bill Items (<span
-                                id="itemCount">0</span>)</h3>
+                        <h3 style="margin-bottom:0;"><i class="fas fa-shopping-basket"></i> Bill
+                            Items (<span id="itemCount">0</span>)</h3>
                         <button class="add-item-btn" id="addItemBtn"><i class="fas fa-plus"></i> Add Item</button>
                     </div>
                     <div id="cartTableWrap" style="margin-bottom:20px;">
-                        <p class="cart-empty" id="cartEmptyMsg">No items added yet. Click products on the left to add.
+                        <p class="cart-empty" id="cartEmptyMsg">No items
+                            added yet. Click products on the left to add.
                         </p>
                         <div class="cart-table-wrap" id="cartTableOuter" style="display:none;">
                             <table class="cart-table" id="cartTable">
@@ -1486,14 +1490,18 @@
                     </div>
 
                     <div class="totals-box">
-                        <div class="totals-row"><span>Total Items</span><strong id="sumItems">0</strong></div>
-                        <div class="totals-row"><span>MRP Total</span><strong id="sumMrp">₹0</strong></div>
+                        <div class="totals-row"><span>Total
+                                Items</span><strong id="sumItems">0</strong></div>
+                        <div class="totals-row"><span>MRP
+                                Total</span><strong id="sumMrp">₹0</strong></div>
                         <div class="totals-row"><span>Discount</span><strong id="sumDiscount">₹0</strong></div>
-                        <div class="totals-row grand"><span>Grand Total</span><strong id="sumTotal">₹0</strong></div>
+                        <div class="totals-row grand"><span>Grand
+                                Total</span><strong id="sumTotal">₹0</strong></div>
                     </div>
 
                     <button class="btn-primary" id="saveAndDownloadBtn" disabled>
-                        <i class="fas fa-check-circle"></i> Save & Download Bill
+                        <i class="fas fa-check-circle"></i> Save & Download
+                        Bill
                     </button>
                     <button class="btn-secondary" id="clearBillBtn" style="margin-top:10px;">
                         <i class="fas fa-trash-alt"></i> Clear Bill
@@ -1511,7 +1519,7 @@
         <button class="lightbox-close" id="lightboxClose" aria-label="Close">
             <i class="fas fa-times"></i>
         </button>
-        <img id="lightboxImage" src="" alt="Product Image">
+        <img id="lightboxImage" src alt="Product Image">
         <div class="lightbox-caption" id="lightboxCaption">
             <i class="fas fa-image"></i> <span id="lightboxCaptionText">Product</span>
         </div>
@@ -1526,7 +1534,9 @@
                 <i class="fas fa-trash-alt"></i>
             </div>
             <h3>Remove Item?</h3>
-            <p id="confirmMessage">Are you sure you want to remove <strong>this item</strong> from the bill?</p>
+            <p id="confirmMessage">Are you sure you want to remove
+                <strong>this item</strong> from the bill?
+            </p>
             <div class="confirm-actions">
                 <button class="btn-cancel" id="confirmCancelBtn">
                     <i class="fas fa-times"></i> Cancel
@@ -4520,904 +4530,458 @@
 
 
         // ============================================================
-        // INVOICE HTML
+        // INVOICE HTML — OLD THEME + 80mm THERMAL
         // ============================================================
-
         function buildInvoiceHtml({
-
-            orderId,
-            customerName,
-            customerPhone,
-            payMethod,
-            items,
-            totalItems,
-            subtotal,
-            grandTotal,
-            dateTimeStr,
-            orderStatus
-
+            orderId, customerName, customerPhone, payMethod,
+            items, totalItems, subtotal, grandTotal, dateTimeStr, orderStatus
         }) {
+            const logoUrl = new URL('../pictures/logo-removebg-preview.png', window.location.href).href;
 
+            const rowsHtml = items.map((item, i) => `
+                <tr>
+                    <td>${i + 1}. ${escapeHtmlAttr(item.name)}</td>
+                    <td style="text-align:center;">${item.qty}</td>
+                    <td style="text-align:right;">₹${item.price.toLocaleString('en-IN')}</td>
+                    <td style="text-align:right;">₹${(item.price * item.qty).toLocaleString('en-IN')}</td>
+                </tr>
+            `).join('');
 
-            const logoUrl =
-                new URL(
-                    '../pictures/logo-removebg-preview.png',
-                    window.location.href
-                ).href;
-
-
-            const rowsHtml =
-                items.map(
-                    (item, i) => `
-
-                    <tr>
-
-                        <td>
-
-                            ${i + 1}.
-                            ${escapeHtmlAttr(
-                        item.name
-                    )}
-
-                        </td>
-
-                        <td
-                            style="text-align:center;"
-                        >
-                            ${item.qty}
-                        </td>
-
-                        <td
-                            style="text-align:right;"
-                        >
-                            ₹${Number(
-                        item.price
-                    ).toLocaleString(
-                        'en-IN'
-                    )}
-                        </td>
-
-                        <td
-                            style="text-align:right;"
-                        >
-                            ₹${(
-                            item.price *
-                            item.qty
-                        ).toLocaleString(
-                            'en-IN'
-                        )}
-                        </td>
-
-                    </tr>
-
-                `
-                ).join('');
-
-
-            return `
-
-<!DOCTYPE html>
-
+            return `<!DOCTYPE html>
 <html>
-
 <head>
-
 <meta charset="UTF-8">
-
-<title>
-    Invoice ${escapeHtmlAttr(orderId)}
-</title>
-
-
+<title>Invoice ${escapeHtmlAttr(orderId)}</title>
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-
-    -webkit-print-color-adjust:exact !important;
-    print-color-adjust:exact !important;
-}
-
-
-html,
-body{
-    height:100%;
-}
-
-
-body{
-
-    font-family:
-        'Segoe UI',
-        Arial,
-        sans-serif;
-
-    color:#1f1f1f;
-
-    background:#fff;
-
-    padding:30px 35px;
-
-    max-width:800px;
-
-    margin:auto;
-
-    display:flex;
-
-    flex-direction:column;
-
-    min-height:100vh;
-
-}
-
-
-.inv-content{
-    flex:1;
-}
-
-
-.inv-header{
-
-    display:flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        flex-start;
-
-    margin-bottom:12px;
-
-}
-
-
-.inv-brand{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-}
-
-
-.inv-brand img{
-
-    width:60px;
-    height:60px;
-
-    object-fit:contain;
-
-}
-
-
-.inv-brand-name{
-
-    font-size:28px;
-
-    font-weight:800;
-
-    color:#6a1b9a;
-
-}
-
-
-.inv-brand-tag{
-
-    font-size:11px;
-
-    color:#777;
-
-    letter-spacing:1px;
-
-    text-transform:
-        uppercase;
-
-}
-
-
-.inv-brand-sub{
-
-    font-size:13px;
-
-    color:#555;
-
-    margin-top:4px;
-
-}
-
-
-.inv-right{
-    text-align:right;
-}
-
-
-.inv-title{
-
-    font-size:24px;
-
-    font-weight:800;
-
-    color:#6a1b9a;
-
-}
-
-
-.inv-id{
-
-    font-size:14px;
-
-    font-weight:700;
-
-    margin-top:4px;
-
-}
-
-
-.inv-date{
-
-    font-size:12px;
-
-    color:#777;
-
-    margin-top:4px;
-
-}
-
-
-.inv-hr{
-
-    border:none;
-
-    border-top:
-        3px solid #6a1b9a;
-
-    margin:
-        16px 0 22px;
-
-}
-
-
-.inv-info-box{
-
-    display:flex;
-
-    border:
-        1px solid #e8dff0;
-
-    border-radius:8px;
-
-    overflow:hidden;
-
-    margin-bottom:24px;
-
-}
-
-
-.inv-info-col{
-
-    flex:1;
-
-    padding:
-        16px 18px;
-
-}
-
-
-.inv-info-col:first-child{
-
-    background:#faf5ff;
-
-}
-
-
-.inv-info-col:last-child{
-
-    border-left:
-        1px solid #e8dff0;
-
-}
-
-
-.inv-info-label{
-
-    font-size:11px;
-
-    font-weight:700;
-
-    color:#ffc107;
-
-    text-transform:
-        uppercase;
-
-    letter-spacing:1px;
-
-    margin-bottom:8px;
-
-}
-
-
-.inv-info-col strong{
-
-    display:block;
-
-    font-size:16px;
-
-    margin-bottom:4px;
-
-}
-
-
-.inv-info-col span{
-
-    display:block;
-
-    font-size:13px;
-
-    color:#555;
-
-}
-
-
-.inv-status-row{
-
-    font-size:13px;
-
-    margin-bottom:6px;
-
-}
-
-
-.inv-status-row b{
-
-    color:#6a1b9a;
-
-}
-
-
-.inv-table{
-
-    width:100%;
-
-    border-collapse:
-        collapse;
-
-    margin-bottom:18px;
-
-}
-
-
-.inv-table th{
-
-    background:#6a1b9a !important;
-
-    color:#fff !important;
-
-    padding:12px;
-
-    font-size:12px;
-
-    text-transform:
-        uppercase;
-
-    letter-spacing:.5px;
-
-    border:
-        1px solid #6a1b9a;
-
-    border-right:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            0.35
-        );
-
-}
-
-
-.inv-table th:last-child{
-
-    border-right:
-        1px solid #6a1b9a;
-
-}
-
-
-.inv-table td{
-
-    padding:
-        11px 12px;
-
-    border-bottom:
-        1px solid #eee;
-
-    font-size:13px;
-
-    border-right:
-        1px solid #e8dff0;
-
-}
-
-
-.inv-table td:last-child{
-
-    border-right:none;
-
-}
-
-
-.inv-table tbody tr:nth-child(even){
-
-    background:#faf5ff;
-
-}
-
-
-.inv-totals{
-
-    display:flex;
-
-    justify-content:
-        flex-end;
-
-}
-
-
-.inv-totals table{
-
-    min-width:260px;
-
-    border-collapse:
-        collapse;
-
-}
-
-
-.inv-totals td{
-
-    padding:
-        8px 10px;
-
-    font-size:14px;
-
-    text-align:right;
-
-}
-
-
-.inv-totals .grand td{
-
-    background:#6a1b9a !important;
-
-    color:#fff !important;
-
-    font-size:18px;
-
-    font-weight:800;
-
-    padding:12px;
-
-}
-
-
-.inv-footer{
-
-    text-align:center;
-
-    margin-top:auto;
-
-    padding-top:30px;
-
-    color:#6a1b9a;
-
-    font-size:14px;
-
-    line-height:1.7;
-
-    border-top:
-        1px solid #eee;
-
-}
-
-
-@media print{
-
-    body{
-
-        padding:18px;
-
-        min-height:100vh;
-
-        display:flex;
-
-        flex-direction:column;
-
+    /* ============================================================
+       ORIGINAL THEME — 80mm THERMAL (IHR810)
+       ============================================================ */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 
-
-    .inv-content{
-        flex:1;
+    /* Page: 80mm thermal roll */
+    @page {
+        size: 80mm auto;
+        margin: 0;
     }
 
-
-    .inv-footer{
-        margin-top:auto;
+    html, body {
+        height: 100%;
     }
 
-}
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        color: #1f1f1f;
+        background: #fff;
+        width: 80mm;
+        padding: 3mm 2.5mm;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        font-size: 10.5px;
+    }
 
+    .inv-content { flex: 1; }
+
+    /* HEADER */
+    .inv-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+    }
+
+    .inv-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .inv-brand img {
+        width: 45px;
+        height: 45px;
+        object-fit: contain;
+    }
+
+    .inv-brand-name {
+        font-size: 18px;
+        font-weight: 800;
+        color: #6a1b9a;
+        line-height: 1.1;
+    }
+
+    .inv-brand-tag {
+        font-size: 8px;
+        color: #777;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-top: 1px;
+    }
+
+    .inv-brand-sub {
+        font-size: 9px;
+        color: #555;
+        margin-top: 2px;
+        line-height: 1.3;
+    }
+
+    .inv-right {
+        text-align: right;
+    }
+
+    .inv-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: #6a1b9a;
+    }
+
+    .inv-id {
+        font-size: 11px;
+        font-weight: 700;
+        margin-top: 2px;
+        color: #333;
+    }
+
+    .inv-date {
+        font-size: 9px;
+        color: #777;
+        margin-top: 2px;
+    }
+
+    /* PURPLE HR LINE (same as old) */
+    .inv-hr {
+        border: none;
+        border-top: 2px solid #6a1b9a;
+        margin: 8px 0 10px;
+    }
+
+    /* INFO BOX (purple theme, side by side) */
+    .inv-info-box {
+        display: flex;
+        border: 1px solid #e8dff0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 10px;
+        font-size: 10px;
+    }
+
+    .inv-info-col {
+        flex: 1;
+        padding: 6px 8px;
+    }
+
+    .inv-info-col:first-child {
+        background: #faf5ff;
+    }
+
+    .inv-info-col:last-child {
+        border-left: 1px solid #e8dff0;
+    }
+
+    .inv-info-label {
+        font-size: 8px;
+        font-weight: 700;
+        color: #ffc107;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .inv-info-col strong {
+        display: block;
+        font-size: 11px;
+        margin-bottom: 2px;
+        color: #1f1f1f;
+    }
+
+    .inv-info-col span {
+        display: block;
+        font-size: 9.5px;
+        color: #555;
+    }
+
+    .inv-status-row {
+        font-size: 9.5px;
+        margin-bottom: 3px;
+        line-height: 1.3;
+    }
+
+    .inv-status-row b {
+        color: #6a1b9a;
+    }
+
+    /* ITEMS TABLE (same purple header) */
+    .inv-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+        font-size: 10px;
+    }
+
+    .inv-table th {
+        background: #6a1b9a !important;
+        color: #fff !important;
+        padding: 5px 4px;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border: 1px solid #6a1b9a;
+        border-right: 1px solid rgba(255, 255, 255, 0.35);
+        font-weight: 700;
+    }
+
+    .inv-table th:last-child {
+        border-right: 1px solid #6a1b9a;
+    }
+
+    .inv-table td {
+        padding: 4px 4px;
+        border-bottom: 1px solid #eee;
+        font-size: 10px;
+        border-right: 1px solid #e8dff0;
+        vertical-align: top;
+    }
+
+    .inv-table td:last-child {
+        border-right: none;
+    }
+
+    .inv-table tbody tr:nth-child(even) {
+        background: #faf5ff;
+    }
+
+    /* TOTALS (right aligned, purple grand box) */
+    .inv-totals {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 6px;
+    }
+
+    .inv-totals table {
+        min-width: 65%;
+        border-collapse: collapse;
+    }
+
+    .inv-totals td {
+        padding: 4px 5px;
+        font-size: 11px;
+        text-align: right;
+    }
+
+    .inv-totals .grand td {
+        background: #6a1b9a !important;
+        color: #fff !important;
+        font-size: 13px;
+        font-weight: 800;
+        padding: 6px 5px;
+        border-radius: 4px;
+    }
+
+    /* FOOTER */
+    .inv-footer {
+        text-align: center;
+        margin-top: auto;
+        padding-top: 12px;
+        color: #6a1b9a;
+        font-size: 10px;
+        line-height: 1.5;
+        border-top: 1px solid #eee;
+    }
+
+    /* ============================================================ */
+    /* SCREEN PREVIEW (browser-la narrow preview)                    */
+    /* ============================================================ */
+    @media screen {
+        body {
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        .inv-content,
+        .inv-footer {
+            background: #fff;
+            width: 80mm;
+            margin: 0 auto;
+            padding: 5mm 4mm;
+            box-shadow: 0 0 12px rgba(0,0,0,0.15);
+        }
+        .inv-content {
+            padding-bottom: 8px;
+        }
+        .inv-footer {
+            padding-top: 10px;
+            padding-bottom: 15px;
+        }
+    }
+
+    /* ============================================================ */
+    /* PRINT — IHR810 Thermal 80mm                                   */
+    /* ============================================================ */
+    @media print {
+        @page {
+            size: 80mm auto;
+            margin: 0;
+        }
+        body {
+            width: 80mm;
+            padding: 2mm 1.5mm;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .inv-content { flex: 1; }
+        .inv-footer {
+            margin-top: auto;
+            padding-top: 8px;
+            padding-bottom: 12px;
+        }
+    }
 </style>
-
 </head>
-
-
 <body>
 
-
 <div class="inv-content">
-
-
+    <!-- HEADER — logo left, invoice right (same as old) -->
     <div class="inv-header">
-
-
         <div class="inv-brand">
-
-
-            <img
-                src="${logoUrl}"
-                alt="Hari Crackers"
-            >
-
-
+            <img src="${logoUrl}" alt="Hari Crackers">
             <div>
-
-                <div
-                    class="inv-brand-name"
-                >
-                    HARI CRACKERS
+                <div class="inv-brand-name">HARI CRACKERS</div>
+                <div class="inv-brand-tag">Light Up Every Celebration</div>
+                <div class="inv-brand-sub">
+                    Ranjankudi, Perambalur(d.t), TN<br>
+                    +91 86677 25665
                 </div>
-
-
-                <div
-                    class="inv-brand-tag"
-                >
-                    Light Up Every Celebration
-                </div>
-
-
-                <div
-                    class="inv-brand-sub"
-                >
-                    Ranjankudi, Perambalur(d.t), Tamil Nadu
-                    | +91 86677 25665
-                </div>
-
             </div>
-
-
         </div>
-
-
         <div class="inv-right">
-
-            <div class="inv-title">
-                INVOICE
-            </div>
-
-
-            <div class="inv-id">
-
-                #${escapeHtmlAttr(
-                orderId
-            )}
-
-            </div>
-
-
-            <div class="inv-date">
-
-                ${escapeHtmlAttr(
-                dateTimeStr
-            )}
-
-            </div>
-
+            <div class="inv-title">INVOICE</div>
+            <div class="inv-id">#${escapeHtmlAttr(orderId)}</div>
+            <div class="inv-date">${escapeHtmlAttr(dateTimeStr)}</div>
         </div>
-
-
     </div>
 
-
+    <!-- PURPLE HR -->
     <hr class="inv-hr">
 
-
+    <!-- INFO BOX — Bill To + Status side by side -->
     <div class="inv-info-box">
-
-
         <div class="inv-info-col">
-
-
-            <div class="inv-info-label">
-                Bill To
-            </div>
-
-
-            <strong>
-
-                ${escapeHtmlAttr(
-                customerName
-            )}
-
-            </strong>
-
-
-            ${customerPhone
-
-                    ? `
-                        <span>
-                            ${escapeHtmlAttr(
-                        customerPhone
-                    )}
-                        </span>
-                    `
-
-                    : ''
-                }
-
-
+            <div class="inv-info-label">Bill To</div>
+            <strong>${escapeHtmlAttr(customerName)}</strong>
+            ${customerPhone ? `<span>${escapeHtmlAttr(customerPhone)}</span>` : ''}
         </div>
-
-
         <div class="inv-info-col">
-
-
-            <div class="inv-info-label">
-                Status
-            </div>
-
-
-            <div class="inv-status-row">
-
-                Order:
-
-                <b>
-                    ${escapeHtmlAttr(
-                    orderStatus ||
-                    'Completed'
-                )}
-                </b>
-
-            </div>
-
-
-            <div class="inv-status-row">
-
-                Payment:
-
-                <b>
-                    ${escapeHtmlAttr(
-                    payMethod || '-'
-                )}
-                </b>
-
-            </div>
-
-
-            <div class="inv-status-row">
-
-                Total Items:
-
-                <b>
-                    ${totalItems}
-                </b>
-
-            </div>
-
-
+            <div class="inv-info-label">Status</div>
+            <div class="inv-status-row">Order: <b>${escapeHtmlAttr(orderStatus || 'Completed')}</b></div>
+            <div class="inv-status-row">Payment: <b>${escapeHtmlAttr(payMethod || '-')}</b></div>
+            <div class="inv-status-row">Items: <b>${totalItems}</b></div>
         </div>
-
-
     </div>
 
-
+    <!-- ITEMS TABLE — purple header -->
     <table class="inv-table">
-
-
         <thead>
-
             <tr>
-
-                <th>
-                    Product
-                </th>
-
-                <th
-                    style="text-align:center;"
-                >
-                    Qty
-                </th>
-
-                <th
-                    style="text-align:right;"
-                >
-                    Price
-                </th>
-
-                <th
-                    style="text-align:right;"
-                >
-                    Amount
-                </th>
-
+                <th>Product</th>
+                <th style="text-align:center;">Qty</th>
+                <th style="text-align:right;">Price</th>
+                <th style="text-align:right;">Amount</th>
             </tr>
-
         </thead>
-
-
-        <tbody>
-
-            ${rowsHtml}
-
-        </tbody>
-
-
+        <tbody>${rowsHtml}</tbody>
     </table>
 
-
+    <!-- TOTALS — right aligned, purple grand -->
     <div class="inv-totals">
-
-
         <table>
-
-
             <tr>
-
-                <td>
-                    Subtotal:
-                </td>
-
-                <td>
-
-                    ₹${subtotal.toLocaleString(
-                    'en-IN'
-                )}
-
-                </td>
-
+                <td>Subtotal:</td>
+                <td>Rs.${subtotal.toLocaleString('en-IN')}</td>
             </tr>
-
-
             <tr class="grand">
-
-                <td>
-                    Grand Total:
-                </td>
-
-                <td>
-
-                    ₹${grandTotal.toLocaleString(
-                    'en-IN'
-                )}
-
-                </td>
-
+                <td>Grand Total:</td>
+                <td>Rs.${grandTotal.toLocaleString('en-IN')}</td>
             </tr>
-
-
         </table>
-
-
     </div>
-
-
 </div>
 
-
+<!-- FOOTER -->
 <div class="inv-footer">
-
     ✨ Thank you for choosing Hari Crackers.<br>
-
     Wishing you a Safe, Bright & Joyful Celebration!
-
 </div>
-
 
 </body>
-
-</html>
-
-        `;
-
+</html>`;
         }
-
 
         // ============================================================
         // OPEN INVOICE + PRINT
         // ============================================================
-
         function openInvoiceAndPrint(html) {
-
             const win =
                 window.open(
                     '',
                     '_blank'
                 );
 
-
             if (!win) {
-
                 showToast(
                     '⚠️ Popup blocked — allow popups for this site to print the bill',
                     'error'
                 );
-
                 return;
-
             }
 
 
             win.document.open();
-
             win.document.write(
                 html
             );
-
             win.document.close();
-
             win.focus();
-
 
             setTimeout(
                 () => {
-
                     try {
-
                         win.print();
-
                     } catch (e) { }
-
                 },
                 400
             );
-
         }
 
 
         // ============================================================
         // TOAST
         // ============================================================
-
         function showToast(
             message,
             type = 'info'
         ) {
-
             const toast =
                 document.getElementById(
                     'toast'
                 );
 
-
             if (!toast) return;
-
 
             toast.textContent =
                 message;
 
-
             toast.className =
                 `toast ${type} show`;
-
 
             clearTimeout(
                 toast._timeout
             );
-
 
             toast._timeout =
                 setTimeout(
@@ -5430,20 +4994,15 @@ body{
                     },
                     3000
                 );
-
         }
 
 
         // ============================================================
         // KEYBOARD NAVIGATION
         // ============================================================
-
         function updateKeyboardHighlight() {
-
             const visible =
                 getKeyboardProducts();
-
-
             if (
                 visible.length === 0
             ) {
@@ -5523,89 +5082,62 @@ body{
         // ============================================================
 
         function moveProductNext() {
-
             const visible =
                 getKeyboardProducts();
-
 
             if (
                 visible.length === 0
             ) {
-
                 return;
 
             }
 
-
             highlightIndex++;
-
-
             if (
                 highlightIndex >=
                 visible.length
             ) {
-
                 highlightIndex = 0;
 
             }
-
-
             updateKeyboardHighlight();
-
         }
 
 
         // ============================================================
         // KEYBOARD EVENT
         // ============================================================
-
         searchInput.addEventListener(
             'keydown',
             (e) => {
-
                 const visible =
                     getKeyboardProducts();
-
 
                 // ----------------------------------------------------
                 // UP
                 // ----------------------------------------------------
-
                 if (
                     e.key ===
                     'ArrowUp'
                 ) {
-
                     e.preventDefault();
-
                     e.stopPropagation();
-
                     moveProductPrevious();
-
                     return;
-
                 }
-
 
                 // ----------------------------------------------------
                 // DOWN
                 // ----------------------------------------------------
-
                 if (
                     e.key ===
                     'ArrowDown'
                 ) {
-
                     e.preventDefault();
-
                     e.stopPropagation();
-
                     moveProductNext();
-
                     return;
-
                 }
-
 
                 // ----------------------------------------------------
                 // LEFT
@@ -5615,37 +5147,25 @@ body{
                     e.key ===
                     'ArrowLeft'
                 ) {
-
                     e.preventDefault();
-
                     e.stopPropagation();
-
                     moveProductPrevious();
-
                     return;
-
                 }
 
 
                 // ----------------------------------------------------
                 // RIGHT
                 // ----------------------------------------------------
-
                 if (
                     e.key ===
                     'ArrowRight'
                 ) {
-
                     e.preventDefault();
-
                     e.stopPropagation();
-
                     moveProductNext();
-
                     return;
-
                 }
-
 
                 // ----------------------------------------------------
                 // ENTER
@@ -5655,25 +5175,18 @@ body{
                     e.key ===
                     'Enter'
                 ) {
-
                     e.preventDefault();
-
                     e.stopPropagation();
-
 
                     if (
                         visible.length === 0
                     ) {
-
                         showToast(
                             '⚠️ No matching product found',
                             'error'
                         );
-
                         return;
-
                     }
-
 
                     const selectedProduct =
                         visible[
@@ -5683,28 +5196,21 @@ body{
                         )
                         ];
 
-
                     if (
                         !selectedProduct
                     ) {
-
                         return;
-
                     }
-
 
                     // Add product
                     addToBill(
                         selectedProduct
                     );
 
-
                     showToast(
                         `✅ Added: ${selectedProduct.name}`,
                         'success'
                     );
-
-
                     // Keep search focused
                     searchInput.focus();
 
@@ -5714,92 +5220,61 @@ body{
                         highlightIndex <
                         visible.length - 1
                     ) {
-
                         highlightIndex++;
-
                     } else {
-
                         // Last product -> first product
                         highlightIndex = 0;
-
                     }
 
 
                     // Restore highlight
                     setTimeout(
                         () => {
-
                             updateKeyboardHighlight();
-
                             searchInput.focus();
-
-
                             searchInput.setSelectionRange(
                                 searchInput.value.length,
                                 searchInput.value.length
                             );
-
                         },
                         50
                     );
-
-
                     return;
-
                 }
 
 
                 // ----------------------------------------------------
                 // ESCAPE
                 // ----------------------------------------------------
-
                 if (
                     e.key ===
                     'Escape'
                 ) {
-
                     e.preventDefault();
-
                     e.stopPropagation();
-
-
                     searchInput.value =
                         '';
-
                     highlightIndex =
                         0;
-
-
                     renderProductGrid();
-
                     searchInput.focus();
-
                     return;
-
                 }
 
 
                 // ----------------------------------------------------
                 // BACKSPACE
                 // ----------------------------------------------------
-
                 if (
                     e.key ===
                     'Backspace' &&
                     searchInput.value === ''
                 ) {
-
                     e.preventDefault();
-
                     e.stopPropagation();
-
-
                     removeLastBillItem();
-
                     return;
-
                 }
-
             }
         );
 
@@ -5807,45 +5282,31 @@ body{
         // ============================================================
         // SEARCH INPUT
         // ============================================================
-
         searchInput.addEventListener(
             'input',
             () => {
-
                 highlightIndex =
                     0;
-
-
                 renderProductGrid();
-
-
                 setTimeout(
                     () => {
-
                         const visible =
                             getKeyboardProducts();
-
-
                         if (
                             visible.length > 0
                         ) {
-
                             highlightProductRow(
                                 visible[0].id
                             );
-
                         }
-
                     },
                     50
                 );
-
             }
         );
 
 
         function highlightProductRow(productId) {
-
             // Remove old highlight
             document
                 .querySelectorAll('.product-pick-table tbody tr')
@@ -5861,10 +5322,8 @@ body{
 
             // Highlight current product
             row.classList.add('kb-highlight');
-
             const productWrap =
                 document.querySelector('.product-table-wrap');
-
             if (!productWrap) return;
 
             // ========================================================
@@ -5873,134 +5332,90 @@ body{
 
             const rowTop = row.offsetTop;
             const rowBottom = rowTop + row.offsetHeight;
-
             const visibleTop = productWrap.scrollTop;
             const visibleBottom =
                 visibleTop + productWrap.clientHeight;
 
             // Product above visible area
             if (rowTop < visibleTop) {
-
                 productWrap.scrollTop = rowTop - 10;
-
             }
 
             // Product below visible area
             else if (rowBottom > visibleBottom) {
-
                 productWrap.scrollTop =
                     rowBottom - productWrap.clientHeight + 10;
-
             }
-
-            // 🔥 NO scrollIntoView()
-            // 🔥 NO smooth scrolling
         }
 
         // ============================================================
         // FOCUS QTY FIELD
         // ============================================================
-
         function focusQtyFieldForProduct(
             productId
         ) {
-
             const rows =
                 cartTbody.querySelectorAll(
                     'tr[data-index]'
                 );
 
-
             for (
                 const row of rows
             ) {
-
                 const idx =
                     parseInt(
                         row.dataset.index,
                         10
                     );
-
-
                 const item =
                     billItems[idx];
-
-
                 if (
                     item &&
                     item.id ===
                     productId
                 ) {
-
                     const qtyInput =
                         row.querySelector(
                             '.qty-input'
                         );
 
-
                     if (qtyInput) {
-
                         qtyInput.focus();
-
                         qtyInput.select();
-
                         qtyInput.scrollIntoView({
-
                             block:
                                 'nearest',
-
                             behavior:
                                 'smooth'
-
                         });
-
-
                         return;
-
                     }
-
                 }
-
             }
-
-
             searchInput.focus();
-
         }
 
 
         // ============================================================
         // REMOVE LAST BILL ITEM
         // ============================================================
-
         function removeLastBillItem() {
-
             if (
                 billItems.length === 0
             ) {
-
                 showToast(
                     'Bill empty',
                     'info'
                 );
-
                 return;
-
             }
-
-
             const lastItem =
                 billItems[
                 billItems.length - 1
                 ];
 
-
             billItems.pop();
-
-
             renderCart();
-
-
             showToast(
                 `🗑️ Removed: ${lastItem.name}`,
                 'info'
@@ -6012,22 +5427,16 @@ body{
         // ============================================================
         // AUTO FOCUS SEARCH
         // ============================================================
-
         window.addEventListener(
             'load',
             () => {
-
                 setTimeout(
                     () => {
-
                         searchInput.focus();
-
                         updateKeyboardHighlight();
-
                     },
                     300
                 );
-
             }
         );
 
@@ -6035,21 +5444,12 @@ body{
         // ============================================================
         // BADGES
         // ============================================================
-
         function listenToBadges() {
-
-
-            // --------------------------------------------------------
-            // ORDERS BADGE
-            // --------------------------------------------------------
-
             const ordersRef =
                 collection(
                     db,
                     'orders'
                 );
-
-
             onSnapshot(
                 ordersRef,
                 (snapshot) => {
@@ -6058,8 +5458,6 @@ body{
                         document.getElementById(
                             'orderBadge'
                         );
-
-
                     if (orderBadge) {
 
                         orderBadge.textContent =
@@ -6070,9 +5468,7 @@ body{
                             snapshot.size > 0
                                 ? 'inline-block'
                                 : 'none';
-
                     }
-
                 },
                 (error) => {
 
@@ -6080,7 +5476,6 @@ body{
                         'Error listening to orders:',
                         error
                     );
-
                 }
             );
 
@@ -6088,7 +5483,6 @@ body{
             // --------------------------------------------------------
             // PRODUCTS BADGE
             // --------------------------------------------------------
-
             const productsRef =
                 collection(
                     db,
@@ -6099,12 +5493,10 @@ body{
             onSnapshot(
                 productsRef,
                 (snapshot) => {
-
                     const productBadge =
                         document.getElementById(
                             'productBadge'
                         );
-
 
                     if (productBadge) {
 
@@ -6118,7 +5510,6 @@ body{
                                 : 'none';
 
                     }
-
                 },
                 (error) => {
 
@@ -6134,13 +5525,11 @@ body{
             // --------------------------------------------------------
             // STOCK ALERT BADGE
             // --------------------------------------------------------
-
             const productsBadgeRef =
                 collection(
                     db,
                     'products'
                 );
-
 
             onSnapshot(
                 productsBadgeRef,
