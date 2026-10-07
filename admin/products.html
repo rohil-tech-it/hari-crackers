@@ -10,13 +10,8 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- FAVICON / TAB LOGO -->
     <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
     <style>
-        /* ============================================================
-       COMPLETE STYLES - Admin Panel Style
-       PURPLE & YELLOW Theme
-       ============================================================ */
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
         * {
@@ -82,9 +77,7 @@
             border-bottom: 1px solid rgba(255, 193, 7, 0.2);
             display: flex;
             flex-direction: column;
-            /* ← Change to column */
             align-items: center;
-            /* ← Center horizontally */
             justify-content: center;
             gap: 10px;
             text-align: center;
@@ -92,9 +85,7 @@
 
         .sidebar-brand .brand-icon {
             width: 90px;
-            /* ← Increased from 44px */
             height: 90px;
-            /* ← Increased from 44px */
             min-width: 90px;
             border-radius: 50%;
             background: #ffffff;
@@ -112,17 +103,14 @@
 
         .sidebar-brand .brand-icon img {
             width: 78px;
-            /* ← Increased from 36px */
             height: 78px;
-            /* ← Increased from 36px */
             object-fit: contain;
             display: block;
         }
 
         .sidebar-brand .brand-text {
             font-weight: 700;
-            font-size: 1.2rem;
-            /* ← Slightly bigger */
+            font-size: 1.1rem;
             color: #fff;
             text-align: center;
         }
@@ -138,16 +126,6 @@
             letter-spacing: 2px;
             display: block;
             text-align: center;
-        }
-
-        .sidebar-brand .brand-text {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #fff;
-        }
-
-        .sidebar-brand .brand-text span {
-            color: var(--yellow);
         }
 
         .sidebar-nav {
@@ -294,10 +272,6 @@
 
         .sidebar-footer .logout-btn:active {
             transform: translateY(0) scale(0.98);
-        }
-
-        .sidebar-footer .logout-btn i {
-            font-size: 1rem;
         }
 
         /* ===== MAIN CONTENT ===== */
@@ -524,17 +498,6 @@
             transform: scale(1.05);
         }
 
-        .item-card .item-image .image-placeholder {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--bg-elevated), #f0e6ff);
-            font-size: 2.5rem;
-            color: var(--text-dim);
-        }
-
         .item-card .item-name {
             font-weight: 600;
             font-size: 0.85rem;
@@ -552,19 +515,6 @@
             border-radius: 999px;
             display: inline-block;
             margin-top: 4px;
-        }
-
-        .item-card .product-price {
-            font-weight: 700;
-            color: var(--card);
-            font-size: 1rem;
-        }
-
-        .item-card .product-old-price {
-            text-decoration: line-through;
-            color: var(--text-dim);
-            font-size: 0.75rem;
-            margin-left: 6px;
         }
 
         .item-card .item-actions {
@@ -683,9 +633,7 @@
             color: #e74c3c;
         }
 
-        /* ============================================================
-       LIGHTBOX ZOOM
-       ============================================================ */
+        /* ===== LIGHTBOX ===== */
         .lightbox-overlay {
             display: none;
             position: fixed;
@@ -746,6 +694,19 @@
             font-weight: 600;
         }
 
+        .lightbox-title {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            background: rgba(45, 0, 80, 0.6);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -768,9 +729,7 @@
             }
         }
 
-        /* ============================================================
-       EDIT MODAL WITH IMAGE UPLOAD
-       ============================================================ */
+        /* ===== EDIT MODAL ===== */
         .edit-modal {
             display: none;
             position: fixed;
@@ -896,7 +855,6 @@
             box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.15);
         }
 
-        /* Category with Add New Button */
         .category-input-group {
             display: flex;
             gap: 8px;
@@ -927,7 +885,6 @@
             background: rgba(255, 193, 7, 0.05);
         }
 
-        /* Image Upload Styles */
         .image-upload-container {
             border: 2px dashed var(--border);
             border-radius: 8px;
@@ -1109,9 +1066,7 @@
             }
         }
 
-        /* ============================================================
-       RESPONSIVE
-       ============================================================ */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
@@ -1201,7 +1156,6 @@
             background: #6a1b9a;
         }
 
-        /* Admin actions bar */
         .admin-actions-bar {
             display: flex;
             gap: 12px;
@@ -1209,16 +1163,6 @@
             align-items: center;
         }
 
-        .admin-actions-bar .btn {
-            font-size: 0.8rem;
-            padding: 8px 16px;
-        }
-
-        .admin-actions-bar .btn i {
-            margin-right: 6px;
-        }
-
-        /* Uploading text */
         .uploading-text {
             display: none;
             color: var(--text-muted);
@@ -1230,7 +1174,6 @@
             display: block;
         }
 
-        /* Category management badge */
         .category-badge {
             display: inline-block;
             background: rgba(106, 27, 154, 0.1);
@@ -1240,19 +1183,6 @@
             font-size: 0.6rem;
             font-weight: 600;
             margin-left: 6px;
-        }
-
-        .lightbox-title {
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 18px;
-            font-weight: 600;
-            background: rgba(45, 0, 80, 0.6);
-            padding: 8px 16px;
-            border-radius: 20px;
         }
 
         .stock-toggle {
@@ -1320,6 +1250,11 @@
             background: #e74c3c;
         }
 
+        .stock-badge.low {
+            background: #f39c12;
+            color: #fff;
+        }
+
         .out-stock {
             opacity: .6;
         }
@@ -1328,9 +1263,7 @@
             filter: grayscale(100%);
         }
 
-        /* ============================================================ */
-        /* QUICK STOCK EDIT - Product card la inline stock update */
-        /* ============================================================ */
+        /* ===== QUICK STOCK EDIT ===== */
         .quick-stock-edit {
             display: flex;
             align-items: center;
@@ -1407,13 +1340,6 @@
             color: #fff;
         }
 
-        /* Stock badge LOW variant */
-        .stock-badge.low {
-            background: #f39c12;
-            color: #fff;
-        }
-
-        /* Mobile - smaller */
         @media (max-width: 480px) {
             .quick-stock-edit {
                 padding: 6px 8px;
@@ -1440,56 +1366,30 @@
 </head>
 
 <body>
-
-    <!-- SIDEBAR OVERLAY -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-icon">
-                <img src="../pictures/logo-removebg-preview.png" alt="Hari Crackers Logo">
-            </div>
+            <div class="brand-icon"><img src="../pictures/logo-removebg-preview.png" alt="Hari Crackers Logo"></div>
             <div>
                 <div class="brand-text">Hari <span>Crackers</span></div>
                 <span class="brand-sub">Admin Panel</span>
             </div>
         </div>
-
         <nav class="sidebar-nav">
             <div class="nav-label">Main Menu</div>
-
-            <a href="dashboard.html" class="nav-item">
-                <i class="fas fa-chart-pie"></i> Dashboard
-            </a>
-            <a href="orders.html" class="nav-item">
-                <i class="fas fa-shopping-bag"></i> Orders
-                <span class="badge" id="orderBadge">0</span>
-            </a>
-
-            <a href="products.html" class="nav-item active">
-                <i class="fas fa-box"></i> Products
-                <span class="badge" id="productBadge">0</span>
-            </a>
-
-            <div class="nav-label" style="margin-top:20px;">Direct
-                Billing</div>
-
-            <a href="billing.html" class="nav-item">
-                <i class="fas fa-cog"></i> Billing
-            </a>
-            <a href="bills-history.html" class="nav-item">
-                <i class="fas fa-file-invoice"></i> Billing History
-            </a>
-
+            <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i> Dashboard</a>
+            <a href="orders.html" class="nav-item"><i class="fas fa-shopping-bag"></i> Orders <span class="badge"
+                    id="orderBadge">0</span></a>
+            <a href="products.html" class="nav-item active"><i class="fas fa-box"></i> Products <span class="badge"
+                    id="productBadge">0</span></a>
+            <div class="nav-label" style="margin-top:20px;">Direct Billing</div>
+            <a href="billing.html" class="nav-item"><i class="fas fa-cash-register"></i> Billing</a>
+            <a href="bills-history.html" class="nav-item"><i class="fas fa-file-invoice"></i> Billing History</a>
             <div class="nav-label" style="margin-top:20px;">Inventory</div>
-
-            <a href="stock-management.html" class="nav-item">
-                <i class="fas fa-warehouse"></i> Stock Management
-                <span class="badge" id="stockAlertBadge" style="background:#e74c3c;display:none;">0</span>
-            </a>
+            <a href="stock-management.html" class="nav-item"><i class="fas fa-warehouse"></i> Stock Management
+                <span class="badge" id="stockAlertBadge" style="background:#e74c3c;display:none;">0</span></a>
         </nav>
-
         <div class="sidebar-footer">
             <div class="user-info">
                 <div class="user-avatar">A</div>
@@ -1498,20 +1398,16 @@
                     <div class="user-email">haricrackers182@gmail.com</div>
                 </div>
             </div>
-            <button class="logout-btn" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
     </aside>
 
-    <!-- ===== MAIN CONTENT ===== -->
     <main class="main-content">
         <header class="top-header">
             <div style="display:flex;align-items:center;gap:14px;">
                 <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
                 <div class="page-title">
-                    <h2>Products <span>— admin catalog
-                            management</span></h2>
+                    <h2>Products <span>— admin catalog management</span></h2>
                 </div>
             </div>
             <div class="header-actions">
@@ -1523,13 +1419,10 @@
         </header>
 
         <div class="page-content">
-
-            <!-- LOW STOCK BANNER -->
             <div id="lowStockBanner" class="low-stock-banner">
                 <div class="banner-title">
                     <i class="fas fa-triangle-exclamation"></i>
-                    <span id="lowStockBannerText">Stock குறைவா
-                        இருக்கு</span>
+                    <span id="lowStockBannerText">Stock குறைவா இருக்கு</span>
                 </div>
                 <div class="low-stock-list" id="lowStockList"></div>
             </div>
@@ -1537,8 +1430,7 @@
             <div
                 style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
                 <div>
-                    <h3 style="font-weight:600;font-size:1.1rem;">
-                        All Products
+                    <h3 style="font-weight:600;font-size:1.1rem;">All Products
                         <span id="productCount"
                             style="font-weight:400;font-size:0.85rem;color:var(--text-muted);"></span>
                     </h3>
@@ -1549,44 +1441,32 @@
                     </div>
                 </div>
                 <div class="admin-actions-bar">
-                    <button class="btn-primary" onclick="refreshProducts()">
-                        <i class="fas fa-sync"></i> Sync
-                    </button>
-                    <button class="btn-primary" onclick="renumberProducts()">
-                        <i class="fas fa-list-ol"></i> Fix Order Gaps
-                    </button>
-                    <button class="btn-primary" onclick="openAddModal()">
-                        <i class="fas fa-plus"></i> Add Product
-                    </button>
-
+                    <button class="btn-primary" onclick="refreshProducts()"><i class="fas fa-sync"></i> Sync</button>
+                    <button class="btn-primary" onclick="renumberProducts()"><i class="fas fa-list-ol"></i> Fix Order
+                        Gaps</button>
+                    <button class="btn-primary" onclick="openAddModal()"><i class="fas fa-plus"></i> Add
+                        Product</button>
                     <button class="btn-danger"
-                        onclick="if(confirm('Delete ALL products? This cannot be undone!')) deleteAllProducts()">
-                        <i class="fas fa-trash"></i> Delete All
-                    </button>
+                        onclick="if(confirm('Delete ALL products? This cannot be undone!')) deleteAllProducts()"><i
+                            class="fas fa-trash"></i> Delete All</button>
                 </div>
             </div>
 
             <div id="loadingState" class="loading-spinner">
                 <i class="fas fa-spinner"></i>
-                <span style="margin-left:12px;color:var(--text-muted);">Loading
-                    products from Firebase...</span>
+                <span style="margin-left:12px;color:var(--text-muted);">Loading products from Firebase...</span>
             </div>
-
             <div id="productsGrid" class="items-grid" style="display:none;"></div>
-
             <div id="emptyState" class="empty-state" style="display:none;">
                 <i class="fas fa-box-open"></i>
                 <h3>No Products Found</h3>
-                <p style="color:var(--text-muted);">Click "Add Product" to
-                    start building your catalog.</p>
-                <button class="btn-primary" onclick="openAddModal()" style="margin-top:16px;">
-                    <i class="fas fa-plus"></i> Add First Product
-                </button>
+                <p style="color:var(--text-muted);">Click "Add Product" to start building your catalog.</p>
+                <button class="btn-primary" onclick="openAddModal()" style="margin-top:16px;"><i
+                        class="fas fa-plus"></i> Add First Product</button>
             </div>
         </div>
     </main>
 
-    <!-- ===== LIGHTBOX ZOOM ===== -->
     <div class="lightbox-overlay" id="lightboxOverlay">
         <button class="lightbox-close" id="lightboxClose">&times;</button>
         <img id="lightboxImage" src alt="Product Image">
@@ -1594,19 +1474,14 @@
         <div class="lightbox-counter" id="lightboxCounter"></div>
     </div>
 
-    <!-- ===== EDIT MODAL WITH DYNAMIC CATEGORY ===== -->
     <div class="edit-modal" id="editModal">
         <div class="edit-modal-content">
             <div class="edit-modal-header">
                 <h2><i class="fas fa-pen"></i> Edit Product</h2>
-                <button class="edit-modal-close" onclick="closeEditModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+                <button class="edit-modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button>
             </div>
             <div class="edit-modal-body">
                 <input type="hidden" id="editProductId">
-
-                <!-- Product Image Upload -->
                 <div class="form-group">
                     <label>Product Image</label>
                     <div class="image-upload-container" id="imageUploadContainer">
@@ -1616,72 +1491,45 @@
                             <i class="fas fa-cloud-upload-alt"></i>
                             <span>Click or drag to upload image</span>
                         </div>
-                        <button class="remove-image" id="removeImageBtn" onclick="removeImage()">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <button class="remove-image" id="removeImageBtn" onclick="removeImage()"><i
+                                class="fas fa-times"></i></button>
                         <div class="upload-progress" id="uploadProgress">
                             <div class="progress-bar" id="progressBar"></div>
                         </div>
                         <div class="uploading-text" id="uploadingText">Uploading image...</div>
                     </div>
-                    <p style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;">
-                        Supported: JPG, PNG, WEBP (Max 2MB)
-                    </p>
+                    <p style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;">Supported: JPG, PNG, WEBP (Max
+                        2MB)</p>
                 </div>
-
-                <!-- Product Name -->
                 <div class="form-group">
                     <label>Product Name *</label>
                     <input type="text" id="editProductName" placeholder="Enter product name...">
                 </div>
-
-                <!-- Category with Add New Button -->
                 <div class="form-group">
                     <label>Category *</label>
                     <div class="category-input-group">
-                        <select id="editProductCategory">
-                            <!-- Static categories will be populated by JavaScript -->
-                        </select>
-                        <button class="btn-add-category" onclick="addNewCategory()" title="Add new category">
-                            <i class="fas fa-plus"></i> New
-                        </button>
+                        <select id="editProductCategory"></select>
+                        <button class="btn-add-category" onclick="addNewCategory()" title="Add new category"><i
+                                class="fas fa-plus"></i> New</button>
                     </div>
-                    <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;" id="categoryTags">
-                        <!-- Category tags will be shown here -->
-                    </div>
+                    <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;" id="categoryTags"></div>
                 </div>
-
-                <!-- Price & MRP Row -->
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Price (₹) *</label>
-                        <input type="number" id="editProductPrice" placeholder="0" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>MRP / Old Price (₹)</label>
-                        <input type="number" id="editProductOldPrice" placeholder="0" min="0">
-                    </div>
+                    <div class="form-group"><label>Price (₹) *</label><input type="number" id="editProductPrice"
+                            placeholder="0" min="0"></div>
+                    <div class="form-group"><label>MRP / Old Price (₹)</label><input type="number"
+                            id="editProductOldPrice" placeholder="0" min="0"></div>
                 </div>
-
-                <!-- Sub/Unit -->
                 <div class="form-group">
                     <label>Unit / Quantity</label>
                     <input type="text" id="editProductSub" placeholder="e.g., 1 Pkt, 1 Box, 1 Bag">
                 </div>
-
-                <!-- Stock Quantity & Low Stock Alert -->
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Stock Quantity</label>
-                        <input type="number" id="editProductStockQty" placeholder="0" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Low Stock Alert At</label>
-                        <input type="number" id="editProductLowStockAt" placeholder="5" min="0">
-                    </div>
+                    <div class="form-group"><label>Stock Quantity</label><input type="number" id="editProductStockQty"
+                            placeholder="0" min="0"></div>
+                    <div class="form-group"><label>Low Stock Alert At</label><input type="number"
+                            id="editProductLowStockAt" placeholder="5" min="0"></div>
                 </div>
-
-                <!-- Order Index -->
                 <div class="form-group">
                     <label>Order Index</label>
                     <input type="number" id="editProductOrder" placeholder="0" min="0">
@@ -1691,19 +1539,15 @@
                 <label>Stock Status</label>
                 <div class="stock-toggle">
                     <span>Out of Stock</span>
-                    <label class="switch">
-                        <input type="checkbox" id="editProductStock" checked>
-                        <span class="slider"></span>
-                    </label>
+                    <label class="switch"><input type="checkbox" id="editProductStock" checked><span
+                            class="slider"></span></label>
                     <span>In Stock</span>
                 </div>
             </div>
-
             <div class="edit-modal-footer">
                 <button class="btn btn-cancel" onclick="closeEditModal()">Cancel</button>
-                <button class="btn btn-save" id="saveBtn" onclick="saveProduct()">
-                    <i class="fas fa-save"></i> Save Changes
-                </button>
+                <button class="btn btn-save" id="saveBtn" onclick="saveProduct()"><i class="fas fa-save"></i> Save
+                    Changes</button>
             </div>
         </div>
     </div>
@@ -1727,29 +1571,11 @@
         // ============================================================
         import { initializeApp } from "firebase/app";
         import {
-            getFirestore,
-            collection,
-            getDocs,
-            onSnapshot,
-            query,
-            orderBy,
-            doc,
-            updateDoc,
-            deleteDoc,
-            addDoc,
-            writeBatch,
-            setDoc,
-            where
+            getFirestore, collection, getDocs, onSnapshot, query, orderBy,
+            doc, updateDoc, deleteDoc, addDoc, writeBatch, setDoc, where, serverTimestamp
         } from "firebase/firestore";
         import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-        import {
-            getStorage,
-            ref,
-            uploadBytesResumable,
-            getDownloadURL,
-            deleteObject
-        } from "firebase/storage";
-
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
@@ -1764,7 +1590,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const storage = getStorage(app);
-        const auth = getAuth(app);   // ✅ INTHA LINE ADD PANNUNGA
+        const auth = getAuth(app);
 
         // ============================================================
         // DOM ELEMENTS
@@ -1809,15 +1635,13 @@
             "CARNIVAL DISPLAY SETOUT [SONNY, LIYA, PANDIYAN]",
             "SPARKLERS"
         ];
+
         // ============================================================
         // CATEGORY MANAGEMENT
         // ============================================================
         let allCategories = [...defaultCategories];
-
         const CATEGORY_STORAGE_KEY = 'haricrackers_categories_v2';
 
-        // Removes duplicate category names, ignoring case/extra spaces.
-        // Keeps the first spelling it sees, so defaultCategories wins over old saved ones.
         function dedupeCategories(list) {
             const seen = new Set();
             const result = [];
@@ -1831,16 +1655,13 @@
         }
 
         function loadCategories() {
-            // Try to load from localStorage (only genuinely custom categories are kept here)
             const saved = localStorage.getItem(CATEGORY_STORAGE_KEY);
             let customSaved = [];
             if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
                     if (Array.isArray(parsed)) customSaved = parsed;
-                } catch (e) {
-                    console.log('Using default categories');
-                }
+                } catch (e) { console.log('Using default categories'); }
             }
             allCategories = dedupeCategories([...defaultCategories, ...customSaved]);
             renderCategoryDropdown();
@@ -1849,7 +1670,6 @@
 
         function saveCategories() {
             allCategories = dedupeCategories(allCategories);
-            // Only persist categories that aren't already part of the built-in list
             const defaultKeys = new Set(defaultCategories.map(c => c.trim().toLowerCase()));
             const customOnly = allCategories.filter(c => !defaultKeys.has(c.trim().toLowerCase()));
             localStorage.setItem(CATEGORY_STORAGE_KEY, JSON.stringify(customOnly));
@@ -1861,31 +1681,24 @@
             const select = document.getElementById('editProductCategory');
             const currentValue = select.value;
             select.innerHTML = '';
-
             allCategories.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat;
                 option.textContent = cat;
                 select.appendChild(option);
             });
-
-            if (currentValue && allCategories.includes(currentValue)) {
-                select.value = currentValue;
-            }
+            if (currentValue && allCategories.includes(currentValue)) select.value = currentValue;
         }
 
         function renderCategoryTags() {
             const container = document.getElementById('categoryTags');
             container.innerHTML = '';
-
             const defaultKeysForTags = new Set(defaultCategories.map(c => c.trim().toLowerCase()));
             const customCategories = allCategories.filter(c => !defaultKeysForTags.has(c.trim().toLowerCase()));
-
             if (customCategories.length === 0) {
                 container.innerHTML = '<span style="font-size:0.7rem;color:var(--text-dim);">All default categories loaded</span>';
                 return;
             }
-
             customCategories.forEach(cat => {
                 const tag = document.createElement('span');
                 tag.className = 'category-badge';
@@ -1898,129 +1711,74 @@
         window.addNewCategory = function () {
             const newCategory = prompt('Enter new category name:');
             if (!newCategory) return;
-
             const trimmed = newCategory.trim();
-            if (allCategories.includes(trimmed)) {
-                showToast('⚠️ Category already exists!', 'error');
-                return;
-            }
-
+            if (allCategories.includes(trimmed)) { showToast('⚠️ Category already exists!', 'error'); return; }
             allCategories.push(trimmed);
             saveCategories();
             showToast(`✅ Category "${trimmed}" added!`, 'success');
         };
 
         window.removeCategory = function (category) {
-            if (defaultCategories.includes(category)) {
-                showToast('Cannot remove default category.', 'error');
-                return;
-            }
-
+            if (defaultCategories.includes(category)) { showToast('Cannot remove default category.', 'error'); return; }
             if (!confirm(`Remove category "${category}"?`)) return;
-
             allCategories = allCategories.filter(c => c !== category);
             saveCategories();
             showToast(`🗑️ Category "${category}" removed`, 'info');
         };
+
         // ============================================================
-        // LISTEN TO ORDERS (for badge count only)
+        // LISTEN TO ORDERS (badge count only)
         // ============================================================
         function listenToOrders() {
-            const ordersRef = collection(db, 'orders');
-            unsubscribeOrders = onSnapshot(ordersRef, (snapshot) => {
+            unsubscribeOrders = onSnapshot(collection(db, 'orders'), (snapshot) => {
                 if (orderBadge) {
                     orderBadge.textContent = snapshot.size;
                     orderBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
                 }
-            }, (error) => {
-                console.error('Error listening to orders:', error);
-            });
-        }
-        // ============================================================
-        // LISTEN TO STOCK ALERTS — Sidebar badge count (Low Stock Products)
-        // ============================================================
-        function listenToStockAlerts() {
-            const productsRef = collection(db, 'products');
-
-            onSnapshot(productsRef, (snapshot) => {
-                let lowStockCount = 0;
-
-                snapshot.docs.forEach(doc => {
-                    const data = doc.data();
-                    const stockQty = data.stockQty;
-                    const threshold = data.lowStockThreshold || 5;
-
-                    // Stock track pannirundha + threshold-ku kuraiya irundha count pannum
-                    if (typeof stockQty === 'number' && stockQty <= threshold) {
-                        lowStockCount++;
-                    }
-                });
-
-                const badge = document.getElementById('stockAlertBadge');
-                if (badge) {
-                    badge.textContent = lowStockCount;
-                    badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
-                }
-            }, (error) => {
-                console.error('Stock alert badge error:', error);
-            });
+            }, (error) => console.error('Error listening to orders:', error));
         }
 
         // ============================================================
         // LISTEN TO PRODUCTS (REAL-TIME SYNC)
+        // (Sidebar low-stock badge is handled by the Global Low-Stock Watcher at the bottom)
         // ============================================================
         function listenToProducts() {
             const q = query(collection(db, 'products'), orderBy('orderIndex', 'asc'));
-
             loadingState.style.display = 'flex';
             listenToOrders();
-            listenToStockAlerts();   // ✅ NEW: Stock alert badge
 
             unsubscribeProducts = onSnapshot(q, async (snapshot) => {
                 try {
                     const promises = snapshot.docs.map(async (docSnap) => {
                         const data = docSnap.data();
-
                         let imageUrl = data.imageUrl;
-
-                        // Old products-ku imageFilename irundha Storage-la irundhu URL edukkum
                         if (!imageUrl && data.imageFilename) {
                             try {
-                                imageUrl = await getDownloadURL(
-                                    ref(storage, data.imageFilename)
-                                );
+                                imageUrl = await getDownloadURL(ref(storage, data.imageFilename));
                             } catch (e) {
                                 console.log("Image not found:", data.imageFilename);
                                 imageUrl = null;
                             }
                         }
-
-                        return {
-                            id: docSnap.id,
-                            ...data,
-                            imageUrl
-                        };
+                        return { id: docSnap.id, ...data, imageUrl };
                     });
 
                     allProducts = await Promise.all(promises);
 
-                    renderProducts(allProducts);
+                    // keep the search filter applied after live updates
+                    window.filterProducts();
                     renderLowStockBanner(allProducts);
                     updateSyncStatus(true);
-
                     loadingState.style.display = 'none';
 
                     if (productBadge) {
                         productBadge.textContent = allProducts.length;
-                        productBadge.style.display =
-                            allProducts.length ? 'inline-block' : 'none';
+                        productBadge.style.display = allProducts.length ? 'inline-block' : 'none';
                     }
-
                 } catch (err) {
                     console.error(err);
                     showToast("Error loading images", "error");
                 }
-
             }, (error) => {
                 console.error("Error listening to products:", error);
                 updateSyncStatus(false);
@@ -2037,10 +1795,9 @@
             const list = document.getElementById('lowStockList');
             const bannerText = document.getElementById('lowStockBannerText');
 
-            // Only products that actually have a stockQty number set are considered.
             const lowStock = products
                 .filter(p => typeof p.stockQty === 'number')
-                .filter(p => p.stockQty <= (typeof p.lowStockThreshold === 'number' ? p.lowStockThreshold : 5))
+                .filter(p => p.stockQty <= (p.lowStockThreshold || 5))
                 .sort((a, b) => (a.stockQty || 0) - (b.stockQty || 0));
 
             if (lowStock.length === 0) {
@@ -2050,16 +1807,13 @@
             }
 
             bannerText.textContent = `⚠️ Stock குறைவா இருக்கு — ${lowStock.length} product(s) கவனிக்கவும்`;
-
             list.innerHTML = lowStock.map(p => {
                 const out = (p.stockQty || 0) <= 0;
-                const safeName = (p.name || 'Unnamed').replace(/'/g, "\\'");
                 return `<div class="low-stock-item ${out ? 'out-of-stock' : ''}" onclick="openEditModal('${p.id}')" title="Click to edit stock">
                     ${p.name || 'Unnamed'}
                     <span class="qty-left">${out ? 'OUT' : p.stockQty + ' left'}</span>
                 </div>`;
             }).join('');
-
             banner.classList.add('show');
         }
 
@@ -2081,62 +1835,55 @@
             emptyState.style.display = 'none';
             productCount.textContent = `(${products.length})`;
             productTotal.textContent = `— ${products.length} products`;
+
+            // don't wipe the box the admin is typing in
+            const active = document.activeElement;
+            const keep = active && active.classList && active.classList.contains('quick-stock-input')
+                ? { id: active.dataset.id, v: active.value, dirty: active.value !== active.defaultValue }
+                : null;
+
             productsGrid.innerHTML = products.map(product => {
                 const imageSrc = product.imageUrl || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect width="200" height="200" fill="%23f0ebe6"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999" font-size="14"%3E📷 No Image%3C/text%3E%3C/svg%3E';
                 const inStock = product.inStock !== false;
                 const stockQty = typeof product.stockQty === 'number' ? product.stockQty : null;
                 const threshold = product.lowStockThreshold || 5;
 
-                // Stock status badge - low / out / in
                 let stockStatusBadge;
-                if (stockQty === null) {
-                    stockStatusBadge = '<div class="stock-badge in">In Stock</div>';
-                } else if (stockQty <= 0) {
-                    stockStatusBadge = '<div class="stock-badge out">Out of Stock</div>';
-                } else if (stockQty <= threshold) {
-                    stockStatusBadge = `<div class="stock-badge low">⚠️ ${stockQty} left</div>`;
-                } else {
-                    stockStatusBadge = `<div class="stock-badge in">${stockQty} pcs</div>`;
-                }
+                if (stockQty === null) stockStatusBadge = '<div class="stock-badge in">In Stock</div>';
+                else if (stockQty <= 0) stockStatusBadge = '<div class="stock-badge out">Out of Stock</div>';
+                else if (stockQty <= threshold) stockStatusBadge = `<div class="stock-badge low">⚠️ ${stockQty} left</div>`;
+                else stockStatusBadge = `<div class="stock-badge in">${stockQty} pcs</div>`;
 
                 return `
 <div class="item-card ${inStock ? '' : 'out-stock'}" data-id="${product.id}" data-order="${product.orderIndex || 0}">
     ${stockStatusBadge}
-
     <div class="item-image" onclick="openLightbox('${imageSrc}', '${product.name?.replace(/'/g, "\\'") || 'Product'}')">
         <img src="${imageSrc}" alt="${product.name || 'Product'}" loading="lazy" decoding="async"
             onerror="this.src='../pictures/logo-removebg-preview.png'">
     </div>
-
     <div class="item-name">${product.name || 'Unnamed Product'}</div>
     <div class="product-category">${product.category || 'Uncategorized'}</div>
-
-    <!-- ✅ NEW: Quick Stock Edit -->
     <div class="quick-stock-edit">
         <label>Stock:</label>
-        <input type="number" 
-               class="quick-stock-input" 
-               data-id="${product.id}"
-               value="${stockQty !== null ? stockQty : ''}"
-               placeholder="—"
-               min="0">
+        <input type="number" class="quick-stock-input" data-id="${product.id}"
+               value="${stockQty !== null ? stockQty : ''}" placeholder="—" min="0">
         <button class="quick-stock-save" onclick="quickUpdateStock('${product.id}')" title="Save stock">
             <i class="fas fa-check"></i>
         </button>
     </div>
-
     <div class="item-actions">
-        <button class="action-btn edit" onclick="openEditModal('${product.id}')">
-            <i class="fas fa-pen"></i>
-        </button>
-        <button class="action-btn delete" onclick="deleteProduct('${product.id}')">
-            <i class="fas fa-trash"></i>
-        </button>
+        <button class="action-btn edit" onclick="openEditModal('${product.id}')"><i class="fas fa-pen"></i></button>
+        <button class="action-btn delete" onclick="deleteProduct('${product.id}')"><i class="fas fa-trash"></i></button>
     </div>
 </div>`;
             }).join('');
 
+            if (keep && keep.dirty) {
+                const el = productsGrid.querySelector(`.quick-stock-input[data-id="${keep.id}"]`);
+                if (el) { el.value = keep.v; el.focus(); }
+            }
         }
+
         // ============================================================
         // IMAGE UPLOAD FUNCTIONS
         // ============================================================
@@ -2145,73 +1892,43 @@
             if (!file) return;
 
             const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-            if (!validTypes.includes(file.type)) {
-                showToast('Please upload JPG, PNG, WEBP, or GIF images only.', 'error');
-                return;
-            }
-
-            if (file.size > 2 * 1024 * 1024) {
-                showToast('Image size must be less than 2MB.', 'error');
-                return;
-            }
+            if (!validTypes.includes(file.type)) { showToast('Please upload JPG, PNG, WEBP, or GIF images only.', 'error'); return; }
+            if (file.size > 2 * 1024 * 1024) { showToast('Image size must be less than 2MB.', 'error'); return; }
 
             selectedFile = file;
-
             const reader = new FileReader();
             reader.onload = function (e) {
                 const preview = document.getElementById('uploadPreview');
-                const placeholder = document.getElementById('uploadPlaceholder');
-                const removeBtn = document.getElementById('removeImageBtn');
-
                 preview.src = e.target.result;
                 preview.classList.add('show');
-                placeholder.style.display = 'none';
-                removeBtn.classList.add('show');
+                document.getElementById('uploadPlaceholder').style.display = 'none';
+                document.getElementById('removeImageBtn').classList.add('show');
             };
             reader.readAsDataURL(file);
-
             event.target.value = '';
         };
 
         window.removeImage = function () {
             selectedFile = null;
             const preview = document.getElementById('uploadPreview');
-            const placeholder = document.getElementById('uploadPlaceholder');
-            const removeBtn = document.getElementById('removeImageBtn');
-            const progress = document.getElementById('uploadProgress');
-            const progressBar = document.getElementById('progressBar');
-
             preview.classList.remove('show');
             preview.src = '';
-            placeholder.style.display = 'block';
-            removeBtn.classList.remove('show');
-            progress.classList.remove('show');
-            progressBar.style.width = '0%';
+            document.getElementById('uploadPlaceholder').style.display = 'block';
+            document.getElementById('removeImageBtn').classList.remove('show');
+            document.getElementById('uploadProgress').classList.remove('show');
+            document.getElementById('progressBar').style.width = '0%';
             document.getElementById('uploadingText').classList.remove('show');
             document.getElementById('imageInput').value = '';
         };
 
-
         // ============================================================
         // PDF TABLE EXTRACTION (position-based column detection)
         // ============================================================
-        // Column boundaries (in PDF points) calibrated against the
-        // Hari Crackers price-list PDF layout: S.No | Name (Eng) | Name (Tamil)
-        // | PER | BEFORE DISCOUNT | AFTER DISCOUNT | REQ | TOTAL
-        const PDF_COLS = {
-            SNO: 36,
-            NAME_END: 240,
-            TAMIL_END: 377,
-            PER_END: 418,
-            BEFORE_END: 473,
-            AFTER_END: 520
-        };
+        const PDF_COLS = { SNO: 36, NAME_END: 240, TAMIL_END: 377, PER_END: 418, BEFORE_END: 473, AFTER_END: 520 };
 
         async function extractPdfRows(arrayBuffer) {
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             const rows = [];
-
-            // Page 1 is the cover page - table data starts from page 2
             for (let pageNum = 2; pageNum <= pdf.numPages; pageNum++) {
                 const page = await pdf.getPage(pageNum);
                 const viewport = page.getViewport({ scale: 1 });
@@ -2219,15 +1936,9 @@
 
                 const words = textContent.items
                     .filter(item => item.str && item.str.trim().length > 0)
-                    .map(item => ({
-                        x0: item.transform[4],
-                        top: viewport.height - item.transform[5],
-                        text: item.str.trim()
-                    }));
-
+                    .map(item => ({ x0: item.transform[4], top: viewport.height - item.transform[5], text: item.str.trim() }));
                 words.sort((a, b) => (a.top - b.top) || (a.x0 - b.x0));
 
-                // Cluster words into visual rows (same line = similar 'top')
                 const TOL = 3;
                 const lineGroups = [];
                 let cur = [];
@@ -2254,150 +1965,88 @@
                         else if (x < PDF_COLS.PER_END) perTokens.push(w.text);
                         else if (x < PDF_COLS.BEFORE_END) beforeTokens.push(w.text);
                         else if (x < PDF_COLS.AFTER_END) afterTokens.push(w.text);
-                        // REQ / TOTAL columns are left blank by design - ignored
                     }
-
                     const name = nameTokens.join(' ').trim();
                     if (!name) continue;
-                    if (/^NAME\s+OF/i.test(name)) continue; // repeated table header row
-
+                    if (/^NAME\s+OF/i.test(name)) continue;
                     const per = perTokens.join(' ').trim();
                     const before = beforeTokens.join('').trim();
                     const after = afterTokens.join('').trim();
                     const isCategory = (sno === '' && per === '' && before === '' && after === '');
-
                     rows.push({ sno, name, per, before, after, isCategory });
                 }
             }
-
             return rows;
         }
 
         window.bulkUploadPDF = function (event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
 
             reader.onload = async function (e) {
                 try {
-                    const arrayBuffer = e.target.result;
-                    const rows = await extractPdfRows(arrayBuffer);
-
+                    const rows = await extractPdfRows(e.target.result);
                     if (!rows.length) {
                         showToast("PDF-la data edhuvum kidaikala!", "error");
                         event.target.value = "";
                         return;
                     }
 
-                    console.log("PDF rows detected:", rows.length);
-
-                    // Quote & fraction normalize panra helper - Firebase vs PDF text difference fix
                     function normalizeName(str) {
                         return String(str || "")
-                            .replace(/[\u2018\u2019]/g, "'")
-                            .replace(/[\u201C\u201D]/g, '"')
-                            .replace(/½/g, "1/2")
-                            .replace(/¾/g, "3/4")
-                            .replace(/¼/g, "1/4")
-                            .replace(/\s+/g, " ")
-                            .trim()
-                            .toUpperCase();
+                            .replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"')
+                            .replace(/½/g, "1/2").replace(/¾/g, "3/4").replace(/¼/g, "1/4")
+                            .replace(/\s+/g, " ").trim().toUpperCase();
                     }
 
-                    // PDF section-header text (ALL CAPS) -> exact dropdown category name.
-                    // Keys are normalized (trim + uppercase + straight quotes) so PDF's curly
-                    // apostrophes and spacing differences don't matter.
                     const categoryHeaderMap = {
-                        "SINGLE SOUND CRACKERS": "Single Sound Crackers",
-                        "BIJILLI CRACKERS": "Bijilli Crackers",
-                        "FLOWERPOTS": "Flowerpots",
-                        "GROUND CHAKKAR": "Ground Chakkar",
-                        "RAINBOW CHAKKAR": "Rainbow Chakkar",
-                        "ELECTRIC CRACKERS": "Electric Crackers",
-                        "CHILDREN'S SPECIAL": "Children's Special",
-                        "ATOM BOMBS": "Atom Bombs",
-                        "ROCKETS": "Rockets",
-                        "JAGUVAR VARITIES": "Jaguvar Varities",
-                        "COLOUR FOUNTAIN'S": "Colour Fountains",
-                        "NEW SPECIAL FOUNTAIN'S": "New Special Fountains",
-                        "NEW WONDERS": "New Wonders",
-                        "CHOTTA FANCY": "Chotta Fancy",
-                        "NIGHT ATTRACTION FANCY": "Night Attraction Fancy",
-                        "AYYAN'S SPECIAL ELITE SERIES": "Ayyan's Special Elite Series",
-                        "2026 NEW ELITE FANCY": "2026 New Elite Fancy",
-                        "NOVELTIES": "Novelties",
-                        "MULTISHOTS": "Multishots",
-                        "FESTIVAL SERIES (SET OUT)": "Festival Series (Set Out)",
-                        "ROLL CAPS & SERPANT EGGS": "Roll Caps & Serpent Eggs",
-                        "2026 NEW VARITIES": "2026 New Varities",
-                        "SPARKLERS": "Sparklers",
-                        "NEW VARITIES SPARKLERS": "New Varities Sparklers",
-                        "GIFT BOXES (NET RATE)": "Gift Boxes",
-                        "COMBO PACK": "Combo Pack"
+                        "SINGLE SOUND CRACKERS": "Single Sound Crackers", "BIJILLI CRACKERS": "Bijilli Crackers",
+                        "FLOWERPOTS": "Flowerpots", "GROUND CHAKKAR": "Ground Chakkar", "RAINBOW CHAKKAR": "Rainbow Chakkar",
+                        "ELECTRIC CRACKERS": "Electric Crackers", "CHILDREN'S SPECIAL": "Children's Special",
+                        "ATOM BOMBS": "Atom Bombs", "ROCKETS": "Rockets", "JAGUVAR VARITIES": "Jaguvar Varities",
+                        "COLOUR FOUNTAIN'S": "Colour Fountains", "NEW SPECIAL FOUNTAIN'S": "New Special Fountains",
+                        "NEW WONDERS": "New Wonders", "CHOTTA FANCY": "Chotta Fancy", "NIGHT ATTRACTION FANCY": "Night Attraction Fancy",
+                        "AYYAN'S SPECIAL ELITE SERIES": "Ayyan's Special Elite Series", "2026 NEW ELITE FANCY": "2026 New Elite Fancy",
+                        "NOVELTIES": "Novelties", "MULTISHOTS": "Multishots", "FESTIVAL SERIES (SET OUT)": "Festival Series (Set Out)",
+                        "ROLL CAPS & SERPANT EGGS": "Roll Caps & Serpent Eggs", "2026 NEW VARITIES": "2026 New Varities",
+                        "SPARKLERS": "Sparklers", "NEW VARITIES SPARKLERS": "New Varities Sparklers",
+                        "GIFT BOXES (NET RATE)": "Gift Boxes", "COMBO PACK": "Combo Pack"
                     };
 
                     function matchCategoryHeader(rawText) {
-                        const key = String(rawText || "")
-                            .replace(/[\u2018\u2019]/g, "'")
-                            .trim()
-                            .toUpperCase()
-                            .replace(/\s+/g, " ");
+                        const key = String(rawText || "").replace(/[\u2018\u2019]/g, "'").trim().toUpperCase().replace(/\s+/g, " ");
                         return categoryHeaderMap[key] || null;
                     }
 
                     const productRows = rows.filter(r => !r.isCategory && /^\d+$/.test(r.sno));
-
-                    const ok = confirm(`Upload ${productRows.length} products to Firebase?`);
-                    if (!ok) { event.target.value = ""; return; }
+                    if (!confirm(`Upload ${productRows.length} products to Firebase?`)) { event.target.value = ""; return; }
 
                     let updated = 0;
                     let notFound = [];
                     let failed = [];
-                    let currentCategory = null; // tracks which section (e.g. "Single Sound Crackers") we're currently in
+                    let currentCategory = null;
 
                     for (const row of rows) {
-
-                        // Category-section rows (e.g. "SINGLE SOUND CRACKERS") - no price data on these.
                         if (row.isCategory) {
                             const mapped = matchCategoryHeader(row.name);
                             if (mapped) currentCategory = mapped;
                             continue;
                         }
-
-                        // Skip stray text (footnotes etc.) that isn't a real numbered product row
                         if (!/^\d+$/.test(row.sno)) continue;
 
                         const rawName = row.name;
                         const excelName = normalizeName(rawName);
-
                         const product = allProducts.find(p => normalizeName(p.name) === excelName);
-
-                        if (!product) {
-                            notFound.push(rawName);
-                            continue;
-                        }
+                        if (!product) { notFound.push(rawName); continue; }
 
                         const oldPrice = Number(row.before) || product.oldPrice || product.price;
                         const newPrice = Number(row.after);
-
-                        if (!newPrice) {
-                            notFound.push(rawName + " (no price in PDF)");
-                            continue;
-                        }
+                        if (!newPrice) { notFound.push(rawName + " (no price in PDF)"); continue; }
 
                         const discount = oldPrice ? Math.round((1 - newPrice / oldPrice) * 100) : 0;
-
-                        // Only price/discount/category are touched - name, image, unit, order stay exactly as-is.
-                        const updatePayload = {
-                            oldPrice: oldPrice,
-                            price: newPrice,
-                            discount: discount,
-                            updatedAt: new Date().toISOString()
-                        };
-                        if (currentCategory) {
-                            updatePayload.category = currentCategory;
-                        }
+                        const updatePayload = { oldPrice, price: newPrice, discount, updatedAt: new Date().toISOString() };
+                        if (currentCategory) updatePayload.category = currentCategory;
 
                         try {
                             await updateDoc(doc(db, "products", product.id), updatePayload);
@@ -2409,7 +2058,6 @@
                     }
 
                     alert(`Updated : ${updated}\nNot Found : ${notFound.length}\nFailed : ${failed.length}`);
-
                     if (notFound.length) console.table(notFound);
                     if (failed.length) console.table(failed);
                 } catch (err) {
@@ -2419,7 +2067,6 @@
                     event.target.value = "";
                 }
             };
-
             reader.readAsArrayBuffer(file);
         };
 
@@ -2427,27 +2074,17 @@
             return new Promise((resolve, reject) => {
                 const storageRef = ref(storage, `product-images/${productId}/${Date.now()}_${file.name}`);
                 const uploadTask = uploadBytesResumable(storageRef, file);
-
                 const progress = document.getElementById('uploadProgress');
                 const progressBar = document.getElementById('progressBar');
                 const uploadingText = document.getElementById('uploadingText');
-
                 progress.classList.add('show');
                 uploadingText.classList.add('show');
 
                 uploadTask.on('state_changed',
-                    (snapshot) => {
-                        const progressPercent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        progressBar.style.width = progressPercent + '%';
-                    },
-                    (error) => {
-                        progress.classList.remove('show');
-                        uploadingText.classList.remove('show');
-                        reject(error);
-                    },
+                    (snapshot) => { progressBar.style.width = (snapshot.bytesTransferred / snapshot.totalBytes) * 100 + '%'; },
+                    (error) => { progress.classList.remove('show'); uploadingText.classList.remove('show'); reject(error); },
                     async () => {
                         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                        console.log("Download URL:", downloadURL);
                         progress.classList.remove('show');
                         uploadingText.classList.remove('show');
                         resolve(downloadURL);
@@ -2459,8 +2096,7 @@
         async function deleteOldImage(imageUrl) {
             if (!imageUrl) return;
             try {
-                const oldRef = ref(storage, imageUrl);
-                await deleteObject(oldRef);
+                await deleteObject(ref(storage, imageUrl));
                 console.log('Old image deleted');
             } catch (error) {
                 console.log('No old image to delete or error:', error.message);
@@ -2472,14 +2108,10 @@
         // ============================================================
         window.openEditModal = function (productId) {
             const product = allProducts.find(p => p.id === productId);
-            if (!product) {
-                showToast('Product not found!', 'error');
-                return;
-            }
+            if (!product) { showToast('Product not found!', 'error'); return; }
 
             currentEditId = productId;
             currentImageUrl = product.imageUrl || null;
-
             removeImage();
 
             document.getElementById('editProductId').value = productId;
@@ -2489,7 +2121,7 @@
             if (product.category && allCategories.includes(product.category)) {
                 document.getElementById('editProductCategory').value = product.category;
             } else {
-                document.getElementById('editProductCategory').value = 'Single Sound Crackers';
+                document.getElementById('editProductCategory').value = allCategories[0];
             }
 
             document.getElementById('editProductPrice').value = product.price || 0;
@@ -2498,24 +2130,19 @@
             document.getElementById('editProductStockQty').value = (typeof product.stockQty === 'number') ? product.stockQty : '';
             document.getElementById('editProductLowStockAt').value = (typeof product.lowStockThreshold === 'number') ? product.lowStockThreshold : 5;
             document.getElementById('editProductOrder').value = product.orderIndex || 0;
-
             document.getElementById('editProductStock').checked = product.inStock !== false;
 
             if (product.imageUrl) {
                 const preview = document.getElementById('uploadPreview');
-                const placeholder = document.getElementById('uploadPlaceholder');
-                const removeBtn = document.getElementById('removeImageBtn');
-
                 preview.src = product.imageUrl;
                 preview.classList.add('show');
-                placeholder.style.display = 'none';
-                removeBtn.classList.add('show');
+                document.getElementById('uploadPlaceholder').style.display = 'none';
+                document.getElementById('removeImageBtn').classList.add('show');
                 currentImageUrl = product.imageUrl;
             }
 
             document.querySelector('.edit-modal-header h2').innerHTML = `<i class="fas fa-pen"></i> Edit Product`;
             document.querySelector('.edit-modal-footer .btn-save').innerHTML = `<i class="fas fa-save"></i> Save Changes`;
-
             document.getElementById('editModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         };
@@ -2527,32 +2154,25 @@
             currentEditId = null;
             currentImageUrl = null;
 
+            loadCategories();
             document.getElementById('editProductId').value = '';
             document.getElementById('editProductName').value = '';
-            document.getElementById('editProductCategory').value = 'Single Sound Crackers';
+            document.getElementById('editProductCategory').value = allCategories[0];
             document.getElementById('editProductPrice').value = '';
             document.getElementById('editProductOldPrice').value = '';
             document.getElementById('editProductSub').value = '';
             document.getElementById('editProductStockQty').value = 0;
             document.getElementById('editProductLowStockAt').value = 5;
             document.getElementById('editProductOrder').value = allProducts.length + 1;
-
-            loadCategories();
-
             removeImage();
-
             document.getElementById('editProductStock').checked = true;
 
             document.querySelector('.edit-modal-header h2').innerHTML = `<i class="fas fa-plus"></i> Add New Product`;
             document.querySelector('.edit-modal-footer .btn-save').innerHTML = `<i class="fas fa-plus"></i> Add Product`;
-
             document.getElementById('editModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         };
 
-        // ============================================================
-        // CLOSE EDIT MODAL
-        // ============================================================
         window.closeEditModal = function () {
             document.getElementById('editModal').classList.remove('active');
             document.body.style.overflow = '';
@@ -2565,7 +2185,6 @@
         // ============================================================
         window.saveProduct = async function () {
             const saveBtn = document.getElementById('saveBtn');
-
             if (isUploading) return;
 
             const name = document.getElementById('editProductName').value.trim();
@@ -2579,112 +2198,73 @@
             const orderIndex = parseInt(document.getElementById('editProductOrder').value) || 0;
             const productId = document.getElementById('editProductId').value;
 
-            if (!name) {
-                showToast('Please enter a product name!', 'error');
-                return;
-            }
+            if (!name) { showToast('Please enter a product name!', 'error'); return; }
 
             saveBtn.disabled = true;
             isUploading = true;
 
             try {
                 let imageUrl = currentImageUrl;
-
                 if (selectedFile) {
-                    if (productId && currentImageUrl) {
-                        await deleteOldImage(currentImageUrl);
-                    }
-
+                    if (productId && currentImageUrl) await deleteOldImage(currentImageUrl);
                     const tempId = productId || `temp_${Date.now()}`;
                     imageUrl = await uploadImage(selectedFile, tempId);
                 }
 
-                // If a stock quantity is tracked and it has hit zero, force the
-                // product out of stock automatically regardless of the manual toggle.
                 let inStockFinal = document.getElementById('editProductStock').checked;
-                if (stockQty !== null && stockQty <= 0) {
-                    inStockFinal = false;
-                }
+                if (stockQty !== null && stockQty <= 0) inStockFinal = false;
 
                 const productData = {
-                    name: name,
-                    category: category,
-                    price: price,
-                    oldPrice: oldPrice,
-                    sub: sub,
+                    name, category, price, oldPrice, sub,
                     orderIndex: orderIndex || allProducts.length + 1,
                     updatedAt: new Date().toISOString(),
                     inStock: inStockFinal,
                     lowStockThreshold: isNaN(lowStockThreshold) ? 5 : lowStockThreshold,
                 };
-
-                if (stockQty !== null) {
-                    productData.stockQty = stockQty;
-                }
-
-                if (imageUrl) {
-                    productData.imageUrl = imageUrl;
-                }
+                if (stockQty !== null) productData.stockQty = stockQty;
+                if (imageUrl) productData.imageUrl = imageUrl;
 
                 if (productId) {
                     const oldProduct = allProducts.find(p => p.id === productId);
                     const oldOrder = oldProduct.orderIndex || 0;
                     const newOrder = orderIndex;
-
                     const batch = writeBatch(db);
 
                     if (newOrder < oldOrder) {
                         allProducts.forEach(p => {
-                            if (p.id !== productId &&
-                                p.orderIndex >= newOrder &&
-                                p.orderIndex < oldOrder) {
-                                batch.update(doc(db, "products", p.id), {
-                                    orderIndex: p.orderIndex + 1
-                                });
+                            if (p.id !== productId && p.orderIndex >= newOrder && p.orderIndex < oldOrder) {
+                                batch.update(doc(db, "products", p.id), { orderIndex: p.orderIndex + 1 });
                             }
                         });
-                    }
-                    else if (newOrder > oldOrder) {
+                    } else if (newOrder > oldOrder) {
                         allProducts.forEach(p => {
-                            if (p.id !== productId &&
-                                p.orderIndex <= newOrder &&
-                                p.orderIndex > oldOrder) {
-                                batch.update(doc(db, "products", p.id), {
-                                    orderIndex: p.orderIndex - 1
-                                });
+                            if (p.id !== productId && p.orderIndex <= newOrder && p.orderIndex > oldOrder) {
+                                batch.update(doc(db, "products", p.id), { orderIndex: p.orderIndex - 1 });
                             }
                         });
                     }
 
-                    batch.update(doc(db, "products", productId), {
-                        ...productData,
-                        orderIndex: newOrder
-                    });
-
+                    batch.update(doc(db, "products", productId), { ...productData, orderIndex: newOrder });
                     await batch.commit();
-                    showToast("✅ Product updated successfully!", "success"); showToast('✅ Product updated successfully!', 'success');
+
+                    // ✅ stock history + alert sync (Stock Management la theriyum)
+                    if (stockQty !== null && stockQty !== oldProduct.stockQty) {
+                        await logStockChange(oldProduct, stockQty, 'Edited from Product modal');
+                    }
+                    showToast("✅ Product updated successfully!", "success");
                 } else {
                     const newOrder = orderIndex || (allProducts.length + 1);
-
-                    // New order-ku mela irukkura products ellam +1
                     const batch = writeBatch(db);
-
                     allProducts.forEach(product => {
                         if ((product.orderIndex || 0) >= newOrder) {
-                            const refDoc = doc(db, "products", product.id);
-                            batch.update(refDoc, {
-                                orderIndex: (product.orderIndex || 0) + 1
-                            });
+                            batch.update(doc(db, "products", product.id), { orderIndex: (product.orderIndex || 0) + 1 });
                         }
                     });
-
                     await batch.commit();
 
                     productData.orderIndex = newOrder;
                     productData.createdAt = new Date().toISOString();
-
                     await addDoc(collection(db, "products"), productData);
-
                     showToast("✅ Product added successfully!", "success");
                 }
 
@@ -2701,73 +2281,46 @@
         // ============================================================
         // DELETE PRODUCT
         // ============================================================
-
         window.deleteProduct = async function (productId) {
             if (!confirm('Are you sure you want to delete this product?')) return;
-
             try {
                 const product = allProducts.find(p => p.id === productId);
-                if (!product) {
-                    showToast('Product not found!', 'error');
-                    return;
-                }
+                if (!product) { showToast('Product not found!', 'error'); return; }
 
                 const deletedOrder = product.orderIndex || 0;
+                if (product.imageUrl) await deleteOldImage(product.imageUrl);
 
-                // Delete image from storage first
-                if (product.imageUrl) {
-                    await deleteOldImage(product.imageUrl);
-                }
-
-                // Shift down orderIndex of all products that come AFTER the deleted one
                 const batch = writeBatch(db);
-
                 allProducts.forEach(p => {
                     if (p.id !== productId && (p.orderIndex || 0) > deletedOrder) {
-                        batch.update(doc(db, "products", p.id), {
-                            orderIndex: (p.orderIndex || 0) - 1
-                        });
+                        batch.update(doc(db, "products", p.id), { orderIndex: (p.orderIndex || 0) - 1 });
                     }
                 });
-
-                // Delete the product itself
                 batch.delete(doc(db, "products", productId));
-
                 await batch.commit();
-
                 showToast('✅ Product deleted & order re-numbered!', 'success');
             } catch (err) {
                 showToast('❌ Error deleting: ' + err.message, 'error');
             }
         };
 
-
         // ============================================================
-        // RENUMBER ALL PRODUCTS (fixes existing gaps like 9,11,12...)
+        // RENUMBER ALL PRODUCTS
         // ============================================================
         window.renumberProducts = async function () {
             if (!confirm('This will re-number ALL products in order as 1, 2, 3... Continue?')) return;
             try {
                 const sorted = [...allProducts].sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
-
                 const batch = writeBatch(db);
                 let changed = 0;
-
                 sorted.forEach((product, index) => {
                     const correctOrder = index + 1;
                     if ((product.orderIndex || 0) !== correctOrder) {
-                        batch.update(doc(db, "products", product.id), {
-                            orderIndex: correctOrder
-                        });
+                        batch.update(doc(db, "products", product.id), { orderIndex: correctOrder });
                         changed++;
                     }
                 });
-
-                if (changed === 0) {
-                    showToast('✅ Already in correct order — no gaps found!', 'info');
-                    return;
-                }
-
+                if (changed === 0) { showToast('✅ Already in correct order — no gaps found!', 'info'); return; }
                 await batch.commit();
                 showToast(`✅ Fixed! ${changed} products re-numbered.`, 'success');
             } catch (err) {
@@ -2783,50 +2336,25 @@
             if (!confirm('⚠️ FINAL CONFIRMATION: Delete all products?')) return;
 
             const batch = writeBatch(db);
-            const productsRef = collection(db, 'products');
-
-            getDocs(productsRef).then((snapshot) => {
-                if (snapshot.empty) {
-                    showToast('No products to delete', 'info');
-                    return;
-                }
-
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.imageUrl) {
-                        deleteOldImage(data.imageUrl);
-                    }
-                });
-
-                snapshot.forEach((doc) => {
-                    batch.delete(doc.ref);
-                });
-
-                batch.commit().then(() => {
-                    showToast(`🗑️ Deleted ${snapshot.size} products!`, 'success');
-                }).catch(err => {
-                    showToast('❌ Error deleting: ' + err.message, 'error');
-                });
-            }).catch(err => {
-                showToast('❌ Error: ' + err.message, 'error');
-            });
+            getDocs(collection(db, 'products')).then((snapshot) => {
+                if (snapshot.empty) { showToast('No products to delete', 'info'); return; }
+                snapshot.forEach((d) => { const data = d.data(); if (data.imageUrl) deleteOldImage(data.imageUrl); });
+                snapshot.forEach((d) => batch.delete(d.ref));
+                batch.commit()
+                    .then(() => showToast(`🗑️ Deleted ${snapshot.size} products!`, 'success'))
+                    .catch(err => showToast('❌ Error deleting: ' + err.message, 'error'));
+            }).catch(err => showToast('❌ Error: ' + err.message, 'error'));
         };
 
         // ============================================================
-        // LIGHTBOX ZOOM FUNCTIONS
+        // LIGHTBOX
         // ============================================================
         function openLightbox(imageUrl, productName) {
-            const overlay = document.getElementById('lightboxOverlay');
-            const lightboxImage = document.getElementById('lightboxImage');
-            const lightboxTitle = document.getElementById('lightboxTitle');
-
-            lightboxImage.src = imageUrl || "../images/logo-removebg-preview.png";
-            lightboxTitle.textContent = productName || "Product";
-
-            overlay.classList.add('active');
+            document.getElementById('lightboxImage').src = imageUrl || "../pictures/logo-removebg-preview.png";
+            document.getElementById('lightboxTitle').textContent = productName || "Product";
+            document.getElementById('lightboxOverlay').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-
         function closeLightbox() {
             document.getElementById('lightboxOverlay').classList.remove('active');
             document.body.style.overflow = '';
@@ -2835,26 +2363,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             const overlay = document.getElementById('lightboxOverlay');
             const closeBtn = document.getElementById('lightboxClose');
-
-            if (closeBtn) {
-                closeBtn.addEventListener('click', closeLightbox);
-            }
-
-            if (overlay) {
-                overlay.addEventListener('click', function (e) {
-                    if (e.target === this) {
-                        closeLightbox();
-                    }
-                });
-            }
-
+            if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+            if (overlay) overlay.addEventListener('click', function (e) { if (e.target === this) closeLightbox(); });
             document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') {
-                    closeLightbox();
-                    closeEditModal();
-                }
+                if (e.key === 'Escape') { closeLightbox(); closeEditModal(); }
             });
-
             loadCategories();
         });
 
@@ -2866,15 +2379,11 @@
         // ============================================================
         window.filterProducts = function () {
             const searchTerm = globalSearch.value.toLowerCase().trim();
-            if (searchTerm === '') {
-                renderProducts(allProducts);
-                return;
-            }
-            const filtered = allProducts.filter(p =>
+            if (searchTerm === '') { renderProducts(allProducts); return; }
+            renderProducts(allProducts.filter(p =>
                 (p.name || '').toLowerCase().includes(searchTerm) ||
                 (p.category || '').toLowerCase().includes(searchTerm)
-            );
-            renderProducts(filtered);
+            ));
         };
 
         // ============================================================
@@ -2882,48 +2391,32 @@
         // ============================================================
         window.refreshProducts = function () {
             showToast('🔄 Syncing products...', 'info');
-            if (unsubscribeProducts) {
-                unsubscribeProducts();
-            }
-            if (unsubscribeOrders) {
-                unsubscribeOrders();
-            }
+            if (unsubscribeProducts) unsubscribeProducts();
+            if (unsubscribeOrders) unsubscribeOrders();
             listenToProducts();
         };
 
-        // ============================================================
-        // UPDATE SYNC STATUS
-        // ============================================================
         function updateSyncStatus(isLive) {
-            const icon = document.getElementById('syncStatusIcon');
-            const text = document.getElementById('syncStatusText');
             const dot = document.getElementById('statusDot');
             const statusText = document.getElementById('statusText');
-
             if (isLive) {
-                if (icon) icon.className = 'fas fa-circle live';
-                if (text) text.textContent = 'Live';
                 if (dot) dot.className = 'fas fa-circle live';
                 if (statusText) statusText.textContent = 'Live from Firebase';
             } else {
-                if (icon) icon.className = 'fas fa-circle offline';
-                if (text) text.textContent = 'Offline';
                 if (dot) dot.className = 'fas fa-circle offline';
                 if (statusText) statusText.textContent = 'Offline — Retrying...';
             }
         }
 
         // ============================================================
-        // TOAST NOTIFICATION
+        // TOAST
         // ============================================================
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = `toast ${type} show`;
             clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // ============================================================
@@ -2933,34 +2426,83 @@
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('active');
         });
-
         document.getElementById('sidebarOverlay').addEventListener('click', () => {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').classList.remove('active');
         });
-
         document.getElementById('globalSearch').addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                window.filterProducts();
-            }
+            if (e.key === 'Enter') window.filterProducts();
+        });
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) logoutBtn.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to logout?')) return;
+            try { await signOut(auth); window.location.href = '/admin/index.html'; }
+            catch (e) { alert('Logout failed. Please try again.'); }
         });
 
         // ============================================================
-        // INIT
+        // STOCK LOG + ALERT SYNC (shared by every stock edit on this page)
+        // Writes Stock History (stockMovements) and creates/resolves stockAlerts
         // ============================================================
-        console.log('🚀 Loading admin products from Firebase...');
-        listenToProducts();
+        async function logStockChange(product, newQty, note) {
+            try {
+                const before = typeof product.stockQty === 'number' ? product.stockQty : 0;
+                const after = Math.max(0, Math.floor(newQty));
+                const nowIso = new Date().toISOString();
+                const threshold = product.lowStockThreshold || 5;
+                const batch = writeBatch(db);
 
-        console.log('🌱 Hari Crackers Admin Panel Ready with Dynamic Categories');
-        console.log('📦 Orders badge will update in real-time');
+                if (after !== before) {
+                    batch.set(doc(collection(db, 'stockMovements')), {
+                        productId: product.id,
+                        productName: product.name || '',
+                        type: after > before ? 'in' : 'out',
+                        change: after - before,
+                        before, after,
+                        note: note || '',
+                        by: auth.currentUser?.email || 'unknown',
+                        date: nowIso,
+                        createdAt: serverTimestamp()
+                    });
+                }
+
+                const existing = await getDocs(query(
+                    collection(db, 'stockAlerts'),
+                    where('productId', '==', product.id),
+                    where('status', '==', 'unread')
+                ));
+
+                if (after <= threshold) {
+                    if (existing.empty) {
+                        batch.set(doc(collection(db, 'stockAlerts')), {
+                            productId: product.id,
+                            productName: product.name,
+                            currentStock: after,
+                            threshold,
+                            type: after <= 0 ? 'out_of_stock' : 'low_stock',
+                            message: after <= 0
+                                ? `❌ OUT OF STOCK: ${product.name}`
+                                : `⚠️ LOW STOCK: ${product.name} — Only ${after} left`,
+                            status: 'unread',
+                            createdAt: serverTimestamp()
+                        });
+                    }
+                } else {
+                    existing.docs.forEach(d => batch.update(d.ref, { status: 'resolved', readAt: nowIso }));
+                }
+
+                await batch.commit();
+            } catch (err) {
+                console.error('Stock sync error:', err);
+            }
+        }
 
         // ============================================================
-        // QUICK UPDATE STOCK — Product card la irundhu directly
+        // QUICK UPDATE STOCK — directly from the product card
         // ============================================================
         window.quickUpdateStock = async function (productId) {
             const input = document.querySelector(`.quick-stock-input[data-id="${productId}"]`);
             const btn = input?.nextElementSibling;
-
             if (!input) return;
 
             const rawValue = input.value.trim();
@@ -2969,10 +2511,7 @@
             if (rawValue === '') {
                 if (!confirm('Remove stock tracking for this product?')) return;
                 try {
-                    await updateDoc(doc(db, 'products', productId), {
-                        stockQty: null,
-                        updatedAt: new Date().toISOString()
-                    });
+                    await updateDoc(doc(db, 'products', productId), { stockQty: null, updatedAt: new Date().toISOString() });
                     showToast('✅ Stock tracking removed', 'success');
                 } catch (err) {
                     showToast('❌ Error: ' + err.message, 'error');
@@ -2981,15 +2520,11 @@
             }
 
             const newQty = parseInt(rawValue, 10);
-            if (isNaN(newQty) || newQty < 0) {
-                showToast('Invalid quantity', 'error');
-                return;
-            }
+            if (isNaN(newQty) || newQty < 0) { showToast('Invalid quantity', 'error'); return; }
 
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
 
-            // Visual feedback
             if (btn) btn.classList.add('saving');
 
             try {
@@ -2999,46 +2534,15 @@
                     updatedAt: new Date().toISOString()
                 });
 
+                // ✅ Stock History + alert create/resolve
+                await logStockChange(product, newQty, 'Edited from Products page');
+
                 if (btn) {
                     btn.classList.remove('saving');
                     btn.classList.add('saved');
-                    btn.innerHTML = '<i class="fas fa-check"></i>';
-                    setTimeout(() => {
-                        btn.classList.remove('saved');
-                    }, 1500);
+                    setTimeout(() => btn.classList.remove('saved'), 1500);
                 }
-
                 showToast(`✅ ${product.name} → ${newQty} pcs`, 'success');
-
-                // Auto-create alert if low/out
-                const threshold = product.lowStockThreshold || 5;
-                if (newQty <= threshold) {
-                    // Only create if no existing unread alert
-                    const { collection, query, where, getDocs, addDoc, serverTimestamp } = await import("firebase/firestore");
-
-                    const existingQuery = query(
-                        collection(db, 'stockAlerts'),
-                        where('productId', '==', productId),
-                        where('status', '==', 'unread')
-                    );
-                    const existing = await getDocs(existingQuery);
-
-                    if (existing.empty) {
-                        await addDoc(collection(db, 'stockAlerts'), {
-                            productId: productId,
-                            productName: product.name,
-                            currentStock: newQty,
-                            threshold: threshold,
-                            type: newQty <= 0 ? 'out_of_stock' : 'low_stock',
-                            message: newQty <= 0
-                                ? `❌ OUT OF STOCK: ${product.name}`
-                                : `⚠️ LOW STOCK: ${product.name} — Only ${newQty} left`,
-                            status: 'unread',
-                            createdAt: serverTimestamp(),
-                            timestamp: serverTimestamp()
-                        });
-                    }
-                }
             } catch (err) {
                 console.error(err);
                 if (btn) btn.classList.remove('saving');
@@ -3046,12 +2550,60 @@
             }
         };
 
-        // Enter key support — quick stock input la Enter press panna save aagum
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.target.classList.contains('quick-stock-input')) {
                 quickUpdateStock(e.target.dataset.id);
             }
         });
+
+        // ============================================================
+        // GLOBAL LOW-STOCK WATCHER (toast + beep + sidebar badge)
+        // Fires whenever ANY page / ANY computer pushes a product to low/out
+        // ============================================================
+        (function () {
+            let last = null, actx;
+            const qtyOf = p => typeof p.stockQty === 'number' ? p.stockQty : null;
+            const statOf = p => {
+                const q = qtyOf(p), t = p.lowStockThreshold || 5;
+                return q === null ? 'un' : q <= 0 ? 'out' : q <= t ? 'low' : 'in';
+            };
+            function beep() {
+                try {
+                    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+                    const o = actx.createOscillator(), g = actx.createGain();
+                    o.connect(g); g.connect(actx.destination);
+                    o.frequency.value = 880; g.gain.value = .15; o.start();
+                    setTimeout(() => o.frequency.value = 660, 160);
+                    setTimeout(() => o.stop(), 360);
+                } catch (e) { }
+            }
+            document.addEventListener('pointerdown', () => {
+                try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); } catch (e) { }
+            }, { once: true });
+
+            onSnapshot(collection(db, 'products'), snap => {
+                const cur = {}; let count = 0;
+                snap.docs.forEach(d => {
+                    const p = { id: d.id, ...d.data() }, s = statOf(p);
+                    cur[p.id] = s;
+                    if (s === 'low' || s === 'out') count++;
+                    const was = last && last[p.id];
+                    if (was !== null && was !== undefined && was !== s && (s === 'low' || s === 'out') && !(was === 'out' && s === 'low')) {
+                        const q = qtyOf(p);
+                        showToast(q <= 0 ? `❌ OUT OF STOCK: ${p.name}` : `⚠️ LOW STOCK: ${p.name} — Only ${q} left`, 'error');
+                        beep();
+                    }
+                });
+                const badge = document.getElementById('stockAlertBadge');
+                if (badge) { badge.textContent = count; badge.style.display = count ? 'inline-block' : 'none'; }
+                last = cur;
+            });
+        })();
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        listenToProducts();
     </script>
 </body>
 

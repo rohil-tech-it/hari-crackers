@@ -488,36 +488,19 @@
             color: #2d0050;
         }
 
-        /* ===== SEARCH BAR ===== */
-        .search-bar {
-            position: relative;
-            margin-bottom: 20px;
+        /* ===== SEARCH GROUP (inside controls) ===== */
+        .order-controls .search-group {
+            flex: 1;
+            min-width: 260px;
         }
 
-        .search-bar input {
-            width: 100%;
-            padding: 14px 20px 14px 50px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-family: inherit;
-            font-size: 0.95rem;
-            background: var(--bg-white);
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar input:focus {
-            border-color: var(--yellow);
-            box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.15);
-        }
-
-        .search-bar i {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+        .order-controls .search-group i.fa-search {
             color: var(--text-dim);
-            font-size: 1rem;
+        }
+
+        .order-controls .search-group input {
+            flex: 1;
+            min-width: 160px;
         }
 
         /* ===== ORDER CARDS GRID ===== */
@@ -1101,9 +1084,8 @@
 
             <div class="nav-label" style="margin-top:20px;">Direct Billing</div>
 
-            <a href="billing.html" class="nav-item">
-                <i class="fas fa-cog"></i> Billing
-            </a>
+            <a href="billing.html" class="nav-item"><i class="fas fa-cash-register"></i> Billing</a>
+
             <a href="bills-history.html" class="nav-item">
                 <i class="fas fa-file-invoice"></i> Billing History
             </a>
@@ -1143,7 +1125,7 @@
 
         <div class="page-content">
 
-            <!-- Summary Cards (Paid Orders removed - now 5 cards) -->
+            <!-- Summary Cards -->
             <div class="order-summary-grid">
                 <div class="summary-card">
                     <div class="summary-icon"><i class="fas fa-shopping-cart"></i></div>
@@ -1172,12 +1154,6 @@
                 </div>
             </div>
 
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search by Order ID, Customer, Phone..." id="globalSearch"
-                    onkeyup="filterOrders()" />
-            </div>
-
             <div class="order-controls">
                 <div class="control-group">
                     <button class="btn-action delete" onclick="deleteAllOrders()"><i class="fas fa-trash"></i> Delete
@@ -1185,15 +1161,19 @@
                     <button class="btn-action print" onclick="printAllOrders()"><i class="fas fa-print"></i> Print
                         All</button>
                 </div>
-                <div class="control-group">
-                    <label>From</label>
-                    <input type="text" id="fromOrderId" placeholder="HC001" style="width:90px;" />
-                    <label>To</label>
-                    <input type="text" id="toOrderId" placeholder="HC010" style="width:90px;" />
-                    <button class="btn-action print" onclick="printByOrderIdRange()"><i
-                            class="fas fa-print"></i></button>
-                    <button class="btn-action delete" onclick="deleteByOrderId()"><i class="fas fa-trash"></i></button>
+
+                <div class="control-group search-group">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Search Order ID / Name / Mobile..."
+                        oninput="filterOrders()" />
+                    <button class="btn-action print" onclick="printSearchResults()" title="Print results">
+                        <i class="fas fa-print"></i>
+                    </button>
+                    <button class="btn-action delete" onclick="deleteSearchResults()" title="Delete results">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
+
                 <div class="control-group">
                     <button class="btn-action selected" onclick="deleteSelected()"><i class="fas fa-trash"></i>
                         Selected</button>
@@ -1244,10 +1224,10 @@
     <script type="module">
         import { initializeApp } from "firebase/app";
         import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-    import {
-    getFirestore, collection, deleteDoc, doc, updateDoc,
-    onSnapshot, query, orderBy, getDocs, where
-} from "firebase/firestore";
+        import {
+            getFirestore, collection, deleteDoc, doc, updateDoc,
+            onSnapshot, query, orderBy, getDocs, where
+        } from "firebase/firestore";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
@@ -1350,8 +1330,11 @@
             return name[0].toUpperCase();
         }
 
-        function generateOrderIdFallback(index) {
-            return 'HC' + String(index + 1).padStart(3, '0');
+        // Stable order ID — never depends on list position
+        function getDisplayOrderId(order) {
+            if (order.orderId) return order.orderId;
+            if (order.orderNumber) return 'HC' + String(order.orderNumber).padStart(3, '0');
+            return order.id.slice(0, 6).toUpperCase();
         }
 
         async function getProductCount() {
@@ -1393,7 +1376,7 @@
             const amount = getOrderAmount(order);
             const customerName = order.customerName || order.name || 'Customer';
             const customerPhone = order.customerPhone || order.phone || '';
-            const orderIdDisplay = order.orderId || order.id || 'N/A';
+            const orderIdDisplay = getDisplayOrderId(order);
             const orderStatus = order.orderStatus || 'Pending';
             const paymentStatus = order.paymentStatus || 'Pending';
 
@@ -1443,9 +1426,9 @@
             ordersGrid.style.display = 'grid';
             emptyState.style.display = 'none';
 
-            ordersGrid.innerHTML = orders.map((order, index) => {
+            ordersGrid.innerHTML = orders.map((order) => {
                 const isChecked = selectedOrders.has(order.id) ? 'checked' : '';
-                const orderIdDisplay = order.orderId || order.id || generateOrderIdFallback(index);
+                const orderIdDisplay = getDisplayOrderId(order);
                 const customerName = order.customerName || order.name || 'N/A';
                 const customerEmail = order.customerEmail || order.email || '';
                 const customerPhone = order.customerPhone || order.phone || '';
@@ -1610,60 +1593,65 @@
         });
 
         // ============================================================
+        // SEARCH / FILTER  (Order ID, Customer Name, Mobile Number)
+        // ============================================================
+        function getFilteredOrders() {
+            const raw = globalSearch.value.toLowerCase().trim();
+            if (!raw) return allOrders;
+
+            const digits = raw.replace(/\D/g, '');
+
+            return allOrders.filter(order => {
+                const id = getDisplayOrderId(order).toLowerCase();
+                const name = (order.customerName || order.name || '').toLowerCase();
+                const phone = String(order.customerPhone || order.phone || '').replace(/\D/g, '');
+
+                if (id.includes(raw)) return true;                              // HC013 / hc013 / 013
+                if (name.includes(raw)) return true;                            // customer name
+                if (digits.length >= 3 && phone.includes(digits)) return true;  // mobile (full or partial)
+                return false;
+            });
+        }
+
+        window.filterOrders = function () {
+            renderOrders(getFilteredOrders());
+        };
+
+        window.printSearchResults = function () {
+            const results = getFilteredOrders();
+            if (results.length === 0) { showToast('No orders to print', 'error'); return; }
+            const html = results.map(order => buildInvoiceHtml(order, getDisplayOrderId(order))).join('');
+            openPrintWindow(html, 'Search Results');
+        };
+
+        window.deleteSearchResults = async function () {
+            if (!globalSearch.value.trim()) {
+                showToast('Search pannitu delete pannunga', 'error');
+                return;
+            }
+            const results = getFilteredOrders();
+            if (results.length === 0) { showToast('No orders found', 'error'); return; }
+            if (!confirm(`Delete ${results.length} order(s) matching "${globalSearch.value}"?`)) return;
+
+            let deleted = 0;
+            for (const order of results) {
+                try { await deleteDoc(doc(db, 'orders', order.id)); deleted++; } catch (e) { }
+            }
+            showToast(`Deleted ${deleted} order(s)`, 'success');
+        };
+
+        // ============================================================
         // TOGGLE
         // ============================================================
         window.toggleOrder = function (orderId) {
             if (selectedOrders.has(orderId)) selectedOrders.delete(orderId);
             else selectedOrders.add(orderId);
-            renderOrders(allOrders);
+            renderOrders(getFilteredOrders());
         };
-
-        // ============================================================
-        // FILTER
-        // ============================================================
-        window.filterOrders = function () {
-            const term = globalSearch.value.toLowerCase().trim();
-            if (!term) { renderOrders(allOrders); return; }
-
-            const filtered = allOrders.filter((order, index) => {
-                const orderId = order.orderId || generateOrderIdFallback(index);
-                const searchable = [
-                    orderId, order.customerName || order.name || '',
-                    order.customerPhone || order.phone || '',
-                    order.customerEmail || order.email || ''
-                ].join(' ').toLowerCase();
-                return searchable.includes(term);
-            });
-            renderOrders(filtered);
-        };
-
-        function getOrdersInIdRange() {
-            const fromId = document.getElementById('fromOrderId').value.trim().toUpperCase();
-            const toId = document.getElementById('toOrderId').value.trim().toUpperCase();
-            return allOrders.filter((order, index) => {
-                const orderId = order.orderId || generateOrderIdFallback(index);
-                if (fromId && toId) return orderId >= fromId && orderId <= toId;
-                if (fromId) return orderId >= fromId;
-                if (toId) return orderId <= toId;
-                return true;
-            });
-        }
 
         // ============================================================
         // DELETE
         // ============================================================
-        window.deleteByOrderId = async function () {
-            const inRange = getOrdersInIdRange();
-            if (inRange.length === 0) { showToast('No orders in range', 'error'); return; }
-            if (!confirm(`Delete ${inRange.length} orders in range?`)) return;
-
-            let deleted = 0;
-            for (const order of inRange) {
-                try { await deleteDoc(doc(db, 'orders', order.id)); deleted++; } catch (e) { }
-            }
-            showToast(`Deleted ${deleted} orders`, 'success');
-        };
-
         window.deleteAllOrders = async function () {
             if (!confirm('⚠️ Delete ALL orders? Cannot be undone!')) return;
             if (!confirm('Really delete all?')) return;
@@ -1809,21 +1797,14 @@
 
         window.printAllOrders = function () {
             if (allOrders.length === 0) { showToast('No orders', 'error'); return; }
-            const html = allOrders.map((order, i) => buildInvoiceHtml(order, order.orderId || generateOrderIdFallback(i))).join('');
+            const html = allOrders.map(order => buildInvoiceHtml(order, getDisplayOrderId(order))).join('');
             openPrintWindow(html, 'All Orders');
-        };
-
-        window.printByOrderIdRange = function () {
-            const inRange = getOrdersInIdRange();
-            if (inRange.length === 0) { showToast('No orders in range', 'error'); return; }
-            const html = inRange.map((order, i) => buildInvoiceHtml(order, order.orderId || generateOrderIdFallback(i))).join('');
-            openPrintWindow(html, 'Orders Range');
         };
 
         window.printSelected = function () {
             if (selectedOrders.size === 0) { showToast('Select orders first', 'error'); return; }
             const selected = allOrders.filter(o => selectedOrders.has(o.id));
-            const html = selected.map((order, i) => buildInvoiceHtml(order, order.orderId || generateOrderIdFallback(i))).join('');
+            const html = selected.map(order => buildInvoiceHtml(order, getDisplayOrderId(order))).join('');
             openPrintWindow(html, 'Selected Orders');
         };
 
@@ -1851,8 +1832,8 @@
 
             unsubscribeOrders = onSnapshot(q, async (snapshot) => {
                 allOrders = [];
-                snapshot.forEach((doc) => {
-                    allOrders.push({ id: doc.id, ...doc.data() });
+                snapshot.forEach((d) => {
+                    allOrders.push({ id: d.id, ...d.data() });
                 });
 
                 loadingState.style.display = 'none';
@@ -1862,57 +1843,60 @@
                     ordersGrid.style.display = 'none';
                     emptyState.style.display = 'block';
                 } else {
-                    renderOrders(allOrders);
+                    renderOrders(getFilteredOrders());
                 }
 
-     const productCount = await getProductCount();
-if (orderBadge) {
-    orderBadge.textContent = allOrders.length;
-    orderBadge.style.display = allOrders.length > 0 ? 'inline-block' : 'none';
-}
-if (productBadge) {
-    productBadge.textContent = productCount;
-    productBadge.style.display = productCount > 0 ? 'inline-block' : 'none';
-}
+                const productCount = await getProductCount();
+                if (orderBadge) {
+                    orderBadge.textContent = allOrders.length;
+                    orderBadge.style.display = allOrders.length > 0 ? 'inline-block' : 'none';
+                }
+                if (productBadge) {
+                    productBadge.textContent = productCount;
+                    productBadge.style.display = productCount > 0 ? 'inline-block' : 'none';
+                }
 
-// ✅ NEW: Stock Alerts Badge Listener
-listenToStockAlerts();
+                listenToStockAlerts();
 
-}, (error) => {
-    loadingState.style.display = 'none';
-    showToast('Error: ' + error.message, 'error');
-});
-}
-
-// ============================================================
-// LISTEN TO STOCK ALERTS — Sidebar badge count (Low Stock Products)
-// ============================================================
-function listenToStockAlerts() {
-    const productsRef = collection(db, 'products');
-    
-    onSnapshot(productsRef, (snapshot) => {
-        let lowStockCount = 0;
-        
-        snapshot.docs.forEach(doc => {
-            const data = doc.data();
-            const stockQty = data.stockQty;
-            const threshold = data.lowStockThreshold || 5;
-            
-            // Stock track pannirundha + threshold-ku kuraiya irundha count pannum
-            if (typeof stockQty === 'number' && stockQty <= threshold) {
-                lowStockCount++;
-            }
-        });
-        
-        const badge = document.getElementById('stockAlertBadge');
-        if (badge) {
-            badge.textContent = lowStockCount;
-            badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
+            }, (error) => {
+                loadingState.style.display = 'none';
+                showToast('Error: ' + error.message, 'error');
+            });
         }
-    }, (error) => {
-        console.error('Stock alert badge error:', error);
-    });
-}
+
+        // ============================================================
+        // LISTEN TO STOCK ALERTS — Sidebar badge count (Low Stock Products)
+        // ============================================================
+        let stockAlertsStarted = false;
+        function listenToStockAlerts() {
+            if (stockAlertsStarted) return;   // avoid duplicate listeners on every orders update
+            stockAlertsStarted = true;
+
+            const productsRef = collection(db, 'products');
+
+            onSnapshot(productsRef, (snapshot) => {
+                let lowStockCount = 0;
+
+                snapshot.docs.forEach(d => {
+                    const data = d.data();
+                    const stockQty = data.stockQty;
+                    const threshold = data.lowStockThreshold || 5;
+
+                    if (typeof stockQty === 'number' && stockQty <= threshold) {
+                        lowStockCount++;
+                    }
+                });
+
+                const badge = document.getElementById('stockAlertBadge');
+                if (badge) {
+                    badge.textContent = lowStockCount;
+                    badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
+                }
+            }, (error) => {
+                console.error('Stock alert badge error:', error);
+            });
+        }
+
         function updateSummary(orders) {
             totalOrdersEl.textContent = orders.length;
 
@@ -1941,30 +1925,24 @@ function listenToStockAlerts() {
         }
 
         // ============================================================
-        // AUTH CHECK — REMOVED (Direct-a orders load aagum)
+        // AUTH (orders load without login check)
         // ============================================================
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Logged in — show user info
-                const userEmail = document.querySelector('.sidebar-footer .user-email');
-                const userName = document.querySelector('.sidebar-footer .user-name');
+            const userEmail = document.querySelector('.sidebar-footer .user-email');
+            const userName = document.querySelector('.sidebar-footer .user-name');
 
+            if (user) {
                 if (userEmail) userEmail.textContent = user.email || 'haricrackers182@gmail.com';
                 if (userName) {
                     const label = (user.email || 'Admin').split('@')[0];
                     userName.textContent = label.charAt(0).toUpperCase() + label.slice(1);
                 }
             } else {
-                // Not logged in — show default admin
-                const userEmail = document.querySelector('.sidebar-footer .user-email');
-                const userName = document.querySelector('.sidebar-footer .user-name');
-
                 if (userEmail) userEmail.textContent = 'haricrackers182@gmail.com';
                 if (userName) userName.textContent = 'Admin';
             }
 
-            // ✅ Always load orders — login kekkama
-            listenToOrders();
+            if (!unsubscribeOrders) listenToOrders();
         });
 
         document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -1984,9 +1962,9 @@ function listenToStockAlerts() {
             document.getElementById('sidebarOverlay').classList.remove('active');
         });
 
-        console.log('✅ Orders page loaded — Paid Orders card removed');
+        console.log('✅ Orders page loaded');
 
-   </script>
+    </script>
 </body>
 
 </html>

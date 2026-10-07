@@ -4417,9 +4417,9 @@
 
     <section class="page-hero products-hero">
         <div class="container">
-            <h1>Our <span class="accent">Catalogue</span></h1>
+            <h1>Our <span class="accent">Products</span></h1>
             <p style="color:var(--text-muted); max-width:520px; margin:0 auto;">Premium
-                fireworks from Sivakasi — shop
+                fireworks — shop
                 with confidence.</p>
             <div style="margin-top:12px;"></div>
         </div>
@@ -5208,32 +5208,12 @@
             }
             window.openLightbox = openLightbox;
             window.closeLightbox = closeLightbox;
+
             async function saveOrderToFirebase(orderData) {
                 try {
-                    // ============================================================
-                    // GENERATE SEQUENTIAL ORDER ID FROM FIREBASE COUNTER
-                    // ============================================================
-                    const counterRef = doc(db, 'settings', 'orderCounter');
-                    let orderNumber = 1;
-
-                    try {
-                        const counterSnap = await getDoc(counterRef);
-                        if (counterSnap.exists()) {
-                            orderNumber = (counterSnap.data().lastOrderNumber || 0) + 1;
-                        }
-                        await setDoc(counterRef, { lastOrderNumber: orderNumber }, { merge: true });
-                    } catch (e) {
-                        console.error('Counter error:', e);
-                        orderNumber = Math.floor(Date.now() / 1000) % 100000;
-                    }
-
-                    // ✅ FIXED: Correct variable name (uppercase 'O')
-                    const formattedOrderId = 'HC' + String(orderNumber).padStart(3, '0');
-
-                    const ordersRef = collection(db, 'orders');
                     const order = {
-                        orderId: formattedOrderId,          // ✅ Now this works
-                        orderNumber: orderNumber,
+                        orderId: orderData.orderId,
+                        orderNumber: orderData.orderNumber,
                         customerName: orderData.name,
                         customerPhone: orderData.phone,
                         customerEmail: orderData.email || '',
@@ -5245,11 +5225,12 @@
                         orderDate: new Date().toISOString(),
                         createdAt: serverTimestamp(),
                         timestamp: serverTimestamp(),
-                        status: 'pending',
+                        orderStatus: 'Pending',
+                        paymentStatus: 'Pending',
                         source: 'website',
                         whatsappSent: true
                     };
-                    const docRef = await addDoc(ordersRef, order);
+                    const docRef = await addDoc(collection(db, 'orders'), order);
                     return docRef.id;
                 } catch (error) {
                     console.error('Save order error:', error);
@@ -5408,7 +5389,7 @@
                 // ============================================================
                 // GENERATE SEQUENTIAL ORDER ID (QC001, QC002, ...)
                 // ============================================================
-                let orderId = 'QC001';
+                let orderId = 'HC001';
                 let orderNumber = 1;
 
                 try {
@@ -5450,7 +5431,8 @@
 
 
                 // ✅ NEW: Stock decrease pannunga
-                await decreaseStockAfterOrder(cartItems);
+                await saveOrderToFirebase(orderData);
+                await decreaseStockAfterOrder(cartItems);    
                 // ============================================================
                 // STOCK DECREASE — Order place panna aprom automatic-a
                 // Firebase la irukura product stock-a kuraikkum
@@ -5651,8 +5633,22 @@
 
                 document.getElementById('order-summary-close').addEventListener('click', () => document.getElementById('order-summary-modal').classList.remove('active'));
                 document.getElementById('cart-download-bill').addEventListener('click', downloadBill);
-                document.getElementById('cart-send-whatsapp').addEventListener('click', sendToWhatsApp);
+let isPlacingOrder = false;
 
+document.getElementById('cart-send-whatsapp').addEventListener('click', async function () {
+    if (isPlacingOrder) return;          // 2nd click block
+    isPlacingOrder = true;
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Placing...';
+    try {
+        await sendToWhatsApp();
+    } finally {
+        isPlacingOrder = false;
+        btn.disabled = false;
+        btn.textContent = 'Place Order';
+    }
+});
                 document.getElementById('submit-enquiry').addEventListener('click', function () {
                     const { totalItems } = collectCartItems();
                     if (totalItems === 0) { alert('Please add items to your cart.'); return; }
