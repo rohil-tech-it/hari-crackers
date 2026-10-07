@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin — Direct Billing | Hari Crackers</title>
+    <title>Staff — Direct Billing | Hari Crackers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
@@ -41,7 +42,6 @@
             cursor: pointer
         }
 
-        /* sidebar */
         .sidebar {
             width: 260px;
             background: linear-gradient(180deg, #1a0033, #2d0050 45%, #4a148c);
@@ -220,7 +220,6 @@
             color: #2d0050
         }
 
-        /* main */
         .main {
             flex: 1;
             min-height: 100vh;
@@ -929,7 +928,6 @@
             color: #fff
         }
 
-        /* billing layout */
         .grid2 {
             display: grid;
             grid-template-columns: minmax(0, 1.6fr) minmax(340px, 1fr);
@@ -1005,26 +1003,66 @@
             background: #fff;
             border: 2px solid var(--y);
             border-radius: var(--rs);
-            z-index: 50;
+            z-index: 9999;
             box-shadow: 0 10px 30px rgba(45, 0, 80, .25);
             max-height: 320px;
-            overflow: auto
+            overflow-y: auto;
+            overflow-x: hidden
+        }
+
+        #sugg .sg.on {
+            background: #fff0bf;
+            border-left: 4px solid var(--y);
+            padding-left: 8px
+        }
+
+        #sugg .sg {
+            scroll-margin: 4px
         }
 
         .sg {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             gap: 10px;
-            padding: 9px 12px;
+            min-height: 64px;
+            padding: 10px 12px;
             cursor: pointer;
-            border-bottom: 1px solid var(--bd);
-            font-size: .88rem;
-            font-weight: 600
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            transition: background .12s ease, border-left .12s ease
         }
 
-        .sg.on,
+        .sg:last-child {
+            border-bottom: 0
+        }
+
+        .sg.on {
+            background: #fff0bf;
+            border-left: 4px solid var(--y);
+            padding-left: 8px;
+            color: #32104f
+        }
+
         .sg:hover {
-            background: #fff3cd
+            background: #f8efff
+        }
+
+        .sg-name {
+            flex: 1;
+            min-width: 0;
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.3;
+            overflow-wrap: anywhere
+        }
+
+        .sg-stock {
+            flex-shrink: 0;
+            font-size: 12px;
+            font-weight: 900;
+            color: #7020a0;
+            white-space: nowrap
         }
 
         .sg.so {
@@ -1117,7 +1155,6 @@
             }
         }
 
-        /* ===== POS fixed screen: page scroll aagathu, bill table ullaye scroll aagum ===== */
         .catmodal {
             display: none;
             position: fixed !important;
@@ -1344,6 +1381,7 @@
             <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
     </aside>
+
     <main class="main">
         <header class="top">
             <div style="display:flex;align-items:center;gap:14px">
@@ -1510,7 +1548,7 @@
     <script type="module">
         import { initializeApp } from "firebase/app";
         import { getFirestore, collection, onSnapshot, query, orderBy, doc, serverTimestamp, where, limit, getDocs, writeBatch, runTransaction, increment, setDoc, deleteDoc, enableIndexedDbPersistence } from "firebase/firestore";
-        import { getAuth, signOut } from "firebase/auth";
+        import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 
         const app = initializeApp({
             apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8", authDomain: "hari-crackers.firebaseapp.com", projectId: "hari-crackers",
@@ -1520,14 +1558,32 @@
         const db = getFirestore(app), auth = getAuth(app);
         enableIndexedDbPersistence(db).catch(e => console.warn('Offline persistence:', e.code));
 
+        // ✅ STAFF AUTH CHECK — staff illa na login page-ku
+        const staffEmails = ['staffharicrackers@gmail.com'];
+        // ✅ Hide body until auth confirmed — no flash
+        document.body.style.display = 'none';
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.replace('index.html');
+                return;
+            }
+            const email = (user.email || '').toLowerCase();
+            if (!staffEmails.includes(email)) {
+                signOut(auth);
+                window.location.replace('index.html');
+                return;
+            }
+            // ✅ Auth OK — show page
+            document.body.style.display = '';
+        });
         const $ = id => document.getElementById(id);
         const inr = n => '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 });
         const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const LOGO = '../pictures/logo-removebg-preview.png', K = 'haricrackers_pos_draft_v2', KH = 'haricrackers_pos_held_v2';
-        const PAPER = 80; // thermal paper width in mm: 80 or 58
+        const PAPER = 80;
         let products = [], bill = [], cat = 'All', hl = 0, saving = false, pendingRm = null;
 
-        // live bill -> shared with Stock Management ("In Bill" column)
         const CID = (() => { try { let c = sessionStorage.getItem('hc_cid'); if (!c) { c = 'b' + Math.random().toString(36).slice(2, 9); sessionStorage.setItem('hc_cid', c); } return c; } catch (e) { return 'b' + Date.now(); } })();
         let liveT;
         function publishLive() {
@@ -1545,20 +1601,23 @@
         function toast(m, t = 'info') { const e = $('toast'); e.textContent = m; e.className = 'toast show ' + t; clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('show'), 3000); }
         setInterval(() => $('clock').textContent = new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }), 1000);
 
-        // ---------- products ----------
         const stockOf = p => typeof p.stockQty === 'number' ? p.stockQty : null;
         const isOut = p => stockOf(p) !== null ? stockOf(p) <= 0 : p.inStock === false;
         const filtered = () => { const t = $('search').value.trim().toLowerCase(); return products.filter(p => (cat === 'All' || (p.category || 'Others') === cat) && (!t || (p.name || '').toLowerCase().includes(t))); };
         const pickable = () => filtered().filter(p => !isOut(p));
 
+        // ✅ Products listener — staff page-la productBadge illa, so safe check
         onSnapshot(query(collection(db, 'products'), orderBy('orderIndex', 'asc')), s => {
             products = s.docs.map(d => ({ id: d.id, ...d.data() }));
             renderCats(); renderProducts(); renderWarn(); refreshStockViews();
-            $('productBadge').textContent = s.size;
+            const pb = $('productBadge'); if (pb) pb.textContent = s.size;
             const low = products.filter(p => stockOf(p) !== null && stockOf(p) <= (p.lowStockThreshold || 5)).length;
-            $('stockAlertBadge').textContent = low; $('stockAlertBadge').style.display = low ? 'inline-block' : 'none';
+            const sb = $('stockAlertBadge');
+            if (sb) { sb.textContent = low; sb.style.display = low ? 'inline-block' : 'none'; }
         }, e => toast('⚠️ Error loading products', 'error'));
-        onSnapshot(collection(db, 'orders'), s => $('orderBadge').textContent = s.size);
+
+        // ✅ Orders listener — staff page-la orderBadge illa, so safe check
+        onSnapshot(collection(db, 'orders'), s => { const ob = $('orderBadge'); if (ob) ob.textContent = s.size; });
         onSnapshot(doc(db, 'settings', 'orderCounter'), s => $('nextNo').textContent = 'HC' + String((s.exists() ? s.data().lastOrderNumber || 0 : 0) + 1).padStart(3, '0'));
 
         function renderCats() {
@@ -1591,7 +1650,6 @@
             if (e.target.closest('.addb')) addProduct(products.find(p => p.id === tr.dataset.id));
         };
 
-        // ---------- live stock helpers ----------
         const leftOf = i => { if (i.manual) return null; const p = products.find(x => x.id === i.id); const s = p ? stockOf(p) : null; return s === null ? null : s - i.qty; };
         const stlHtml = i => { const l = leftOf(i); return l === null ? '—' : `<span class="stk ${l < 0 ? 'ou' : l <= 5 ? 'lo' : 'in'}">${l}</span>`; };
         function refreshStockViews() {
@@ -1606,12 +1664,10 @@
             b.innerHTML = `📦 Stock: <b>${s}</b> &nbsp;|&nbsp; In Bill: <b>${inBill}</b> &nbsp;|&nbsp; After Adding: <b class="${left < 0 ? 'neg' : 'pos'}">${left}</b>`;
         }
 
-        // ---------- lightbox ----------
         function openLb(src, n) { $('lbImg').src = src; $('lbCap').textContent = n || 'Product'; $('lb').classList.add('on'); }
         const closeLb = () => $('lb').classList.remove('on');
         $('lb').onclick = e => { if (e.target.id === 'lb' || e.target.closest('#lbX')) closeLb(); };
 
-        // ---------- bill ----------
         function addProduct(p) {
             if (!p) return;
             const s = stockOf(p), ex = bill.find(b => b.id === p.id);
@@ -1673,7 +1729,6 @@
         $('cart').onfocusin = e => { if (e.target.tagName === 'INPUT') e.target.select(); };
         ['dVal', 'dType', 'recv', 'pay', 'cName'].forEach(i => $(i).addEventListener('input', () => { updateTotals(); persist(); }));
 
-        // ---------- persist / hold ----------
         const snap = () => ({ bill, name: $('cName').value, phone: $('cPhone').value, dType: $('dType').value, dVal: $('dVal').value, pay: $('pay').value, recv: $('recv').value });
         function load(s) { bill = Array.isArray(s.bill) ? s.bill : []; $('cName').value = s.name || ''; $('cPhone').value = s.phone || ''; $('dType').value = s.dType || 'pct'; $('dVal').value = s.dVal || 0; $('pay').value = s.pay || 'Cash'; $('recv').value = s.recv || ''; renderCart(); }
         function persist() { try { localStorage.setItem(K, JSON.stringify(snap())); } catch (e) { } publishLive(); }
@@ -1695,7 +1750,6 @@
         $('holdBtn').onclick = hold;
         $('clearBtn').onclick = () => { if (bill.length && !confirm('Clear the current bill?')) return; reset(); };
 
-        // ---------- customer history ----------
         async function lookup() {
             const ph = $('cPhone').value.trim(), nm = $('cName').value.trim(), h = $('hist');
             if (!ph && !nm) return toast('Customer Name or Phone number required', 'error');
@@ -1713,7 +1767,6 @@
         $('histBtn').onclick = lookup;
         $('cPhone').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10); persist(); if (e.target.value.length === 10) lookup(); else if (!e.target.value) $('hist').style.display = 'none'; });
 
-        // ---------- save ----------
         async function save() {
             const t = calc(); if (!t.a.length || saving) return;
             const recv = $('recv').value === '' ? t.grand : parseFloat($('recv').value) || 0, name = $('cName').value.trim() || 'Walk-in Customer', phone = $('cPhone').value.trim();
@@ -1747,9 +1800,8 @@
         }
         $('saveBtn').onclick = save;
 
-        // ---------- thermal receipt (80mm / 58mm, black & white) ----------
         const SHOP = {
-            name: 'HARI PATTASU KADAI',
+            name: 'HARI CRACKERS',
             address: '2/8A GANDHI NAGAR RANJANKUDI THEVAIYUR NORTH PERAMBALUR (D.T) PIN CODE:621115',
             phones: '7010392742,8667725665',
             gstin: '',
@@ -1799,106 +1851,179 @@
             }));
         }
 
-async function printInvoice(o) {
-    const W = PAPER === 58 ? '48mm' : '72mm', FS = PAPER === 58 ? 11 : 12, LW = PAPER === 58 ? '34mm' : '50mm';
-    const N = n => Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const now = new Date();
-    const dStr = now.toLocaleDateString('en-GB'), tStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
-    const cashier = (auth.currentUser?.email || '').split('@')[0];
-    const t = o.t, paid = Math.min(o.recv, t.grand), refund = Math.max(0, o.recv - t.grand), pending = Math.max(0, t.grand - o.recv);
-    const saved = t.offer + t.extra;
-    const logo = await thermalLogo();
-    const logoTag = logo ? `<img class="logo" src="${logo}">` : `<img class="logo" style="filter:grayscale(1) contrast(1.6)" src="${LOGO}">`;
-    const custLine = [o.name, o.phone].filter(Boolean).map(esc).join(' · ');
+        function inWords(n) {
+            const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            const two = x => x < 20 ? a[x] : b[Math.floor(x / 10)] + (x % 10 ? ' ' + a[x % 10] : '');
+            const three = x => (x >= 100 ? a[Math.floor(x / 100)] + ' Hundred' + (x % 100 ? ' ' : '') : '') + (x % 100 ? two(x % 100) : '');
+            n = Math.floor(n); if (n <= 0) return 'Zero';
+            const cr = Math.floor(n / 10000000), lk = Math.floor(n / 100000) % 100, th = Math.floor(n / 1000) % 100, rest = n % 1000;
+            let s = '';
+            if (cr) s += two(cr) + ' Crore ';
+            if (lk) s += two(lk) + ' Lakh ';
+            if (th) s += two(th) + ' Thousand ';
+            if (rest) s += three(rest);
+            return s.trim();
+        }
 
-    const rows = o.items.map((i, x) => `
-<div class="it">
-  <div class="nm">${x + 1}. ${esc(i.name)}</div>
-  <div class="cal"><span>${i.qty} × ${N(i.price)}</span><span class="am">${N(i.price * i.qty)}</span></div>
-</div>`).join('');
+        async function printInvoice(o) {
+            const is58 = PAPER === 58;
+            const W = is58 ? '48mm' : '76mm';
+            const FS = is58 ? 10.5 : 11.5;
+            const LW = is58 ? '27mm' : '34mm';
+            const N = n => Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const now = new Date();
+            const dStr = now.toLocaleDateString('en-GB');
+            const tStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const cashier = (auth.currentUser?.email || '').split('@')[0] || 'Staff';
+            const t = o.t || {};
+            const grand = Number(t.grand || 0);
+            const received = Number(o.recv || 0);
+            const paid = Math.min(received, grand);
+            const refund = Math.max(0, received - grand);
+            const pending = Math.max(0, grand - received);
+            const saved = Number(t.offer || 0) + Number(t.extra || 0);
 
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${esc(o.orderId)}</title><style>
-@page{size:${PAPER}mm auto;margin:0}
-*{margin:0;padding:0;box-sizing:border-box;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{width:${W};margin:0 auto;padding:2mm 0 10mm;font:700 ${FS}px/1.3 Arial,Helvetica,sans-serif;background:#fff}
-.c{text-align:center}
-.logo{width:${LW};display:block;margin:0 auto 3px;image-rendering:pixelated}
-.shop{font-size:${FS + 6}px;font-weight:900;letter-spacing:.5px}
-.addr{font-size:${FS - 2}px;font-weight:700;margin-top:2px}
-.ph{font-size:${FS}px;font-weight:800;margin-top:2px}
-.dash{border-top:1.5px dashed #000;margin:5px 0}
-.sol{border-top:2px solid #000;margin:5px 0}
-.tag{text-align:center;font-weight:900;letter-spacing:2px;font-size:${FS}px;margin:2px 0}
-.ln{display:flex;justify-content:space-between;gap:6px}
-.bno{font-size:${FS + 3}px;font-weight:900}
-.hd{display:flex;justify-content:space-between;font-size:${FS - 1}px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}
-.it{padding:3px 0;border-bottom:1px dotted #000}
-.it:last-child{border-bottom:none}
-.nm{font-size:${FS}px;font-weight:800;word-break:break-word}
-.cal{display:flex;justify-content:space-between;font-size:${FS}px;padding-left:12px;margin-top:1px}
-.am{font-weight:900}
-.sum .ln{font-size:${FS}px;margin:2px 0}
-.tot{display:flex;justify-content:space-between;align-items:center;border:2px solid #000;padding:5px 6px;margin:5px 0}
-.tot .l{font-size:${FS + 2}px;font-weight:900;letter-spacing:1px}
-.tot .v{font-size:${FS + 9}px;font-weight:900}
-.save{text-align:center;border:1.5px dashed #000;padding:3px;font-size:${FS + 1}px;font-weight:900;margin:5px 0}
-.pay .ln{margin:2px 0}
-.thx{font-size:${FS + 1}px;font-weight:900;margin-top:3px}
+            const logo = await thermalLogo();
+            const logoTag = logo ? `<img class="logo" src="${logo}" alt="Hari Crackers">` : `<img class="logo fallback-logo" src="${LOGO}" alt="Hari Crackers">`;
+
+            const qrUrl = 'https://www.haricrackers.com/';
+            const qrImg = await new Promise(resolve => {
+                try {
+                    const holder = document.createElement('div');
+                    new QRCode(holder, { text: qrUrl, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+                    setTimeout(() => {
+                        const canvas = holder.querySelector('canvas');
+                        if (canvas) { resolve(canvas.toDataURL('image/png')); return; }
+                        const image = holder.querySelector('img');
+                        if (image && image.src) { resolve(image.src); return; }
+                        resolve(null);
+                    }, 150);
+                } catch (err) { console.error('QR generation failed:', err); resolve(null); }
+            });
+
+            const rows = (o.items || []).map((i, x) => {
+                const qty = Number(i.qty || 0);
+                const rate = Number(i.price || 0);
+                const amount = qty * rate;
+                const mrp = Number(i.oldPrice || 0);
+                return `<tr class="it-row"><td class="it-sn">${x + 1}</td><td class="it-name">${esc(i.name || '')}</td><td class="it-mrp">${mrp > 0 ? N(mrp) : ''}</td><td class="it-qty">${qty}</td><td class="it-rate">${N(rate)}</td><td class="it-amt">${N(amount)}</td></tr>`;
+            }).join('');
+
+            const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${esc(o.orderId || 'Bill')}</title><style>
+@page { size: ${PAPER}mm auto; margin: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+html { width: ${W}; }
+body { width: ${W}; margin: 0 auto; padding: 2.5mm 1.5mm 7mm 1.5mm; background: #fff; color: #000; font-family: Arial, Helvetica, sans-serif; font-size: ${FS}px; line-height: 1.25; font-weight: 600; }
+.c { text-align: center; }
+.logo { width: ${LW}; max-width: 45mm; max-height: 20mm; height: auto; object-fit: contain; display: block; margin: 0 auto 2px; }
+.fallback-logo { filter: grayscale(1) contrast(1.35); }
+.shop { font-size: ${is58 ? 16 : 19}px; font-weight: 900; letter-spacing: .3px; line-height: 1.05; margin-top: 1px; }
+.tag { font-size: ${is58 ? 9 : 10}px; font-weight: 800; letter-spacing: .4px; margin-top: 2px; }
+.addr { font-size: ${is58 ? 8.5 : 9.5}px; font-weight: 700; line-height: 1.25; margin-top: 3px; }
+.ph { font-size: ${is58 ? 9 : 10}px; font-weight: 900; margin-top: 3px; }
+.gst { font-size: ${is58 ? 8 : 9}px; font-weight: 700; margin-top: 2px; }
+.dash { border-top: 1px dashed #000; margin: 4px 0; }
+.sol { border-top: 1.4px solid #000; margin: 5px 0; }
+.dbl { border-top: 2px double #000; margin: 5px 0; }
+.bill-no-wrap { text-align: center; margin: 3px 0; }
+.bill-no { display: inline-block; font-size: ${is58 ? 11 : 13}px; font-weight: 900; letter-spacing: 1.5px; padding: 2px 10px; border: 1.5px solid #000; }
+.meta { font-size: ${is58 ? 9.5 : 10.5}px; margin: 4px 0; }
+.meta .ln { display: flex; justify-content: space-between; align-items: flex-start; gap: 7px; margin: 2px 0; line-height: 1.35; }
+.meta .ln > span { min-width: 0; }
+.meta b { font-weight: 900; }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.it { width: 100%; font-size: ${is58 ? 9 : 10.5}px; margin-top: 2px; }
+.it thead th { font-size: ${is58 ? 8 : 9}px; font-weight: 900; text-transform: uppercase; letter-spacing: .1px; padding: 3px 1px; border-top: 1.3px solid #000; border-bottom: 1.3px solid #000; text-align: right; white-space: nowrap; }
+.it-sn-h { width: 6% !important; text-align: left !important; }
+.it-name-h { width: 34% !important; text-align: left !important; }
+.it-mrp-h { width: 13% !important; }
+.it-qty-h { width: 9% !important; text-align: center !important; }
+.it-rate-h { width: 18% !important; }
+.it-amt-h { width: 20% !important; }
+.it tbody td { padding: 3px 1px; vertical-align: top; line-height: 1.3; }
+.it-sn { width: 6%; text-align: left; padding-left: 1px !important; font-weight: 700; }
+.it-name { width: 34%; text-align: left; padding-right: 3px !important; word-break: normal; overflow-wrap: anywhere; font-weight: 800; }
+.it-mrp { width: 13%; text-align: right; font-size: ${is58 ? 8 : 9}px; color: #555; text-decoration: line-through; font-weight: 600; }
+.it-qty { width: 9%; text-align: center; font-weight: 800; }
+.it-rate { width: 18%; text-align: right; font-weight: 700; }
+.it-amt { width: 20%; text-align: right; font-weight: 900; }
+.it tbody tr { border-bottom: 1px dotted #000; }
+.it tbody tr:last-child { border-bottom: 1.3px solid #000; }
+.sum { font-size: ${is58 ? 9.5 : 10.5}px; margin-top: 4px; }
+.sum .ln { display: flex; justify-content: space-between; gap: 5px; margin: 2.5px 0; line-height: 1.3; }
+.sum .ln span:last-child { font-weight: 800; }
+.tot { display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #000; border-bottom: 2px solid #000; background: #fff; padding: 5px 2px; margin: 6px 0; }
+.tot .l { font-size: ${is58 ? 12 : 14}px; font-weight: 900; letter-spacing: 1.5px; }
+.tot .v { font-size: ${is58 ? 17 : 20}px; font-weight: 900; line-height: 1; }
+.words { font-size: ${is58 ? 8.5 : 9.5}px; font-weight: 800; text-align: center; margin: 3px 0 4px; line-height: 1.3; }
+.save { text-align: center; border: 1px dashed #000; padding: 4px 3px; font-size: ${is58 ? 9 : 10}px; font-weight: 900; margin: 5px 0; letter-spacing: .3px; }
+.pay { font-size: ${is58 ? 9.5 : 10.5}px; margin-top: 3px; }
+.pay .ln { display: flex; justify-content: space-between; gap: 5px; margin: 2.5px 0; line-height: 1.3; }
+.pay .ln b { font-weight: 900; }
+.pay .due { font-weight: 900; font-size: ${is58 ? 10.5 : 11.5}px; border-top: 1px solid #000; padding-top: 3px; margin-top: 4px; }
+.qr-wrap { text-align: center; margin: 6px 0 3px; page-break-inside: avoid; }
+.qr-wrap img { width: ${is58 ? '25mm' : '29mm'}; height: ${is58 ? '25mm' : '29mm'}; object-fit: contain; display: block; margin: 0 auto; }
+.qr-txt { font-size: ${is58 ? 8.5 : 9.5}px; font-weight: 900; letter-spacing: .5px; margin-top: 3px; }
+.qr-url { font-size: ${is58 ? 8 : 9}px; font-weight: 700; margin-top: 1px; }
+.contact { font-size: ${is58 ? 8 : 9}px; font-weight: 800; text-align: center; margin-top: 3px; line-height: 1.35; word-break: break-word; }
+.thx { font-size: ${is58 ? 12 : 14}px; font-weight: 900; text-align: center; margin-top: 4px; line-height: 1.2; }
+.wish { font-size: ${is58 ? 8.5 : 9.5}px; font-weight: 700; text-align: center; margin-top: 2px; line-height: 1.3; }
+@media print { html, body { width: ${W}; margin: 0; padding-bottom: 6mm; } }
 </style></head><body>
-
 <div class="c">${logoTag}</div>
 <div class="c shop">${esc(SHOP.name)}</div>
+<div class="c tag">${esc(SHOP.tagline || 'Crackers & Fireworks')}</div>
 <div class="c addr">${esc(SHOP.address)}</div>
 <div class="c ph">Ph: ${esc(SHOP.phones)}</div>
-${SHOP.gstin ? `<div class="c addr">GSTIN: ${esc(SHOP.gstin)}</div>` : ''}
-
+${SHOP.gstin ? `<div class="c gst">GSTIN: ${esc(SHOP.gstin)}</div>` : ''}
 <div class="dash"></div>
-<div class="tag">BILL OF SUPPLY</div>
-<div class="ln"><span class="bno">Bill: ${esc(o.orderId)}</span><span>${dStr}</span></div>
-<div class="ln"><span>${esc(cashier)} · ${esc(SHOP.counter)}</span><span>${tStr}</span></div>
-${custLine ? `<div style="margin-top:2px">Customer: ${custLine}</div>` : ''}
-
+<div class="bill-no-wrap"><span class="bill-no">${esc(o.orderId || '')}</span></div>
+<div class="dash"></div>
+<div class="meta">
+  <div class="ln"><span><b>Date:</b> ${dStr}</span><span><b>Time:</b> ${tStr}</span></div>
+  <div class="ln"><span><b>Cashier:</b> ${esc(cashier)}</span><span><b>Counter:</b> ${esc(SHOP.counter || 'Bill 1')}</span></div>
+  <div class="ln"><span><b>Customer:</b> ${esc(o.name || 'Walk-in Customer')}</span>${o.phone ? `<span>${esc(o.phone)}</span>` : ''}</div>
+</div>
 <div class="sol"></div>
-<div class="hd"><span>Item</span><span>Qty × Rate &nbsp;&nbsp; Amount</span></div>
-<div class="sol" style="margin-top:2px"></div>
-${rows}
+<table class="it"><thead><tr><th class="it-sn-h">#</th><th class="it-name-h">Product</th><th class="it-mrp-h">MRP</th><th class="it-qty-h">Qty</th><th class="it-rate-h">Rate</th><th class="it-amt-h">Amt</th></tr></thead><tbody>${rows}</tbody></table>
 <div class="sol"></div>
-
 <div class="sum">
-  <div class="ln"><span>Total Items / Qty</span><span>${o.items.length} / ${t.qty}</span></div>
   <div class="ln"><span>Sub Total</span><span>${N(t.sub)}</span></div>
-  ${t.extra ? `<div class="ln"><span>Extra Discount</span><span>- ${N(t.extra)}</span></div>` : ''}
-  ${t.roundOff ? `<div class="ln"><span>Round Off</span><span>${t.roundOff < 0 ? '- ' : '+ '}${N(Math.abs(t.roundOff))}</span></div>` : ''}
+  ${Number(t.offer || 0) > 0 ? `<div class="ln"><span>Offer Discount</span><span>- ${N(t.offer)}</span></div>` : ''}
+  ${Number(t.extra || 0) > 0 ? `<div class="ln"><span>Extra Discount</span><span>- ${N(t.extra)}</span></div>` : ''}
+  ${Number(t.roundOff || 0) !== 0 ? `<div class="ln"><span>Round Off</span><span>${t.roundOff < 0 ? '- ' : '+ '}${N(Math.abs(Number(t.roundOff)))}</span></div>` : ''}
 </div>
-
-<div class="tot"><span class="l">TOTAL</span><span class="v">&#8377; ${N(t.grand)}</span></div>
-${saved > 0 ? `<div class="save">★ You Saved &#8377; ${N(saved)} ★</div>` : ''}
-
+<div class="tot"><span class="l">TOTAL</span><span class="v">&#8377; ${N(grand)}</span></div>
+<div class="words">${inWords(grand)} Rupees Only</div>
+${saved > 0 ? `<div class="save">YOU SAVED &#8377; ${N(saved)}</div>` : ''}
+<div class="sol"></div>
 <div class="pay">
-  <div class="ln"><span>Payment Mode</span><span>${esc(o.pay || 'Cash')}</span></div>
-  <div class="ln"><span>Amount Received</span><span>${N(o.recv)}</span></div>
-  ${refund > 0 ? `<div class="ln"><span>Change Returned</span><span>${N(refund)}</span></div>` : ''}
-  ${pending > 0 ? `<div class="ln"><span>Balance Due</span><span>${N(pending)}</span></div>` : ''}
+  <div class="ln"><span><b>Payment Mode</b></span><span><b>${esc(o.pay || 'Cash')}</b></span></div>
+  <div class="ln"><span>Paid</span><span>${N(paid)}</span></div>
+  ${refund > 0 ? `<div class="ln"><span>Change</span><span>${N(refund)}</span></div>` : ''}
+  ${pending > 0 ? `<div class="ln due"><span>BALANCE DUE</span><span>${N(pending)}</span></div>` : ''}
 </div>
-
+${qrImg ? `<div class="qr-wrap"><img src="${qrImg}" alt="Hari Crackers QR"><div class="qr-txt">SCAN TO VISIT</div><div class="qr-url">www.haricrackers.com</div></div>` : ''}
+<div class="dbl"></div>
+<div class="contact">WhatsApp Orders: ${esc(SHOP.phones)}</div>
 <div class="dash"></div>
-<div class="c" style="font-size:${FS - 1}px">WhatsApp Orders: ${esc(SHOP.phones)}</div>
-<div class="dash"></div>
-<div class="c thx">${esc(SHOP.thanks)}</div>
-<div class="c" style="font-size:${FS}px;margin-top:2px">${esc(SHOP.wish)}</div>
-<div class="c" style="font-size:${FS - 3}px;margin-top:6px">E &amp; O.E.</div>
+<div class="thx">${esc(SHOP.thanks || 'Thank you! Visit Again.')}</div>
+<div class="wish">${esc(SHOP.wish || 'Wishing you a Safe & Joyful Diwali!')}</div>
 </body></html>`;
 
-    const f = document.createElement('iframe');
-    f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
-    document.body.appendChild(f);
-    const d = f.contentWindow.document; d.open(); d.write(html); d.close();
-    f.contentWindow.onafterprint = () => f.remove();
-    setTimeout(() => { f.contentWindow.focus(); f.contentWindow.print(); }, 500);
-    setTimeout(() => f.remove(), 120000);
-}
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) { alert('Please allow pop-ups for this billing website to print the bill.'); return; }
+            printWindow.document.open();
+            printWindow.document.write(html);
+            printWindow.document.close();
+            printWindow.onload = () => {
+                setTimeout(() => { try { printWindow.focus(); printWindow.print(); } catch (err) { console.error('Print error:', err); } }, 500);
+            };
+            printWindow.onafterprint = () => { setTimeout(() => { try { printWindow.close(); } catch (err) { } }, 300); };
+            setTimeout(() => { try { if (printWindow && !printWindow.closed) printWindow.close(); } catch (err) { } }, 120000);
+        }
 
-        // ---------- global keyboard ----------
         document.addEventListener('keydown', e => {
             const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (e.key === 'F2' || (e.key === '/' && !typing)) { e.preventDefault(); $('eItem').focus(); $('eItem').select(); }
@@ -1919,13 +2044,37 @@ ${saved > 0 ? `<div class="save">★ You Saved &#8377; ${N(saved)} ★</div>` : 
             else if (e.key === 'Backspace' && !$('search').value && bill.length) { e.preventDefault(); const l = bill.pop(); toast('🗑️ Removed: ' + l.name, 'info'); renderCart(); }
         });
 
-        // ---------- entry bar (real billing flow) ----------
         let sel = null, sIdx = 0;
-        const sugList = () => { const t = $('eItem').value.trim().toLowerCase(); return t ? products.filter(p => (p.name || '').toLowerCase().includes(t)).slice(0, 8) : []; };
+        const sugList = () => {
+            const t = $('eItem').value.trim().toLowerCase();
+            if (!t) return [];
+            return products.filter(p => (p.name || '').toLowerCase().includes(t));
+        };
         function showSugg() {
-            const l = sugList(), b = $('sugg'); if (sel || !l.length) { b.style.display = 'none'; return; }
-            sIdx = Math.min(sIdx, l.length - 1);
-            b.innerHTML = l.map((p, i) => { const s0 = stockOf(p), s = s0 === null ? null : s0 - (bill.find(b => b.id === p.id)?.qty || 0); return `<div class="sg ${i === sIdx ? 'on' : ''} ${isOut(p) ? 'so' : ''}" data-id="${p.id}"><span>${esc(p.name)}</span><span>₹${p.price || 0} · ${isOut(p) ? 'OUT' : s !== null ? s + ' left' : 'In stock'}</span></div>`; }).join(''); b.style.display = 'block';
+            const l = sugList();
+            const b = $('sugg');
+            if (sel || !l.length) { b.style.display = 'none'; return; }
+            if (sIdx < 0) sIdx = l.length - 1;
+            if (sIdx >= l.length) sIdx = 0;
+            b.innerHTML = l.map((p, i) => {
+                const s0 = stockOf(p);
+                const used = bill.find(x => x.id === p.id)?.qty || 0;
+                const s = s0 === null ? null : s0 - used;
+                return `<div class="sg ${i === sIdx ? 'on' : ''} ${isOut(p) ? 'so' : ''}" data-id="${p.id}"><div class="sg-name">${esc(p.name)}</div><div class="sg-stock">₹${p.price || 0} · ${isOut(p) ? 'OUT' : s !== null ? `${s} left` : 'In stock'}</div></div>`;
+            }).join('');
+            b.style.display = 'block';
+            requestAnimationFrame(() => {
+                const active = b.querySelector('.sg.on');
+                if (!active) return;
+                const itemTop = active.offsetTop;
+                const itemHeight = active.offsetHeight;
+                const boxHeight = b.clientHeight;
+                let targetScroll = itemTop - (boxHeight / 2) + (itemHeight / 2);
+                if (targetScroll < 0) targetScroll = 0;
+                const maxScroll = b.scrollHeight - b.clientHeight;
+                if (targetScroll > maxScroll) targetScroll = maxScroll;
+                b.scrollTop = targetScroll;
+            });
         }
         function entryAmt() { $('eAmt').textContent = inr((parseFloat($('eRate').value) || 0) * (parseInt($('eQty').value, 10) || 0)); entryInfo(); }
         function pick(p) {
@@ -1948,13 +2097,12 @@ ${saved > 0 ? `<div class="save">★ You Saved &#8377; ${N(saved)} ★</div>` : 
         $('eItem').addEventListener('blur', () => setTimeout(() => { $('sugg').style.display = 'none'; }, 150));
         $('eItem').addEventListener('keydown', e => {
             const l = sugList();
-            if (e.key === 'ArrowDown' && l.length && !sel) { e.preventDefault(); sIdx = (sIdx + 1) % l.length; showSugg(); }
-            else if (e.key === 'ArrowUp' && l.length && !sel) { e.preventDefault(); sIdx = (sIdx - 1 + l.length) % l.length; showSugg(); }
-            else if (e.key === 'ArrowDown') { const t = $('cart').querySelector('[data-k="qty"]'); if (t) { e.preventDefault(); t.focus(); } }
-            else if (e.key === 'ArrowRight' && sel) { e.preventDefault(); $('eRate').focus(); }
-            else if (e.key === 'Enter') { e.preventDefault(); if (sel) { $('eQty').focus(); $('eQty').select(); } else if (l.length) pick(l[sIdx]); else toast('No matching product', 'error'); }
-            else if (e.key === 'Tab' && !sel && l.length) { e.preventDefault(); pick(l[sIdx]); }
-            else if (e.key === 'Escape') clearEntry();
+            if (e.key === 'ArrowDown' && !sel) { if (!l.length) return; e.preventDefault(); sIdx++; if (sIdx >= l.length) sIdx = 0; showSugg(); return; }
+            if (e.key === 'ArrowUp' && !sel) { if (!l.length) return; e.preventDefault(); sIdx--; if (sIdx < 0) sIdx = l.length - 1; showSugg(); return; }
+            if (e.key === 'Enter' && !sel) { e.preventDefault(); if (!l.length) { toast('⚠️ No matching product found', 'error'); return; } const p = l[sIdx]; if (p) pick(p); return; }
+            if (e.key === 'Escape') { e.preventDefault(); clearEntry(); return; }
+            if (e.key === 'ArrowDown' && sel) { e.preventDefault(); $('eQty').focus(); $('eQty').select(); return; }
+            if (e.key === 'ArrowRight' && sel) { e.preventDefault(); $('eRate').focus(); $('eRate').select(); return; }
         });
         $('sugg').addEventListener('mousedown', e => { const d = e.target.closest('.sg'); if (d) { e.preventDefault(); pick(products.find(p => p.id === d.dataset.id)); } });
         $('eRate').addEventListener('input', entryAmt); $('eQty').addEventListener('input', entryAmt);
@@ -1976,7 +2124,6 @@ ${saved > 0 ? `<div class="save">★ You Saved &#8377; ${N(saved)} ★</div>` : 
         $('eRate').addEventListener('focus', e => e.target.select()); $('eQty').addEventListener('focus', e => e.target.select());
         $('eAdd').onclick = addEntry;
 
-        // customer fields: Enter -> next field, last field Enter -> Save
         [['cName', 'cPhone'], ['cPhone', 'pay'], ['pay', 'dType'], ['dType', 'dVal'], ['dVal', 'recv']].forEach(([a, b]) =>
             $(a).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $(b).focus(); $(b).select?.(); } }));
         $('recv').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
@@ -1989,22 +2136,18 @@ ${saved > 0 ? `<div class="save">★ You Saved &#8377; ${N(saved)} ★</div>` : 
         }
         $('catBtn').onclick = () => toggleCat(); $('catX').onclick = () => toggleCat(false); $('catBack').onclick = () => toggleCat(false);
 
-        // ---------- ui ----------
         $('ham').onclick = () => { $('sidebar').classList.toggle('open'); $('overlay').classList.toggle('active'); };
         $('overlay').onclick = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('active'); };
-        $('logoutBtn').onclick = async () => { if (!confirm('Are you sure you want to logout?')) return; try { await signOut(auth); window.location.href = '/admin/index.html'; } catch (e) { alert('Logout failed. Please try again.'); } };
+        $('logoutBtn').onclick = async () => { if (!confirm('Are you sure you want to logout?')) return; try { await signOut(auth); window.location.href = 'index.html'; } catch (e) { alert('Logout failed. Please try again.'); } };
 
-        // ---------- init ----------
         try { const d = JSON.parse(localStorage.getItem(K)); load(d || {}); } catch (e) { load({}); }
-        renderHeld(); $('eItem').focus();// ===== GLOBAL LOW-STOCK WATCHER (all pages la same) =====
+        renderHeld(); $('eItem').focus();
+
         (function () {
-            const say = m => (typeof showToast === 'function' ? showToast(m, 'error') : toast(m, 'error'));
+            const say = m => toast(m, 'error');
             let last = null, actx;
             const qtyOf = p => typeof p.stockQty === 'number' ? p.stockQty : null;
-            const statOf = p => {
-                const q = qtyOf(p), t = p.lowStockThreshold || 5;
-                return q === null ? 'un' : q <= 0 ? 'out' : q <= t ? 'low' : 'in';
-            };
+            const statOf = p => { const q = qtyOf(p), t = p.lowStockThreshold || 5; return q === null ? 'un' : q <= 0 ? 'out' : q <= t ? 'low' : 'in'; };
             function beep() {
                 try {
                     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
@@ -2016,7 +2159,6 @@ ${saved > 0 ? `<div class="save">★ You Saved &#8377; ${N(saved)} ★</div>` : 
                 } catch (e) { }
             }
             document.addEventListener('pointerdown', () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); } catch (e) { } }, { once: true });
-
             onSnapshot(collection(db, 'products'), snap => {
                 const cur = {}; let count = 0;
                 snap.docs.forEach(d => {

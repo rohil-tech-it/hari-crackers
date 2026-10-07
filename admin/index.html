@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hari Crackers — Admin Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- FAVICON / TAB LOGO -->
     <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
@@ -118,180 +117,48 @@
             opacity: 0;
         }
 
-        .sparkle-ray:nth-child(1) {
-            transform: rotate(0deg) translateY(-50px);
-            animation-delay: 0s;
-        }
+        .sparkle-ray:nth-child(1) { transform: rotate(0deg) translateY(-50px); animation-delay: 0s; }
+        .sparkle-ray:nth-child(2) { transform: rotate(45deg) translateY(-50px); animation-delay: 0.2s; }
+        .sparkle-ray:nth-child(3) { transform: rotate(90deg) translateY(-50px); animation-delay: 0.4s; }
+        .sparkle-ray:nth-child(4) { transform: rotate(135deg) translateY(-50px); animation-delay: 0.6s; }
+        .sparkle-ray:nth-child(5) { transform: rotate(180deg) translateY(-50px); animation-delay: 0.8s; }
+        .sparkle-ray:nth-child(6) { transform: rotate(225deg) translateY(-50px); animation-delay: 1.0s; }
+        .sparkle-ray:nth-child(7) { transform: rotate(270deg) translateY(-50px); animation-delay: 1.2s; }
+        .sparkle-ray:nth-child(8) { transform: rotate(315deg) translateY(-50px); animation-delay: 1.4s; }
 
-        .sparkle-ray:nth-child(2) {
-            transform: rotate(45deg) translateY(-50px);
-            animation-delay: 0.2s;
-        }
-
-        .sparkle-ray:nth-child(3) {
-            transform: rotate(90deg) translateY(-50px);
-            animation-delay: 0.4s;
-        }
-
-        .sparkle-ray:nth-child(4) {
-            transform: rotate(135deg) translateY(-50px);
-            animation-delay: 0.6s;
-        }
-
-        .sparkle-ray:nth-child(5) {
-            transform: rotate(180deg) translateY(-50px);
-            animation-delay: 0.8s;
-        }
-
-        .sparkle-ray:nth-child(6) {
-            transform: rotate(225deg) translateY(-50px);
-            animation-delay: 1.0s;
-        }
-
-        .sparkle-ray:nth-child(7) {
-            transform: rotate(270deg) translateY(-50px);
-            animation-delay: 1.2s;
-        }
-
-        .sparkle-ray:nth-child(8) {
-            transform: rotate(315deg) translateY(-50px);
-            animation-delay: 1.4s;
-        }
-
-        .cracker-burst:nth-child(1) {
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
-            width: 250px;
-            height: 250px;
-        }
-
-        .cracker-burst:nth-child(2) {
-            top: 60%;
-            left: 75%;
-            animation-delay: 2s;
-            width: 350px;
-            height: 350px;
-        }
-
-        .cracker-burst:nth-child(3) {
-            top: 80%;
-            left: 10%;
-            animation-delay: 4s;
-            width: 200px;
-            height: 200px;
-        }
-
-        .cracker-burst:nth-child(4) {
-            top: 20%;
-            left: 80%;
-            animation-delay: 1s;
-            width: 280px;
-            height: 280px;
-        }
-
-        .cracker-burst:nth-child(5) {
-            top: 50%;
-            left: 45%;
-            animation-delay: 3s;
-            width: 400px;
-            height: 400px;
-        }
-
-        .cracker-burst:nth-child(6) {
-            top: 85%;
-            left: 50%;
-            animation-delay: 5s;
-            width: 220px;
-            height: 220px;
-        }
+        .cracker-burst:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; width: 250px; height: 250px; }
+        .cracker-burst:nth-child(2) { top: 60%; left: 75%; animation-delay: 2s; width: 350px; height: 350px; }
+        .cracker-burst:nth-child(3) { top: 80%; left: 10%; animation-delay: 4s; width: 200px; height: 200px; }
+        .cracker-burst:nth-child(4) { top: 20%; left: 80%; animation-delay: 1s; width: 280px; height: 280px; }
+        .cracker-burst:nth-child(5) { top: 50%; left: 45%; animation-delay: 3s; width: 400px; height: 400px; }
+        .cracker-burst:nth-child(6) { top: 85%; left: 50%; animation-delay: 5s; width: 220px; height: 220px; }
 
         @keyframes burstExplode {
-            0% {
-                opacity: 0;
-                transform: scale(0.3);
-            }
-
-            10% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.5);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(2.5);
-            }
+            0% { opacity: 0; transform: scale(0.3); }
+            10% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(2.5); }
         }
 
         @keyframes burstPulse {
-            0% {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-
-            20% {
-                opacity: 0.8;
-                transform: scale(1);
-            }
-
-            60% {
-                opacity: 0.5;
-                transform: scale(1.5);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(2);
-            }
+            0% { opacity: 0; transform: scale(0.5); }
+            20% { opacity: 0.8; transform: scale(1); }
+            60% { opacity: 0.5; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(2); }
         }
 
         @keyframes burstInner {
-            0% {
-                opacity: 0;
-                transform: scale(0.3);
-            }
-
-            30% {
-                opacity: 0.6;
-                transform: scale(1.2);
-            }
-
-            70% {
-                opacity: 0.3;
-                transform: scale(1.8);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(2.5);
-            }
+            0% { opacity: 0; transform: scale(0.3); }
+            30% { opacity: 0.6; transform: scale(1.2); }
+            70% { opacity: 0.3; transform: scale(1.8); }
+            100% { opacity: 0; transform: scale(2.5); }
         }
 
         @keyframes rayShoot {
-            0% {
-                opacity: 0;
-                height: 0;
-            }
-
-            20% {
-                opacity: 1;
-                height: 60px;
-            }
-
-            60% {
-                opacity: 0.6;
-                height: 150px;
-            }
-
-            100% {
-                opacity: 0;
-                height: 200px;
-            }
+            0% { opacity: 0; height: 0; }
+            20% { opacity: 1; height: 60px; }
+            60% { opacity: 0.6; height: 150px; }
+            100% { opacity: 0; height: 200px; }
         }
 
         .sparkle {
@@ -305,107 +172,22 @@
             opacity: 0;
         }
 
-        .sparkle:nth-child(1) {
-            left: 15%;
-            animation-duration: 8s;
-            animation-delay: 0s;
-            width: 3px;
-            height: 3px;
-        }
-
-        .sparkle:nth-child(2) {
-            left: 30%;
-            animation-duration: 10s;
-            animation-delay: 2s;
-            width: 5px;
-            height: 5px;
-        }
-
-        .sparkle:nth-child(3) {
-            left: 45%;
-            animation-duration: 7s;
-            animation-delay: 4s;
-            width: 2px;
-            height: 2px;
-        }
-
-        .sparkle:nth-child(4) {
-            left: 60%;
-            animation-duration: 12s;
-            animation-delay: 1s;
-            width: 4px;
-            height: 4px;
-        }
-
-        .sparkle:nth-child(5) {
-            left: 75%;
-            animation-duration: 9s;
-            animation-delay: 3s;
-            width: 3px;
-            height: 3px;
-        }
-
-        .sparkle:nth-child(6) {
-            left: 90%;
-            animation-duration: 11s;
-            animation-delay: 5s;
-            width: 5px;
-            height: 5px;
-        }
-
-        .sparkle:nth-child(7) {
-            left: 5%;
-            animation-duration: 13s;
-            animation-delay: 2s;
-            width: 2px;
-            height: 2px;
-        }
-
-        .sparkle:nth-child(8) {
-            left: 50%;
-            animation-duration: 6s;
-            animation-delay: 6s;
-            width: 4px;
-            height: 4px;
-        }
-
-        .sparkle:nth-child(9) {
-            left: 70%;
-            animation-duration: 14s;
-            animation-delay: 1s;
-            width: 3px;
-            height: 3px;
-        }
-
-        .sparkle:nth-child(10) {
-            left: 25%;
-            animation-duration: 8s;
-            animation-delay: 7s;
-            width: 5px;
-            height: 5px;
-        }
+        .sparkle:nth-child(1) { left: 15%; animation-duration: 8s; animation-delay: 0s; width: 3px; height: 3px; }
+        .sparkle:nth-child(2) { left: 30%; animation-duration: 10s; animation-delay: 2s; width: 5px; height: 5px; }
+        .sparkle:nth-child(3) { left: 45%; animation-duration: 7s; animation-delay: 4s; width: 2px; height: 2px; }
+        .sparkle:nth-child(4) { left: 60%; animation-duration: 12s; animation-delay: 1s; width: 4px; height: 4px; }
+        .sparkle:nth-child(5) { left: 75%; animation-duration: 9s; animation-delay: 3s; width: 3px; height: 3px; }
+        .sparkle:nth-child(6) { left: 90%; animation-duration: 11s; animation-delay: 5s; width: 5px; height: 5px; }
+        .sparkle:nth-child(7) { left: 5%; animation-duration: 13s; animation-delay: 2s; width: 2px; height: 2px; }
+        .sparkle:nth-child(8) { left: 50%; animation-duration: 6s; animation-delay: 6s; width: 4px; height: 4px; }
+        .sparkle:nth-child(9) { left: 70%; animation-duration: 14s; animation-delay: 1s; width: 3px; height: 3px; }
+        .sparkle:nth-child(10) { left: 25%; animation-duration: 8s; animation-delay: 7s; width: 5px; height: 5px; }
 
         @keyframes floatSparkle {
-            0% {
-                top: -5%;
-                opacity: 0;
-                transform: translateX(0) scale(0);
-            }
-
-            10% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            90% {
-                opacity: 1;
-            }
-
-            100% {
-                top: 105%;
-                opacity: 0;
-                transform: translateX(30px) scale(0);
-            }
+            0% { top: -5%; opacity: 0; transform: translateX(0) scale(0); }
+            10% { opacity: 1; transform: scale(1); }
+            90% { opacity: 1; }
+            100% { top: 105%; opacity: 0; transform: translateX(30px) scale(0); }
         }
 
         /* ============================================================
@@ -432,9 +214,7 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
         /* ============================================================
@@ -465,10 +245,7 @@
         }
 
         @keyframes slideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-card {
@@ -496,15 +273,8 @@
         }
 
         @keyframes shimmer {
-
-            0%,
-            100% {
-                background-position: 0% 0%;
-            }
-
-            50% {
-                background-position: 100% 0%;
-            }
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 0%; }
         }
 
         /* ===== BRAND ===== */
@@ -548,17 +318,8 @@
         }
 
         @keyframes pulseRing {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.12);
-                opacity: 0.4;
-            }
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.12); opacity: 0.4; }
         }
 
         .login-brand .brand-title {
@@ -699,19 +460,9 @@
         }
 
         @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-8px);
-            }
-
-            75% {
-                transform: translateX(8px);
-            }
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
         .login-error.show {
@@ -858,138 +609,59 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
-            .login-card {
-                padding: 32px 24px;
-            }
-
-            .login-brand .brand-title {
-                font-size: 1.5rem;
-            }
-
-            .login-brand .brand-icon {
-                width: 56px;
-                height: 56px;
-                font-size: 1.5rem;
-            }
-
-            .login-field input {
-                font-size: 0.9rem;
-                padding: 11px 14px 11px 10px;
-            }
-
-            .login-submit {
-                font-size: 0.85rem;
-                padding: 12px;
-            }
-
-            .login-field .input-wrapper .toggle-password {
-                right: 8px;
-            }
+            .login-card { padding: 32px 24px; }
+            .login-brand .brand-title { font-size: 1.5rem; }
+            .login-brand .brand-icon { width: 56px; height: 56px; font-size: 1.5rem; }
+            .login-field input { font-size: 0.9rem; padding: 11px 14px 11px 10px; }
+            .login-submit { font-size: 0.85rem; padding: 12px; }
+            .login-field .input-wrapper .toggle-password { right: 8px; }
         }
 
         @media (max-width: 360px) {
-            .login-card {
-                padding: 24px 16px;
-            }
-
-            .login-brand .brand-title {
-                font-size: 1.2rem;
-            }
+            .login-card { padding: 24px 16px; }
+            .login-brand .brand-title { font-size: 1.2rem; }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ============================================================
-       CRACKER / FIREWORKS BACKGROUND
-       ============================================================ -->
     <div class="fireworks-bg">
         <div class="burst-container">
             <div class="cracker-burst">
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
             </div>
             <div class="cracker-burst">
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
             </div>
             <div class="cracker-burst">
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
             </div>
             <div class="cracker-burst">
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
             </div>
             <div class="cracker-burst">
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
             </div>
             <div class="cracker-burst">
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
-                <div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
+                <div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div><div class="sparkle-ray"></div>
             </div>
         </div>
 
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
+        <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+        <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
     </div>
 
-    <!-- ============================================================
-       LOADING SCREEN
-       ============================================================ -->
     <div id="auth-loading">
         <div class="spinner"></div>
     </div>
 
-    <!-- ============================================================
-       LOGIN SCREEN
-       ============================================================ -->
     <div id="login-screen" class="active">
         <div class="login-wrapper">
             <div class="login-card">
@@ -1010,8 +682,7 @@
                         <label><i class="fas fa-envelope"></i> Email Address</label>
                         <div class="input-wrapper">
                             <span class="input-icon"><i class="fas fa-envelope"></i></span>
-                            <input type="email" id="loginEmail" placeholder="admin@haricrackers.in" required
-                                autocomplete="username" />
+                            <input type="email" id="loginEmail" placeholder="admin@haricrackers.in" required autocomplete="username" />
                         </div>
                     </div>
 
@@ -1019,8 +690,7 @@
                         <label><i class="fas fa-lock"></i> Password</label>
                         <div class="input-wrapper">
                             <span class="input-icon"><i class="fas fa-lock"></i></span>
-                            <input type="password" id="loginPassword" placeholder="Enter your password" required
-                                autocomplete="current-password" />
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password" />
                             <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -1046,9 +716,6 @@
         </div>
     </div>
 
-    <!-- ============================================================
-       FIREBASE AUTH
-       ============================================================ -->
     <script type="importmap">
         {
             "imports": {
@@ -1060,14 +727,14 @@
 
     <script type="module">
         import { initializeApp } from "firebase/app";
-    
-import {
-    getAuth,
-    signInWithEmailAndPassword,
-    setPersistence,
-    browserLocalPersistence,
-    onAuthStateChanged
-} from "firebase/auth";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            setPersistence,
+            browserLocalPersistence,
+            onAuthStateChanged,
+            signOut
+        } from "firebase/auth";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
@@ -1089,9 +756,9 @@ import {
         const loginSubmitBtn = document.getElementById('loginSubmitBtn');
         const loginError = document.getElementById('loginError');
 
-        // ============================================================
-        // TOGGLE PASSWORD VISIBILITY
-        // ============================================================
+        // ✅ FIX: Dashboard path — login file admin folder-la irunthaa "dashboard.html"
+        // Illa root-la irunthaa "admin/dashboard.html"
+const DASHBOARD_PATH = 'admin/dashboard.html';
         window.togglePasswordVisibility = function () {
             const input = document.getElementById('loginPassword');
             const button = document.querySelector('.toggle-password');
@@ -1131,47 +798,34 @@ import {
                     return 'Incorrect email or password. Please try again.';
                 case 'auth/too-many-requests':
                     return 'Too many failed attempts. Please try again later.';
+                case 'auth/network-request-failed':
+                    return 'Network error. Please check your internet connection.';
                 default:
                     return 'Login failed. Please check your credentials.';
             }
         }
 
         // ============================================================
-        // AUTH INITIALIZATION
+        // ✅ SESSION PERSISTENCE — once logged in, stay logged in
         // ============================================================
-
-// ============================================================
-// AUTH INITIALIZATION
-// ============================================================
-
-setPersistence(auth, browserLocalPersistence)
+    setPersistence(auth, browserLocalPersistence)
     .then(() => {
-
         onAuthStateChanged(auth, (user) => {
-
-            authLoading.style.display = "none";
-
-            if (user) {
-                // Already logged in -> go directly to dashboard
-                window.location.replace("dashboard.html");
-                return;
-            }
-
-            // No login -> show login screen
-            loginScreen.classList.add("active");
+            // ✅ Login screen ALWAYS kaatanum — auto-redirect illa
+            authLoading.style.display = 'none';
+            loginScreen.classList.add('active');
             loginForm.reset();
             clearError();
-        });
 
+            // User already logged in-a irundhaalum, login screen thaan varum
+            // User login panna appuram thaan dashboard-ku poagum
+        });
     })
     .catch((err) => {
-
-        console.error("Persistence error:", err);
-
-        authLoading.style.display = "none";
-        loginScreen.classList.add("active");
+        console.error('Persistence error:', err);
+        authLoading.style.display = 'none';
+        loginScreen.classList.add('active');
     });
-
 
         // ============================================================
         // LOGIN SUBMIT
@@ -1191,10 +845,11 @@ setPersistence(auth, browserLocalPersistence)
             loginSubmitBtn.disabled = true;
             loginSubmitBtn.classList.add('loading');
 
-     signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-        window.location.replace("dashboard.html");
-    })
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    // ✅ Login success -> dashboard
+                    window.location.replace(DASHBOARD_PATH);
+                })
                 .catch(err => {
                     showError(friendlyError(err.code));
                     loginSubmitBtn.disabled = false;
@@ -1202,7 +857,6 @@ setPersistence(auth, browserLocalPersistence)
                 });
         });
 
-        // Enter key support
         loginPassword.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 loginForm.dispatchEvent(new Event('submit'));

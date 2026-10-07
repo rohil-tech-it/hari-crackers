@@ -999,33 +999,124 @@
 
         #sugg {
             display: none;
+
             position: absolute;
             left: 0;
             right: 0;
             top: 100%;
+
             background: #fff;
+
             border: 2px solid var(--y);
             border-radius: var(--rs);
-            z-index: 50;
-            box-shadow: 0 10px 30px rgba(45, 0, 80, .25);
+
+            z-index: 9999;
+
+            box-shadow:
+                0 10px 30px rgba(45, 0, 80, .25);
+
+            /*
+       4 products visible
+    */
             max-height: 320px;
-            overflow: auto
+
+            /*
+       Vertical scrolling ONLY
+    */
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            scroll-behavior: auto;
+        }
+
+        #sugg .sg.on {
+            background: #fff0bf;
+            border-left: 4px solid var(--y);
+            padding-left: 8px;
+        }
+
+        #sugg .sg {
+            scroll-margin: 4px;
         }
 
         .sg {
             display: flex;
+
             justify-content: space-between;
+            align-items: center;
+
             gap: 10px;
-            padding: 9px 12px;
+
+            min-height: 64px;
+
+            padding: 10px 12px;
+
             cursor: pointer;
-            border-bottom: 1px solid var(--bd);
-            font-size: .88rem;
-            font-weight: 600
+
+            background: #fff;
+
+            border-bottom: 1px solid #eee;
+
+            transition:
+                background .12s ease,
+                border-left .12s ease;
         }
 
-        .sg.on,
+        .sg:last-child {
+            border-bottom: 0;
+        }
+
+
+        /* Keyboard selected item */
+
+        .sg.on {
+            background: #fff0bf;
+
+            border-left: 4px solid var(--y);
+
+            padding-left: 8px;
+
+            color: #32104f;
+        }
+
+
+        /* Mouse */
+
         .sg:hover {
-            background: #fff3cd
+            background: #f8efff;
+        }
+
+
+        .sg-name {
+            flex: 1;
+
+            min-width: 0;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            line-height: 1.3;
+
+            overflow-wrap: anywhere;
+        }
+
+
+        .sg-stock {
+            flex-shrink: 0;
+
+            font-size: 12px;
+
+            font-weight: 900;
+
+            color: #7020a0;
+
+            white-space: nowrap;
+        }
+
+
+        .sg.so {
+            opacity: .55;
         }
 
         .sg.so {
@@ -1822,6 +1913,7 @@
             if (rest) s += three(rest);
             return s.trim();
         }
+       
         async function printInvoice(o) {
 
             // =========================================================
@@ -3579,11 +3671,119 @@ ${qrImg
 
         // ---------- entry bar (real billing flow) ----------
         let sel = null, sIdx = 0;
-        const sugList = () => { const t = $('eItem').value.trim().toLowerCase(); return t ? products.filter(p => (p.name || '').toLowerCase().includes(t)).slice(0, 8) : []; };
+        const sugList = () => {
+            const t = $('eItem').value.trim().toLowerCase();
+
+            if (!t) return [];
+
+            return products.filter(p =>
+                (p.name || '').toLowerCase().includes(t)
+            );
+        };
+
         function showSugg() {
-            const l = sugList(), b = $('sugg'); if (sel || !l.length) { b.style.display = 'none'; return; }
-            sIdx = Math.min(sIdx, l.length - 1);
-            b.innerHTML = l.map((p, i) => { const s0 = stockOf(p), s = s0 === null ? null : s0 - (bill.find(b => b.id === p.id)?.qty || 0); return `<div class="sg ${i === sIdx ? 'on' : ''} ${isOut(p) ? 'so' : ''}" data-id="${p.id}"><span>${esc(p.name)}</span><span>₹${p.price || 0} · ${isOut(p) ? 'OUT' : s !== null ? s + ' left' : 'In stock'}</span></div>`; }).join(''); b.style.display = 'block';
+
+            const l = sugList();
+            const b = $('sugg');
+
+            if (sel || !l.length) {
+                b.style.display = 'none';
+                return;
+            }
+
+            // Keep index valid
+            if (sIdx < 0) {
+                sIdx = l.length - 1;
+            }
+
+            if (sIdx >= l.length) {
+                sIdx = 0;
+            }
+
+            b.innerHTML = l.map((p, i) => {
+
+                const s0 = stockOf(p);
+
+                const used =
+                    bill.find(x => x.id === p.id)?.qty || 0;
+
+                const s =
+                    s0 === null
+                        ? null
+                        : s0 - used;
+
+                return `
+            <div
+                class="sg ${i === sIdx ? 'on' : ''} ${isOut(p) ? 'so' : ''}"
+                data-id="${p.id}"
+            >
+                <div class="sg-name">
+                    ${esc(p.name)}
+                </div>
+
+                <div class="sg-stock">
+                    ₹${p.price || 0}
+                    ·
+                    ${isOut(p)
+                        ? 'OUT'
+                        : s !== null
+                            ? `${s} left`
+                            : 'In stock'
+                    }
+                </div>
+            </div>
+        `;
+
+            }).join('');
+
+            b.style.display = 'block';
+
+
+            // ==========================================
+            // FORCE AUTO SCROLL
+            // ==========================================
+
+            requestAnimationFrame(() => {
+
+                const active = b.querySelector('.sg.on');
+
+                if (!active) return;
+
+
+                const itemTop = active.offsetTop;
+                const itemHeight = active.offsetHeight;
+
+                const boxHeight = b.clientHeight;
+
+
+                // Put selected item around the center
+                // of the visible dropdown
+
+                let targetScroll =
+                    itemTop -
+                    (boxHeight / 2) +
+                    (itemHeight / 2);
+
+
+                // Don't scroll above beginning
+                if (targetScroll < 0) {
+                    targetScroll = 0;
+                }
+
+
+                // Don't scroll beyond bottom
+                const maxScroll =
+                    b.scrollHeight - b.clientHeight;
+
+                if (targetScroll > maxScroll) {
+                    targetScroll = maxScroll;
+                }
+
+
+                // IMPORTANT
+                b.scrollTop = targetScroll;
+
+            });
         }
         function entryAmt() { $('eAmt').textContent = inr((parseFloat($('eRate').value) || 0) * (parseInt($('eQty').value, 10) || 0)); entryInfo(); }
         function pick(p) {
@@ -3604,16 +3804,132 @@ ${qrImg
         $('eItem').addEventListener('input', () => { sel = null; $('eStock').textContent = '—'; sIdx = 0; entryInfo(); showSugg(); });
         $('eItem').addEventListener('focus', showSugg);
         $('eItem').addEventListener('blur', () => setTimeout(() => { $('sugg').style.display = 'none'; }, 150));
+
         $('eItem').addEventListener('keydown', e => {
+
             const l = sugList();
-            if (e.key === 'ArrowDown' && l.length && !sel) { e.preventDefault(); sIdx = (sIdx + 1) % l.length; showSugg(); }
-            else if (e.key === 'ArrowUp' && l.length && !sel) { e.preventDefault(); sIdx = (sIdx - 1 + l.length) % l.length; showSugg(); }
-            else if (e.key === 'ArrowDown') { const t = $('cart').querySelector('[data-k="qty"]'); if (t) { e.preventDefault(); t.focus(); } }
-            else if (e.key === 'ArrowRight' && sel) { e.preventDefault(); $('eRate').focus(); }
-            else if (e.key === 'Enter') { e.preventDefault(); if (sel) { $('eQty').focus(); $('eQty').select(); } else if (l.length) pick(l[sIdx]); else toast('No matching product', 'error'); }
-            else if (e.key === 'Tab' && !sel && l.length) { e.preventDefault(); pick(l[sIdx]); }
-            else if (e.key === 'Escape') clearEntry();
+
+            // ==========================================
+            // ARROW DOWN
+            // ==========================================
+
+            if (e.key === 'ArrowDown' && !sel) {
+
+                if (!l.length) return;
+
+                e.preventDefault();
+
+                sIdx++;
+
+                // Last item வந்ததும் first item
+                if (sIdx >= l.length) {
+                    sIdx = 0;
+                }
+
+                showSugg();
+
+                return;
+            }
+
+
+            // ==========================================
+            // ARROW UP
+            // ==========================================
+
+            if (e.key === 'ArrowUp' && !sel) {
+
+                if (!l.length) return;
+
+                e.preventDefault();
+
+                sIdx--;
+
+                // First item மேலிருந்து ↑ press
+                // செய்தால் last item
+                if (sIdx < 0) {
+                    sIdx = l.length - 1;
+                }
+
+                showSugg();
+
+                return;
+            }
+
+
+            // ==========================================
+            // ENTER
+            // ==========================================
+
+            if (e.key === 'Enter' && !sel) {
+
+                e.preventDefault();
+
+                if (!l.length) {
+
+                    toast(
+                        '⚠️ No matching product found',
+                        'error'
+                    );
+
+                    return;
+                }
+
+                const p = l[sIdx];
+
+                if (p) {
+                    pick(p);
+                }
+
+                return;
+            }
+
+
+            // ==========================================
+            // ESC
+            // ==========================================
+
+            if (e.key === 'Escape') {
+
+                e.preventDefault();
+
+                clearEntry();
+
+                return;
+            }
+
+
+            // ==========================================
+            // AFTER PRODUCT SELECTED
+            // DOWN → QTY
+            // ==========================================
+
+            if (e.key === 'ArrowDown' && sel) {
+
+                e.preventDefault();
+
+                $('eQty').focus();
+                $('eQty').select();
+
+                return;
+            }
+
+
+            // ==========================================
+            // RIGHT → RATE
+            // ==========================================
+
+            if (e.key === 'ArrowRight' && sel) {
+
+                e.preventDefault();
+
+                $('eRate').focus();
+                $('eRate').select();
+
+                return;
+            }
+
         });
+
         $('sugg').addEventListener('mousedown', e => { const d = e.target.closest('.sg'); if (d) { e.preventDefault(); pick(products.find(p => p.id === d.dataset.id)); } });
         $('eRate').addEventListener('input', entryAmt); $('eQty').addEventListener('input', entryAmt);
         $('eRate').addEventListener('keydown', e => {

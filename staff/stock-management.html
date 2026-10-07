@@ -274,9 +274,21 @@
     <script type="module">
         import { initializeApp } from "firebase/app";
         import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, writeBatch, serverTimestamp, where, limit, getDocs } from "firebase/firestore";
-        import { getAuth, signOut } from "firebase/auth";
+        import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
         const app = initializeApp({ apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8", authDomain: "hari-crackers.firebaseapp.com", projectId: "hari-crackers", storageBucket: "hari-crackers.firebasestorage.app", messagingSenderId: "510011644696", appId: "1:510011644696:web:b32ce0844e59b774a2dc6d" });
         const db = getFirestore(app), auth = getAuth(app);
+
+        // ✅ STAFF AUTH CHECK
+        const staffEmails = ['staffharicrackers@gmail.com'];
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.replace('index.html'); return; }
+            const email = (user.email || '').toLowerCase();
+            if (!staffEmails.includes(email)) {
+                signOut(auth);
+                window.location.replace('index.html');
+            }
+        });
+
         const $ = id => document.getElementById(id);
         const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const inr = n => '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
@@ -288,15 +300,12 @@
         const TAG = { in: ['in', 'In Stock'], low: ['lo', 'Low Stock'], out: ['ou', 'Out of Stock'], un: ['un', 'Not Tracked'] };
         function toast(m, t = 'info', ms = 3000) { const e = $('toast'); e.textContent = m; e.className = 'toast show ' + t; clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove('show'), ms); }
 
-        // ---------- data ----------
-        // NOTE: staff sidebar has no Products/Orders badge, so nothing here touches those elements
         onSnapshot(query(collection(db, 'products'), orderBy('orderIndex', 'asc')), s => {
             products = s.docs.map(d => ({ id: d.id, ...d.data() }));
             renderStats(); fillCats(); renderBanner(); checkLow();
             if (tab === 'stock') renderTableKeep();
             if (sel) { const f = products.find(p => p.id === sel.id); if (f) { sel = f; $('eCur').textContent = qty(f) ?? 'Not tracked'; preview(); } }
         }, e => toast('Error: ' + e.message, 'error'));
-        // items currently inside an open (unsaved) bill at any billing counter
         onSnapshot(collection(db, 'liveBills'), s => {
             const m = {}, now = Date.now();
             s.docs.forEach(d => { const v = d.data(); if (now - (v.updatedAt || 0) > 15 * 60000) return; Object.entries(v.items || {}).forEach(([k, q]) => m[k] = (m[k] || 0) + q); });
@@ -326,7 +335,6 @@
             const l = list();
             $('tb').innerHTML = l.length ? l.map(p => { const q = qty(p), s = stat(p), [cl, tx] = TAG[s]; return `<tr data-id="${p.id}" class="${s === 'low' ? 'r-low' : s === 'out' ? 'r-out' : ''}"><td><div class="pc"><img src="${esc(p.imageUrl || LOGO)}" onerror="this.src='${LOGO}'"><div><b>${esc(p.name || 'Unnamed')}</b><small>${esc(p.category || 'Uncategorized')}</small></div></div></td><td class="n">${inr(p.price || 0)}</td><td class="c"><input type="number" min="0" class="sq" data-k="s" value="${q === null ? '' : q}" placeholder="—"></td><td class="c">${live[p.id] ? `<span class="tag lo" title="Billing la irukku — save pannina kuraiyum">−${live[p.id]} in bill</span>` : '<span style="color:#bbb">—</span>'}</td><td class="c"><input type="number" min="0" class="tq" data-k="t" value="${thr(p)}"></td><td class="c"><span class="tag ${cl}">${tx}</span></td><td class="n">${inr((q || 0) * (Number(p.price) || 0))}</td></tr>`; }).join('') : '<tr><td colspan="7" class="empty">No products found</td></tr>';
         }
-        // re-draw the table but keep the box you are typing in (and what you typed)
         function renderTableKeep() {
             const a = document.activeElement;
             const keep = a && a.dataset && a.dataset.k && $('tb').contains(a)
@@ -344,7 +352,6 @@
             $('hb').innerHTML = l.length ? l.map(m => `<tr><td>${m.date ? new Date(m.date).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}</td><td><b>${esc(m.productName)}</b></td><td>${L[m.type] || esc(m.type)}</td><td class="n ${m.change >= 0 ? 'mv-in' : 'mv-out'}">${m.change >= 0 ? '+' : ''}${m.change}</td><td class="c">${m.before} → <b>${m.after}</b></td><td>${esc(m.note)}</td><td>${esc((m.by || '').split('@')[0])}</td></tr>`).join('') : '<tr><td colspan="7" class="empty">No stock history yet</td></tr>';
         }
 
-        // ---------- low stock notifications (real, from live stock) ----------
         let lastStat = null, dismissed = {};
         try { dismissed = JSON.parse(localStorage.getItem('hc_dismissed') || '{}'); } catch (e) { }
         const saveDis = () => { try { localStorage.setItem('hc_dismissed', JSON.stringify(dismissed)); } catch (e) { } };
@@ -387,7 +394,6 @@
         };
         document.addEventListener('pointerdown', () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); } catch (e) { } }, { once: true });
 
-        // ---------- apply change (with history + alerts) ----------
         async function applyStock(p, n, type, note) {
             n = Math.max(0, Math.floor(n));
             const before = qty(p) ?? 0;
@@ -437,7 +443,6 @@
         });
         $('tb').addEventListener('focusin', e => { if (e.target.tagName === 'INPUT') e.target.select(); });
 
-        // ---------- entry bar ----------
         const sugList = () => { const t = $('eItem').value.trim().toLowerCase(); return t ? products.filter(p => (p.name || '').toLowerCase().includes(t)).slice(0, 8) : []; };
         function showSugg() {
             const l = sugList(), b = $('sugg'); if (sel || !l.length) { b.style.display = 'none'; return; }
@@ -505,7 +510,6 @@
             else if (e.key === 'Escape') $('apanel').classList.remove('on');
         });
 
-        // ---------- tabs / filters / export ----------
         function setTab(t) { tab = t; $('tabStock').classList.toggle('on', t === 'stock'); $('tabHist').classList.toggle('on', t === 'hist'); $('wStock').style.display = t === 'stock' ? '' : 'none'; $('wHist').style.display = t === 'hist' ? '' : 'none'; t === 'hist' ? renderHist() : renderTable(); }
         $('tabStock').onclick = () => setTab('stock'); $('tabHist').onclick = () => setTab('hist');
         $('search').addEventListener('input', () => tab === 'stock' ? renderTable() : renderHist());
@@ -524,10 +528,9 @@
             w.document.close(); w.focus(); setTimeout(() => { try { w.print(); } catch (e) { } }, 400);
         };
 
-        // ---------- ui ----------
         $('ham').onclick = () => { $('sidebar').classList.toggle('open'); $('overlay').classList.toggle('active'); };
         $('overlay').onclick = () => { $('sidebar').classList.remove('open'); $('overlay').classList.remove('active'); };
-        $('logoutBtn').onclick = async () => { if (!confirm('Are you sure you want to logout?')) return; try { await signOut(auth); window.location.href = '/admin/index.html'; } catch (e) { alert('Logout failed.'); } };
+        $('logoutBtn').onclick = async () => { if (!confirm('Are you sure you want to logout?')) return; try { await signOut(auth); window.location.href = 'index.html'; } catch (e) { alert('Logout failed.'); } };
         renderAlerts(); $('eItem').focus();
     </script>
 </body>

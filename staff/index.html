@@ -37,15 +37,11 @@
             overflow: hidden;
         }
 
-        /* ============================================================
-           FIREWORKS BACKGROUND
-           ============================================================ */
         .fireworks-bg {
             position: fixed;
             inset: 0;
             z-index: 0;
-            background: radial-gradient(ellipse at center,
-                    #4a148c 0%, #2d0050 30%, #1a0033 60%, #060c1f 100%);
+            background: radial-gradient(ellipse at center, #4a148c 0%, #2d0050 30%, #1a0033 60%, #060c1f 100%);
             overflow: hidden;
         }
 
@@ -63,11 +59,7 @@
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            background: radial-gradient(circle,
-                    rgba(106, 27, 154, 0.4) 0%,
-                    rgba(255, 193, 7, 0.2) 20%,
-                    rgba(74, 20, 140, 0.1) 40%,
-                    transparent 70%);
+            background: radial-gradient(circle, rgba(106, 27, 154, 0.4) 0%, rgba(255, 193, 7, 0.2) 20%, rgba(74, 20, 140, 0.1) 40%, transparent 70%);
             animation: burstPulse 4s ease-out infinite;
         }
 
@@ -225,9 +217,6 @@
             }
         }
 
-        /* ============================================================
-           LOGIN CARD
-           ============================================================ */
         #login-screen {
             position: fixed;
             inset: 0;
@@ -261,9 +250,7 @@
             -webkit-backdrop-filter: blur(20px);
             border-radius: var(--radius);
             border: 1px solid rgba(255, 193, 7, 0.25);
-            box-shadow: 0 40px 80px rgba(45, 0, 80, 0.7),
-                0 0 0 1px rgba(255, 193, 7, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            box-shadow: 0 40px 80px rgba(45, 0, 80, 0.7), 0 0 0 1px rgba(255, 193, 7, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3);
             padding: 44px 40px;
             position: relative;
             overflow: hidden;
@@ -293,7 +280,6 @@
             }
         }
 
-        /* BRAND */
         .login-brand {
             display: flex;
             flex-direction: column;
@@ -371,7 +357,6 @@
             border: 1px solid rgba(106, 27, 154, 0.08);
         }
 
-        /* FORM */
         .login-field {
             margin-bottom: 18px;
             position: relative;
@@ -455,7 +440,6 @@
             color: var(--yellow);
         }
 
-        /* ERROR */
         .login-error {
             display: none;
             align-items: center;
@@ -492,7 +476,6 @@
             display: flex;
         }
 
-        /* SUBMIT */
         .login-submit {
             width: 100%;
             padding: 14px;
@@ -552,7 +535,6 @@
             }
         }
 
-        /* FOOTER */
         .login-footer {
             margin-top: 24px;
             text-align: center;
@@ -602,7 +584,6 @@
             font-weight: 600;
         }
 
-        /* VERSION BADGE */
         .badge-version {
             position: absolute;
             top: 16px;
@@ -617,7 +598,6 @@
             z-index: 2;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 480px) {
             .login-card {
                 padding: 32px 24px;
@@ -643,7 +623,6 @@
 
 <body>
 
-    <!-- FIREWORKS BACKGROUND -->
     <div class="fireworks-bg">
         <div class="cracker-burst"></div>
         <div class="cracker-burst"></div>
@@ -658,7 +637,6 @@
         <div class="sparkle"></div>
     </div>
 
-    <!-- LOGIN SCREEN -->
     <div id="login-screen">
         <div class="login-wrapper">
             <div class="login-card">
@@ -715,15 +693,14 @@
         </div>
     </div>
 
-    <!-- FIREBASE AUTH -->
     <script type="importmap">
-    {
-        "imports": {
-            "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
-            "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js"
-        }
+{
+    "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js"
     }
-    </script>
+}
+</script>
 
     <script type="module">
         import { initializeApp } from "firebase/app";
@@ -731,8 +708,9 @@
             getAuth,
             signInWithEmailAndPassword,
             setPersistence,
-            browserLocalPersistence,
-            onAuthStateChanged
+            browserSessionPersistence,
+            onAuthStateChanged,
+            signOut
         } from "firebase/auth";
 
         const firebaseConfig = {
@@ -747,80 +725,91 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Staff emails list
+        // ✅ Staff emails — only these can login
         const staffEmails = [
-            'staffharicrackers@gmail.com'
+            "staffharicrackers@gmail.com"
         ];
 
-        const loginScreen = document.getElementById('login-screen');
-        const loginForm = document.getElementById('loginForm');
-        const loginEmail = document.getElementById('loginEmail');
-        const loginPassword = document.getElementById('loginPassword');
-        const loginSubmitBtn = document.getElementById('loginSubmitBtn');
-        const loginError = document.getElementById('loginError');
+        // ✅ Staff home page
+        const STAFF_HOME = "./staff/billing.html";
+        const loginScreen = document.getElementById("login-screen");
+        const loginForm = document.getElementById("loginForm");
+        const loginEmail = document.getElementById("loginEmail");
+        const loginPassword = document.getElementById("loginPassword");
+        const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+        const loginError = document.getElementById("loginError");
 
-        // Toggle password visibility
         window.togglePasswordVisibility = function () {
-            const input = document.getElementById('loginPassword');
-            const button = document.querySelector('.toggle-password');
-            const icon = button.querySelector('i');
-
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+            const input = document.getElementById("loginPassword");
+            const button = document.querySelector(".toggle-password");
+            const icon = button.querySelector("i");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
             } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
             }
         };
 
-        function showError(msg) {
-            const span = loginError.querySelector('span');
-            if (span) span.textContent = msg;
-            loginError.classList.add('show');
-            setTimeout(() => loginError.classList.remove('show'), 5000);
+        function showError(message) {
+            const span = loginError.querySelector("span");
+            if (span) span.textContent = message;
+            loginError.classList.add("show");
+            setTimeout(() => loginError.classList.remove("show"), 5000);
         }
 
-        function clearError() {
-            loginError.classList.remove('show');
-        }
+        function clearError() { loginError.classList.remove("show"); }
 
         function friendlyError(code) {
             switch (code) {
-                case 'auth/invalid-email':
-                    return 'Please enter a valid email address.';
-                case 'auth/user-not-found':
-                case 'auth/invalid-credential':
-                case 'auth/wrong-password':
-                    return 'Incorrect email or password. Please try again.';
-                case 'auth/too-many-requests':
-                    return 'Too many failed attempts. Please try again later.';
-                default:
-                    return 'Login failed. Please check your credentials.';
+                case "auth/invalid-email": return "Please enter a valid email address.";
+                case "auth/user-not-found":
+                case "auth/invalid-credential":
+                case "auth/wrong-password": return "Incorrect email or password.";
+                case "auth/too-many-requests": return "Too many failed attempts. Please try again later.";
+                case "auth/network-request-failed": return "Network error. Please check your internet connection.";
+                default: return "Login failed. Please check your credentials.";
             }
         }
 
-        // Check if user already logged in
-        setPersistence(auth, browserLocalPersistence)
+        // ============================================================
+        // ✅ SESSION PERSISTENCE (sessionStorage — tab close aana logout)
+        // + ✅ Login screen ALWAYS kaatanum — auto-redirect illa
+        // ============================================================
+        setPersistence(auth, browserSessionPersistence)
             .then(() => {
                 onAuthStateChanged(auth, (user) => {
+                    // ✅ Login screen always kaatanum
+                    loginScreen.classList.add("active");
+
                     if (user) {
-                        // Already logged in -> redirect to billing (staff home)
-                        window.location.replace("../admin/billing.html");
-                    } else {
-                        loginScreen.classList.add("active");
+                        const email = (user.email || "").toLowerCase();
+
+                        // ✅ Staff email check — admin illa
+                        if (staffEmails.includes(email)) {
+                            // Staff user — billing page-ku poagum
+window.location.href = "./billing.html";                            return;
+                        } else {
+                            // Admin user — sign out, login screen thaan kaatanum
+                            signOut(auth);
+                            return;
+                        }
                     }
+                    // User not logged in — login screen thaan kaatanum
                 });
             })
-            .catch((err) => {
-                console.error("Persistence error:", err);
+            .catch((error) => {
+                console.error("Firebase persistence error:", error);
                 loginScreen.classList.add("active");
             });
 
-        // Login submit
-        loginForm.addEventListener('submit', (e) => {
+        // ============================================================
+        // LOGIN
+        // ============================================================
+        loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             clearError();
 
@@ -828,42 +817,37 @@
             const password = loginPassword.value;
 
             if (!email || !password) {
-                showError('Please enter both email and password.');
+                showError("Please enter both email and password.");
                 return;
             }
 
-            // Check if email is in staff list
+            // ✅ Staff email check
             if (!staffEmails.includes(email)) {
-                showError('❌ Not a staff account. Contact admin.');
+                showError("Not a staff account. Contact admin.");
                 return;
             }
 
             loginSubmitBtn.disabled = true;
-            loginSubmitBtn.classList.add('loading');
+            loginSubmitBtn.classList.add("loading");
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    // Redirect to billing page (staff home)
-                    window.location.replace("../admin/billing.html");
-                })
-                .catch(err => {
-                    showError(friendlyError(err.code));
-                    loginSubmitBtn.disabled = false;
-                    loginSubmitBtn.classList.remove('loading');
-                });
-        });
-
-        // Enter key support
-        loginPassword.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                loginForm.dispatchEvent(new Event('submit'));
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // ✅ Success — billing page-ku poagum
+                window.location.replace(STAFF_HOME);
+            } catch (error) {
+                console.error("Staff login error:", error);
+                showError(friendlyError(error.code));
+                loginSubmitBtn.disabled = false;
+                loginSubmitBtn.classList.remove("loading");
             }
         });
 
-        loginEmail.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                loginPassword.focus();
-            }
+        loginEmail.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") { e.preventDefault(); loginPassword.focus(); }
+        });
+
+        loginPassword.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") { e.preventDefault(); loginForm.requestSubmit(); }
         });
     </script>
 </body>

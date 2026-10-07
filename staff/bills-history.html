@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Billing History | Hari Crackers</title>
+    <title>Billing History | Hari Crackers Staff</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../pictures/logo-removebg-preview.png">
     <style>
@@ -41,7 +41,6 @@
             min-height: 100vh;
         }
 
-        /* ===== SIDEBAR (same as billing.html) ===== */
         .sidebar {
             width: var(--sidebar-width);
             background: linear-gradient(180deg, #1a0033 0%, #2d0050 45%, #4a148c 100%);
@@ -222,12 +221,6 @@
             margin-top: 8px;
         }
 
-        .sidebar-footer .logout-btn i {
-            font-size: 1rem;
-            color: #ffc107;
-            transition: all 0.3s ease;
-        }
-
         .sidebar-footer .logout-btn:hover {
             background: linear-gradient(135deg, #ffc107, #e6a800);
             border-color: #ffc107;
@@ -236,16 +229,6 @@
             box-shadow: 0 8px 24px rgba(255, 193, 7, 0.4);
         }
 
-        .sidebar-footer .logout-btn:hover i {
-            color: #2d0050;
-            transform: translateX(3px);
-        }
-
-        .sidebar-footer .logout-btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        /* ===== MAIN CONTENT ===== */
         .main-content {
             flex: 1;
             min-height: 100vh;
@@ -620,26 +603,19 @@
         </div>
         <nav class="sidebar-nav">
             <div class="nav-label">Staff Menu</div>
-
             <a href="billing.html" class="nav-item"><i class="fas fa-cash-register"></i> Billing</a>
-
-            <a href="bills-history.html" class="nav-item active">
-                <i class="fas fa-file-invoice"></i> Billing History
-            </a>
-
+            <a href="bills-history.html" class="nav-item active"><i class="fas fa-file-invoice"></i> Billing History</a>
             <div class="nav-label" style="margin-top:20px;">Inventory</div>
-
             <a href="stock-management.html" class="nav-item">
                 <i class="fas fa-warehouse"></i> Stock Management
                 <span class="badge" id="stockAlertBadge" style="background:#e74c3c;display:none;">0</span>
             </a>
         </nav>
-
         <div class="sidebar-footer">
             <div class="user-info">
-                <div class="user-avatar">S</div> <!-- ← "A" illa -->
+                <div class="user-avatar">S</div>
                 <div>
-                    <div class="user-name">Staff</div> <!-- ← "Admin" illa -->
+                    <div class="user-name">Staff</div>
                     <div class="user-email">staffharicrackers@gmail.com</div>
                 </div>
             </div>
@@ -654,7 +630,7 @@
             <div style="display:flex;align-items:center;gap:14px;">
                 <button class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
                 <div class="page-title">
-                    <h2>Billing History <span>— all saved bills (direct + website orders)</span></h2>
+                    <h2>Billing History <span>— all saved bills</span></h2>
                 </div>
             </div>
         </header>
@@ -691,8 +667,6 @@
                         <option value="walk-in">Direct / Walk-in Only</option>
                         <option value="website">Website Orders Only</option>
                     </select>
-
-                    <!-- ✅ NEW: Export button -->
                     <button class="btn-mini" id="exportCsvBtn" style="padding:12px 20px;font-size:0.85rem;">
                         <i class="fas fa-download"></i> Export CSV
                     </button>
@@ -725,7 +699,6 @@
                 </table>
             </div>
         </div>
-        </div>
     </main>
 
     <div id="toast" class="toast"></div>
@@ -742,10 +715,9 @@
 
     <script type="module">
         import { initializeApp } from "firebase/app";
-        import {
-            getFirestore, collection, onSnapshot, query, orderBy, where,
-            doc, getDoc, getDocs, writeBatch, updateDoc
-        } from "firebase/firestore"; import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+        import { getFirestore, collection, onSnapshot, query, orderBy } from "firebase/firestore";
+        import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
         const firebaseConfig = {
             apiKey: "AIzaSyBZrDsCAoEEQYmjj9lcmC6Jo6WHZ96zuz8",
             authDomain: "hari-crackers.firebaseapp.com",
@@ -758,7 +730,18 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const auth = getAuth(app);   // ✅ INTHA LINE ADD PANNUNGA
+        const auth = getAuth(app);
+
+        // ✅ STAFF AUTH CHECK
+        const staffEmails = ['staffharicrackers@gmail.com'];
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.replace('index.html'); return; }
+            const email = (user.email || '').toLowerCase();
+            if (!staffEmails.includes(email)) {
+                signOut(auth);
+                window.location.replace('index.html');
+            }
+        });
 
         let allBills = [];
         let expandedId = null;
@@ -806,7 +789,6 @@
             return allBills.filter(b => {
                 if (source === 'walk-in' && b.source !== 'walk-in') return false;
                 if (source === 'website' && b.source === 'walk-in') return false;
-
                 if (!term) return true;
                 const haystack = [b.orderId, b.customerName, b.customerPhone].join(' ').toLowerCase();
                 return haystack.includes(term);
@@ -867,7 +849,6 @@
                         </td>
                     </tr>`;
                 }
-
                 return rowsHtml;
             }).join('');
         }
@@ -880,7 +861,6 @@
                 if (bill) openInvoiceAndPrint(buildInvoiceHtml(bill));
                 return;
             }
-
             const row = e.target.closest('.bill-row');
             if (!row) return;
             const id = row.dataset.id;
@@ -891,9 +871,6 @@
         billSearch.addEventListener('input', renderBills);
         sourceFilter.addEventListener('change', renderBills);
 
-        // ============================================================
-        // INVOICE HTML — Orders Page Theme (Purple Header + Vertical Lines)
-        // ============================================================
         function buildInvoiceHtml(bill) {
             const logoUrl = new URL('../pictures/logo-removebg-preview.png', window.location.href).href;
             const items = bill.items || [];
@@ -918,251 +895,51 @@
 <meta charset="UTF-8">
 <title>Invoice ${escapeHtmlAttr(bill.orderId || '')}</title>
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-}
-
-html, body{
-    height:100%;
-}
-
-body{
-    font-family:'Segoe UI',Arial,sans-serif;
-    color:#1f1f1f;
-    background:#fff;
-    padding:30px 35px;
-    max-width:800px;
-    margin:auto;
-    display:flex;
-    flex-direction:column;
-    min-height:100vh;
-}
-
-.inv-content{
-    flex:1;
-}
-
-/* Header */
-.inv-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:12px;
-}
-
-.inv-brand{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.inv-brand img{
-    width:60px;
-    height:60px;
-    object-fit:contain;
-}
-
-.inv-brand-name{
-    font-size:28px;
-    font-weight:800;
-    color:#6a1b9a;
-}
-
-.inv-brand-tag{
-    font-size:11px;
-    color:#777;
-    letter-spacing:1px;
-    text-transform:uppercase;
-}
-
-.inv-brand-sub{
-    font-size:13px;
-    color:#555;
-    margin-top:4px;
-}
-
-.inv-right{
-    text-align:right;
-}
-
-.inv-title{
-    font-size:24px;
-    font-weight:800;
-    color:#6a1b9a;
-}
-
-.inv-id{
-    font-size:14px;
-    font-weight:700;
-    margin-top:4px;
-}
-
-.inv-date{
-    font-size:12px;
-    color:#777;
-    margin-top:4px;
-}
-
-.inv-hr{
-    border:none;
-    border-top:3px solid #6a1b9a;
-    margin:16px 0 22px;
-}
-
-/* Bill To & Status */
-.inv-info-box{
-    display:flex;
-    border:1px solid #e8dff0;
-    border-radius:8px;
-    overflow:hidden;
-    margin-bottom:24px;
-}
-
-.inv-info-col{
-    flex:1;
-    padding:16px 18px;
-}
-
-.inv-info-col:first-child{
-    background:#faf5ff;
-}
-
-.inv-info-col:last-child{
-    border-left:1px solid #e8dff0;
-}
-
-.inv-info-label{
-    font-size:11px;
-    font-weight:700;
-    color:#ffc107;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    margin-bottom:8px;
-}
-
-.inv-info-col strong{
-    display:block;
-    font-size:16px;
-    margin-bottom:4px;
-}
-
-.inv-info-col span{
-    display:block;
-    font-size:13px;
-    color:#555;
-}
-
-.inv-status-row{
-    font-size:13px;
-    margin-bottom:6px;
-}
-
-.inv-status-row b{
-    color:#6a1b9a;
-}
-
-/* Table */
-.inv-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-bottom:18px;
-}
-
-.inv-table th{
-    background:#6a1b9a !important;
-    color:#fff !important;
-    padding:12px;
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:.5px;
-    border:1px solid #6a1b9a;
-    border-right:1px solid rgba(255,255,255,0.35);
-}
-
-.inv-table th:last-child{
-    border-right:1px solid #6a1b9a;
-}
-
-.inv-table td{
-    padding:11px 12px;
-    border-bottom:1px solid #eee;
-    font-size:13px;
-    border-right:1px solid #e8dff0;
-}
-
-.inv-table td:last-child{
-    border-right:none;
-}
-
-.inv-table tbody tr:nth-child(even){
-    background:#faf5ff;
-}
-
-/* Totals */
-.inv-totals{
-    display:flex;
-    justify-content:flex-end;
-}
-
-.inv-totals table{
-    min-width:260px;
-    border-collapse:collapse;
-}
-
-.inv-totals td{
-    padding:8px 10px;
-    font-size:14px;
-    text-align:right;
-}
-
-.inv-totals .grand td{
-    background:#6a1b9a !important;
-    color:#fff !important;
-    font-size:18px;
-    font-weight:800;
-    padding:12px;
-}
-
-/* Footer — Page Bottom */
-.inv-footer{
-    text-align:center;
-    margin-top:auto;
-    padding-top:30px;
-    color:#6a1b9a;
-    font-size:14px;
-    line-height:1.7;
-    border-top:1px solid #eee;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust: exact !important;print-color-adjust: exact !important;}
+html, body{height:100%;}
+body{font-family:'Segoe UI',Arial,sans-serif;color:#1f1f1f;background:#fff;padding:30px 35px;max-width:800px;margin:auto;display:flex;flex-direction:column;min-height:100vh;}
+.inv-content{flex:1;}
+.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.inv-brand{display:flex;align-items:center;gap:14px;}
+.inv-brand img{width:60px;height:60px;object-fit:contain;}
+.inv-brand-name{font-size:28px;font-weight:800;color:#6a1b9a;}
+.inv-brand-tag{font-size:11px;color:#777;letter-spacing:1px;text-transform:uppercase;}
+.inv-brand-sub{font-size:13px;color:#555;margin-top:4px;}
+.inv-right{text-align:right;}
+.inv-title{font-size:24px;font-weight:800;color:#6a1b9a;}
+.inv-id{font-size:14px;font-weight:700;margin-top:4px;}
+.inv-date{font-size:12px;color:#777;margin-top:4px;}
+.inv-hr{border:none;border-top:3px solid #6a1b9a;margin:16px 0 22px;}
+.inv-info-box{display:flex;border:1px solid #e8dff0;border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.inv-info-col{flex:1;padding:16px 18px;}
+.inv-info-col:first-child{background:#faf5ff;}
+.inv-info-col:last-child{border-left:1px solid #e8dff0;}
+.inv-info-label{font-size:11px;font-weight:700;color:#ffc107;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.inv-info-col strong{display:block;font-size:16px;margin-bottom:4px;}
+.inv-info-col span{display:block;font-size:13px;color:#555;}
+.inv-status-row{font-size:13px;margin-bottom:6px;}
+.inv-status-row b{color:#6a1b9a;}
+.inv-table{width:100%;border-collapse:collapse;margin-bottom:18px;}
+.inv-table th{background:#6a1b9a !important;color:#fff !important;padding:12px;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border:1px solid #6a1b9a;border-right:1px solid rgba(255,255,255,0.35);}
+.inv-table th:last-child{border-right:1px solid #6a1b9a;}
+.inv-table td{padding:11px 12px;border-bottom:1px solid #eee;font-size:13px;border-right:1px solid #e8dff0;}
+.inv-table td:last-child{border-right:none;}
+.inv-table tbody tr:nth-child(even){background:#faf5ff;}
+.inv-totals{display:flex;justify-content:flex-end;}
+.inv-totals table{min-width:260px;border-collapse:collapse;}
+.inv-totals td{padding:8px 10px;font-size:14px;text-align:right;}
+.inv-totals .grand td{background:#6a1b9a !important;color:#fff !important;font-size:18px;font-weight:800;padding:12px;}
+.inv-footer{text-align:center;margin-top:auto;padding-top:30px;color:#6a1b9a;font-size:14px;line-height:1.7;border-top:1px solid #eee;}
 @media print{
-    body{
-        padding:18px;
-        min-height:100vh;
-        display:flex;
-        flex-direction:column;
-    }
-    .inv-content{
-        flex:1;
-    }
-    .inv-footer{
-        margin-top:auto;
-    }
-    .inv-table th,
-    .inv-table td {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
+    body{padding:18px;min-height:100vh;display:flex;flex-direction:column;}
+    .inv-content{flex:1;}
+    .inv-footer{margin-top:auto;}
+    .inv-table th,.inv-table td {-webkit-print-color-adjust: exact !important;print-color-adjust: exact !important;}
 }
 </style>
 </head>
 <body>
-
 <div class="inv-content">
-
     <div class="inv-header">
         <div class="inv-brand">
             <img src="${logoUrl}" alt="Hari Crackers">
@@ -1178,9 +955,7 @@ body{
             <div class="inv-date">${escapeHtmlAttr(dateTimeStr)}</div>
         </div>
     </div>
-
     <hr class="inv-hr">
-
     <div class="inv-info-box">
         <div class="inv-info-col">
             <div class="inv-info-label">Bill To</div>
@@ -1194,108 +969,53 @@ body{
             <div class="inv-status-row">Total Items: <b>${totalItems}</b></div>
         </div>
     </div>
-
     <table class="inv-table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th style="text-align:center;">Qty</th>
-                <th style="text-align:right;">Price</th>
-                <th style="text-align:right;">Amount</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${rowsHtml}
-        </tbody>
+        <thead><tr><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th><th style="text-align:right;">Amount</th></tr></thead>
+        <tbody>${rowsHtml}</tbody>
     </table>
-
     <div class="inv-totals">
         <table>
             <tr><td>Subtotal:</td><td>₹${grandTotal.toLocaleString('en-IN')}</td></tr>
             <tr class="grand"><td>Grand Total:</td><td>₹${grandTotal.toLocaleString('en-IN')}</td></tr>
         </table>
     </div>
-
 </div>
-
 <div class="inv-footer">
     ✨ Thank you for choosing Hari Crackers.<br>
     Wishing you a Safe, Bright & Joyful Celebration!
 </div>
-
 </body>
 </html>`;
         }
+
         function openInvoiceAndPrint(html) {
             const win = window.open('', '_blank');
-            if (!win) {
-                alert('⚠️ Popup blocked — allow popups for this site to print the bill');
-                return;
-            }
+            if (!win) { alert('⚠️ Popup blocked — allow popups for this site to print the bill'); return; }
             win.document.open();
             win.document.write(html);
             win.document.close();
             win.focus();
-            setTimeout(() => {
-                try { win.print(); } catch (e) { }
-            }, 400);
+            setTimeout(() => { try { win.print(); } catch (e) { } }, 400);
         }
 
         function listenToBadges() {
-            // ============================================================
-            // ORDERS BADGE
-            // ============================================================
-            const ordersRef = collection(db, 'orders');
-            onSnapshot(ordersRef, (snapshot) => {
-                const orderBadge = document.getElementById('orderBadge');
-                if (orderBadge) {
-                    orderBadge.textContent = snapshot.size;
-                    orderBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
-                }
-            });
-
-            // ============================================================
-            // PRODUCTS BADGE
-            // ============================================================
-            const productsRef = collection(db, 'products');
-            onSnapshot(productsRef, (snapshot) => {
-                const productBadge = document.getElementById('productBadge');
-                if (productBadge) {
-                    productBadge.textContent = snapshot.size;
-                    productBadge.style.display = snapshot.size > 0 ? 'inline-block' : 'none';
-                }
-            });
-            // ============================================================
-            // ✅ STOCK ALERTS BADGE — Low stock products count
-            // ============================================================
-            const productsBadgeRef = collection(db, 'products');
-
-            onSnapshot(productsBadgeRef, (snapshot) => {
+            // Stock alerts badge only (staff page)
+            onSnapshot(collection(db, 'products'), (snapshot) => {
                 let lowStockCount = 0;
-
                 snapshot.docs.forEach(doc => {
                     const data = doc.data();
                     const stockQty = data.stockQty;
                     const threshold = data.lowStockThreshold || 5;
-
-                    if (typeof stockQty === 'number' && stockQty <= threshold) {
-                        lowStockCount++;
-                    }
+                    if (typeof stockQty === 'number' && stockQty <= threshold) lowStockCount++;
                 });
-
                 const badge = document.getElementById('stockAlertBadge');
                 if (badge) {
                     badge.textContent = lowStockCount;
                     badge.style.display = lowStockCount > 0 ? 'inline-block' : 'none';
                 }
-            }, (error) => {
-                console.error('Stock alert badge error:', error);
-            });
+            }, (error) => { console.error('Stock alert badge error:', error); });
         }
 
-        // ============================================================
-        // UI
-        // ============================================================
         document.getElementById('hamburgerBtn').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('sidebarOverlay').classList.toggle('active');
@@ -1305,113 +1025,31 @@ body{
             document.getElementById('sidebarOverlay').classList.remove('active');
         });
 
-        // ============================================================
-        // INIT
-        // ============================================================
         listenToBills();
         listenToBadges();
 
-        // ============================================================
-        // LOGOUT
-        // ============================================================
         document.getElementById('logoutBtn').addEventListener('click', async () => {
-
-            if (!confirm('Are you sure you want to logout?')) {
-                return;
-            }
-
+            if (!confirm('Are you sure you want to logout?')) return;
             try {
                 await signOut(auth);
-
-                // After logout, always go to admin login
-                window.location.href = '/admin/index.html';
-
+                window.location.href = 'index.html';
             } catch (error) {
                 console.error('Logout error:', error);
                 alert('Logout failed. Please try again.');
             }
         });
 
-
-        // ============================================================
-        // STAFF SIDEBAR — Hide admin-only menus for staff
-        // ============================================================
-        onAuthStateChanged(auth, (user) => {
-            if (!user) return;
-
-            // Staff emails list
-            const staffEmails = [
-                'staffharicrackers@gmail.com'
-            ];
-
-            const isStaff = staffEmails.includes(user.email);
-
-            if (isStaff) {
-                // Hide admin-only menus
-                const adminMenus = ['dashboard.html', 'orders.html', 'products.html'];
-
-                adminMenus.forEach(href => {
-                    const link = document.querySelector(`a[href="${href}"]`);
-                    if (link) link.style.display = 'none';
-                });
-
-                // Hide "Main Menu" label
-                const labels = document.querySelectorAll('.nav-label');
-                labels.forEach(label => {
-                    if (label.textContent.trim() === 'Main Menu') {
-                        label.style.display = 'none';
-                    }
-                });
-
-                // Hide "Direct Billing" and "Inventory" labels (optional)
-                // Ava unga structure-ku etha maathunga
-
-                // ✅ Auto-redirect to billing (staff home)
-                const currentPage = window.location.pathname.split('/').pop();
-                if (currentPage === 'dashboard.html' || currentPage === 'index.html') {
-                    window.location.href = 'billing.html';
-                }
-            }
-        });
-
-        // ============================================================
-        // ✅ EXPORT CSV
-        // ============================================================
         document.getElementById('exportCsvBtn').addEventListener('click', () => {
             const bills = getFilteredBills();
+            if (bills.length === 0) { alert('No bills to export'); return; }
 
-            if (bills.length === 0) {
-                alert('No bills to export');
-                return;
-            }
-
-            // Build CSV
-            const headers = [
-                'Order ID', 'Date', 'Customer Name', 'Phone',
-                'Items', 'Payment', 'Source', 'Status', 'Amount'
-            ];
-
+            const headers = ['Order ID', 'Date', 'Customer Name', 'Phone', 'Items', 'Payment', 'Source', 'Status', 'Amount'];
             const rows = bills.map(b => {
                 const d = b.orderDate ? new Date(b.orderDate) : null;
-                const dateStr = d ? d.toLocaleString('en-IN', {
-                    day: '2-digit', month: 'short', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', hour12: true
-                }) : '';
-
-                return [
-                    b.orderId || '',
-                    dateStr,
-                    b.customerName || 'Walk-in',
-                    b.customerPhone || '',
-                    b.totalItems || 0,
-                    b.paymentMethod || '',
-                    b.source === 'walk-in' ? 'Direct/Shop' : 'Website',
-                    b.status || 'completed',
-                    (b.totalAmount || 0).toFixed(2)
-                ];
+                const dateStr = d ? d.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '';
+                return [b.orderId || '', dateStr, b.customerName || 'Walk-in', b.customerPhone || '', b.totalItems || 0, b.paymentMethod || '', b.source === 'walk-in' ? 'Direct/Shop' : 'Website', b.status || 'completed', (b.totalAmount || 0).toFixed(2)];
             });
 
-            // CSV escape
             const escapeCSV = (val) => {
                 const str = String(val ?? '');
                 if (str.includes(',') || str.includes('"') || str.includes('\n')) {
@@ -1420,11 +1058,7 @@ body{
                 return str;
             };
 
-            const csvContent = [headers, ...rows]
-                .map(row => row.map(escapeCSV).join(','))
-                .join('\n');
-
-            // Download
+            const csvContent = [headers, ...rows].map(row => row.map(escapeCSV).join(',')).join('\n');
             const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1434,20 +1068,12 @@ body{
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-
             alert(`✅ Exported ${bills.length} bills to CSV`);
         });
 
-        // ============================================================
-        // ✅ PRINT REPORT
-        // ============================================================
         document.getElementById('printReportBtn').addEventListener('click', () => {
             const bills = getFilteredBills();
-
-            if (bills.length === 0) {
-                alert('No bills to print');
-                return;
-            }
+            if (bills.length === 0) { alert('No bills to print'); return; }
 
             const totalSales = bills.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
             const walkinCount = bills.filter(b => b.source === 'walk-in').length;
@@ -1455,19 +1081,10 @@ body{
             const rowsHtml = bills.map(b => {
                 const d = b.orderDate ? new Date(b.orderDate) : null;
                 const dateStr = d ? d.toLocaleDateString('en-IN') : '-';
-
-                return `
-            <tr>
-                <td>${escapeHtmlAttr(b.orderId || '-')}</td>
-                <td>${dateStr}</td>
-                <td>${escapeHtmlAttr(b.customerName || 'Walk-in')}</td>
-                <td>${b.customerPhone || '-'}</td>
-                <td style="text-align:center;">${b.totalItems || 0}</td>
-                <td>${b.paymentMethod || '-'}</td>
-                <td>${b.source === 'walk-in' ? 'Direct' : 'Website'}</td>
-                <td style="text-align:right;">₹${(b.totalAmount || 0).toLocaleString('en-IN')}</td>
-            </tr>`;
+                return `<tr><td>${escapeHtmlAttr(b.orderId || '-')}</td><td>${dateStr}</td><td>${escapeHtmlAttr(b.customerName || 'Walk-in')}</td><td>${b.customerPhone || '-'}</td><td style="text-align:center;">${b.totalItems || 0}</td><td>${b.paymentMethod || '-'}</td><td>${b.source === 'walk-in' ? 'Direct' : 'Website'}</td><td style="text-align:right;">₹${(b.totalAmount || 0).toLocaleString('en-IN')}</td></tr>`;
             }).join('');
+
+            const filterLabel = sourceFilter.options[sourceFilter.selectedIndex] ? sourceFilter.options[sourceFilter.selectedIndex].text : 'All';
 
             const html = `<!DOCTYPE html>
 <html>
@@ -1486,18 +1103,12 @@ body{
     th{background:#6a1b9a;color:#fff;padding:10px;text-align:left;font-size:11px;text-transform:uppercase;}
     td{padding:8px 10px;border-bottom:1px solid #eee;}
     tr:nth-child(even){background:#faf5ff;}
-    @media print{
-        body{padding:15px;}
-        button{display:none;}
-    }
+    @media print{body{padding:15px;}}
 </style>
 </head>
 <body>
     <h1>Hari Crackers — Bills Report</h1>
-    <div class="meta">
-        Generated: ${new Date().toLocaleString('en-IN')} | 
-        Filter: ${sourceFilter.options[sourceFilter.selectedIndex].text}
-    </div>
+    <div class="meta">Generated: ${new Date().toLocaleString('en-IN')} | Filter: ${filterLabel}</div>
     <div class="summary">
         <div class="summary-item">Total Bills <strong>${bills.length}</strong></div>
         <div class="summary-item">Total Sales <strong>₹${totalSales.toLocaleString('en-IN')}</strong></div>
@@ -1505,37 +1116,20 @@ body{
         <div class="summary-item">Website <strong>${bills.length - walkinCount}</strong></div>
     </div>
     <table>
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th style="text-align:center;">Items</th>
-                <th>Payment</th>
-                <th>Source</th>
-                <th style="text-align:right;">Amount</th>
-            </tr>
-        </thead>
+        <thead><tr><th>Order ID</th><th>Date</th><th>Customer</th><th>Phone</th><th style="text-align:center;">Items</th><th>Payment</th><th>Source</th><th style="text-align:right;">Amount</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
     </table>
 </body>
 </html>`;
 
             const win = window.open('', '_blank');
-            if (!win) {
-                alert('Popup blocked — allow popups to print');
-                return;
-            }
+            if (!win) { alert('Popup blocked — allow popups to print'); return; }
             win.document.open();
             win.document.write(html);
             win.document.close();
             win.focus();
-            setTimeout(() => {
-                try { win.print(); } catch (e) { }
-            }, 400);
+            setTimeout(() => { try { win.print(); } catch (e) { } }, 400);
         });
-
     </script>
 </body>
 
