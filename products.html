@@ -5274,49 +5274,111 @@
                 }
                 // ❌ warningEl block-ஐ இங்க இருந்து DELETE பண்ணுங்க!
             }
-
-            function generateOrderPDF(orderData) {
+            async function generateOrderPDF(orderData) {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
 
-                // Header
-                doc.setFontSize(18);
-                doc.setTextColor(255, 106, 0);
-                doc.text("HARI CRACKERS", 105, 15, { align: "center" });
+                // THEME COLORS — Purple + Yellow
+                const PURPLE = [106, 27, 154];
+                const PURPLE_DARK = [45, 0, 80];
+                const YELLOW = [255, 193, 7];
+
+                // ✅ LOGO — Top center
+                let logoBottomY = 18;
+
+                try {
+                    const logoUrl = 'pictures/logo-removebg-preview.png';
+                    const logoImg = await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.crossOrigin = 'Anonymous';
+                        img.onload = () => resolve(img);
+                        img.onerror = reject;
+                        img.src = logoUrl;
+                    });
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = logoImg.naturalWidth;
+                    canvas.height = logoImg.naturalHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(logoImg, 0, 0);
+                    const logoDataUrl = canvas.toDataURL('image/png');
+
+                    const logoWidth = 30;
+                    const logoHeight = 30;
+                    const logoX = (210 - logoWidth) / 2;
+                    const logoY = 8;
+
+                    doc.addImage(logoDataUrl, 'PNG', logoX, logoY, logoWidth, logoHeight);
+                    logoBottomY = logoY + logoHeight + 4;
+                } catch (err) {
+                    console.warn('Logo load error:', err);
+                }
+
+                // HEADER
+                doc.setFontSize(22);
+                doc.setTextColor(...PURPLE);
+                doc.setFont(undefined, "bold");
+                doc.text("HARI CRACKERS", 105, logoBottomY + 6, { align: "center" });
+
+                // Address
                 doc.setFontSize(10);
                 doc.setTextColor(100);
-                doc.text("Wholesale Dealers - Sivakasi Fireworks", 105, 21, { align: "center" });
-                doc.setDrawColor(255, 106, 0);
-                doc.line(14, 25, 196, 25);
+                doc.setFont(undefined, "normal");
+                doc.text("2/8A Gandhi Nagar, Ranjankudi, Perambalur", 105, logoBottomY + 12, { align: "center" });
 
-                // Order Info
-                doc.setFontSize(11);
-                doc.setTextColor(0);
-                doc.text(`Order ID: ${orderData.orderId || 'N/A'}`, 14, 34);
-                doc.text(`Date: ${orderData.orderDate}`, 196, 34, { align: "right" });
-
-                // Customer Info
-                doc.setFontSize(10);
-                doc.text(`Name: ${orderData.name}`, 14, 42);
-                doc.text(`Phone: ${orderData.phone}`, 14, 48);
-                if (orderData.email) doc.text(`Email: ${orderData.email}`, 14, 54);
-                doc.text(`Address: ${orderData.address}`, 14, 60);
-                doc.text(`State: ${orderData.state}`, 14, 66);
-                let y = 76;
-
-                // Table Header
-                doc.setFillColor(255, 106, 0);
-                doc.setTextColor(255);
-                doc.rect(14, y - 6, 182, 8, "F");
+                // Phone
                 doc.setFontSize(9);
+                doc.setTextColor(100);
+                doc.text("Ph: 7010392742, 8667725665", 105, logoBottomY + 18, { align: "center" });
+
+                // Purple line — phone-ku KEELHA (4mm gap)
+                doc.setDrawColor(...PURPLE);
+                doc.setLineWidth(1.5);
+                doc.line(14, logoBottomY + 22, 196, logoBottomY + 22);
+
+                // ORDER INFO
+                let infoY = logoBottomY + 32;
+                doc.setFontSize(11);
+                doc.setTextColor(...PURPLE_DARK);
+                doc.setFont(undefined, "bold");
+                doc.text(`Order ID: ${orderData.orderId || 'N/A'}`, 14, infoY);
+                doc.setFont(undefined, "normal");
+                doc.text(`Date: ${orderData.orderDate}`, 196, infoY, { align: "right" });
+
+                // CUSTOMER INFO
+                infoY += 8;
+                doc.setFontSize(10);
+                doc.setTextColor(0);
+                doc.text(`Name: ${orderData.name}`, 14, infoY);
+                infoY += 6;
+                doc.text(`Phone: ${orderData.phone}`, 14, infoY);
+                infoY += 6;
+                if (orderData.email) { doc.text(`Email: ${orderData.email}`, 14, infoY); infoY += 6; }
+
+                const addressLines = doc.splitTextToSize(`Address: ${orderData.address}`, 170);
+                doc.text(addressLines, 14, infoY);
+                infoY += addressLines.length * 5;
+                doc.text(`State: ${orderData.state}`, 14, infoY);
+
+                let y = infoY + 12;
+
+                // TABLE HEADER
+                doc.setFillColor(...PURPLE);
+                doc.rect(14, y - 6, 182, 8, "F");
+                doc.setTextColor(255);
+                doc.setFontSize(9);
+                doc.setFont(undefined, "bold");
                 doc.text("S.No", 17, y);
                 doc.text("Product", 32, y);
                 doc.text("Qty", 130, y);
                 doc.text("Price", 150, y);
                 doc.text("Amount", 175, y);
 
-                // Table Rows
+                // TABLE ROWS
                 doc.setTextColor(0);
+                doc.setFont(undefined, "normal");
                 y += 8;
                 orderData.items.forEach((item, i) => {
                     if (y > 270) { doc.addPage(); y = 20; }
@@ -5332,16 +5394,32 @@
                     doc.line(14, y - 2, 196, y - 2);
                 });
 
-                // Total
-                y += 6;
-                doc.setFontSize(11);
+                // GRAND TOTAL
+                y += 8;
+                doc.setFillColor(...PURPLE);
+                doc.rect(14, y - 6, 182, 10, "F");
+                doc.setTextColor(255);
+                doc.setFontSize(12);
                 doc.setFont(undefined, "bold");
-                doc.text(`Total Items: ${orderData.totalItems}`, 14, y);
-                doc.text(`Grand Total: Rs.${orderData.totalAmount.toLocaleString('en-IN')}`, 196, y, { align: "right" });
+                doc.text(`Total Items: ${orderData.totalItems}`, 17, y + 1);
+                doc.text(`Grand Total: Rs.${orderData.totalAmount.toLocaleString('en-IN')}`, 193, y + 1, { align: "right" });
+
+                // FOOTER
+                y += 20;
+                doc.setDrawColor(...YELLOW);
+                doc.setLineWidth(0.8);
+                doc.line(14, y, 196, y);
+                doc.setTextColor(...PURPLE);
+                doc.setFontSize(10);
+                doc.setFont(undefined, "bold");
+                doc.text("Thank you for choosing Hari Crackers!", 105, y + 8, { align: "center" });
+                doc.setFontSize(8);
+                doc.setFont(undefined, "normal");
+                doc.setTextColor(100);
+                doc.text("Wishing you a Safe, Bright & Joyful Celebration!", 105, y + 14, { align: "center" });
 
                 return doc;
             }
-
             async function downloadBill() {
                 const { cartItems, totalItems, totalAmount } = collectCartItems();
                 if (totalItems === 0) { alert('Cart is empty!'); return; }
@@ -5352,22 +5430,47 @@
                 const address = document.getElementById('client-address')?.value || '';
                 const state = document.getElementById('client-state')?.value || 'TamilNadu & PY';
 
-                // Generate a temporary ID for the bill (does NOT save to Firebase)
-                const orderId = 'HC' + String(Date.now()).slice(-6);
+                // ✅ RESERVE REAL ORDER ID FROM FIREBASE COUNTER
+                let orderId = 'HC001';
+                let orderNumber = 1;
+
+                try {
+                    const counterRef = doc(db, 'settings', 'orderCounter');
+                    const counterSnap = await getDoc(counterRef);
+
+                    if (counterSnap.exists()) {
+                        orderNumber = (counterSnap.data().lastOrderNumber || 0) + 1;
+                    }
+
+                    await setDoc(counterRef, {
+                        lastOrderNumber: orderNumber,
+                        lastUpdated: serverTimestamp()
+                    }, { merge: true });
+
+                    orderId = 'HC' + String(orderNumber).padStart(3, '0');
+                } catch (e) {
+                    console.error('Counter error:', e);
+                    orderId = 'HC' + String(Date.now()).slice(-6);
+                }
+
                 const timeStr = new Date().toLocaleString('en-IN', {
                     day: '2-digit', month: '2-digit', year: 'numeric',
                     hour: '2-digit', minute: '2-digit', hour12: true
                 });
 
                 const orderData = {
-                    orderId, name, phone, email, address, state,
-                    items: cartItems.map(item => ({ name: item.name, qty: item.qty, price: item.price, amount: item.amount })),
+                    orderId, orderNumber,
+                    name, phone, email, address, state,
+                    items: cartItems.map(item => ({
+                        name: item.name, qty: item.qty, price: item.price, amount: item.amount
+                    })),
                     totalItems, totalAmount, orderDate: timeStr,
                 };
 
-                generateOrderPDF(orderData).save(`${orderId}.pdf`);
+                // ✅ PDF generate + download (with logo) — NO ALERT
+                const pdfDoc = await generateOrderPDF(orderData);
+                pdfDoc.save(`${orderId}.pdf`);
             }
-
             async function sendToWhatsApp() {
                 const { cartItems, totalItems, totalAmount } = collectCartItems();
                 if (totalItems === 0) {
@@ -5432,7 +5535,7 @@
 
                 // ✅ NEW: Stock decrease pannunga
                 await saveOrderToFirebase(orderData);
-                await decreaseStockAfterOrder(cartItems);    
+                await decreaseStockAfterOrder(cartItems);
                 // ============================================================
                 // STOCK DECREASE — Order place panna aprom automatic-a
                 // Firebase la irukura product stock-a kuraikkum
@@ -5633,22 +5736,22 @@
 
                 document.getElementById('order-summary-close').addEventListener('click', () => document.getElementById('order-summary-modal').classList.remove('active'));
                 document.getElementById('cart-download-bill').addEventListener('click', downloadBill);
-let isPlacingOrder = false;
+                let isPlacingOrder = false;
 
-document.getElementById('cart-send-whatsapp').addEventListener('click', async function () {
-    if (isPlacingOrder) return;          // 2nd click block
-    isPlacingOrder = true;
-    const btn = this;
-    btn.disabled = true;
-    btn.textContent = 'Placing...';
-    try {
-        await sendToWhatsApp();
-    } finally {
-        isPlacingOrder = false;
-        btn.disabled = false;
-        btn.textContent = 'Place Order';
-    }
-});
+                document.getElementById('cart-send-whatsapp').addEventListener('click', async function () {
+                    if (isPlacingOrder) return;          // 2nd click block
+                    isPlacingOrder = true;
+                    const btn = this;
+                    btn.disabled = true;
+                    btn.textContent = 'Placing...';
+                    try {
+                        await sendToWhatsApp();
+                    } finally {
+                        isPlacingOrder = false;
+                        btn.disabled = false;
+                        btn.textContent = 'Place Order';
+                    }
+                });
                 document.getElementById('submit-enquiry').addEventListener('click', function () {
                     const { totalItems } = collectCartItems();
                     if (totalItems === 0) { alert('Please add items to your cart.'); return; }
