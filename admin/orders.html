@@ -1048,6 +1048,22 @@
             .order-card-actions {
                 grid-template-columns: 1fr;
             }
+        }        /* Customer Address Styling */
+        .customer-contact.customer-address {
+            color: #6a1b9a;
+            font-weight: 500;
+            background: #faf5ff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border-left: 3px solid #ffc107;
+            margin-top: 4px;
+            line-height: 1.4;
+            font-size: 0.75rem;
+        }
+
+        .customer-contact.customer-address i {
+            color: #ffc107;
+            margin-top: 2px;
         }
     </style>
 </head>
@@ -1263,6 +1279,53 @@
         let unsubscribeOrders = null;
         let selectedOrders = new Set();
 
+                // ============================================================
+        // GET ORDER ADDRESS — All possible address fields support
+        // ============================================================
+                function getOrderAddress(order) {
+            // Pickup detection
+            const isPickup = order.deliveryType === 'pickup' ||
+                           order.pickupBranch ||
+                           order.orderType === 'pickup' ||
+                           order.branch;
+
+            if (isPickup) {
+                const branch = order.pickupBranch || order.branch || '';
+                const branchAddress = order.branchAddress || order.pickupAddress || order.deliveryBranchAddress || '';
+                if (branchAddress) {
+                    return `🚚 Pickup - ${branch}${branch ? ' · ' : ''}${branchAddress}`;
+                }
+                if (branch) return `🚚 Pickup - ${branch}`;
+            }
+
+            // Address fields check
+            const addressFields = [
+                'customerAddress', 'address', 'deliveryAddress',
+                'shippingAddress', 'customer_address', 'userAddress',
+                'fullAddress', 'addr'
+            ];
+
+            for (const field of addressFields) {
+                const val = order[field];
+                if (val && typeof val === 'string' && val.trim() && val.trim() !== 'N/A') {
+                    return `🏠 ${val.trim()}`;
+                }
+            }
+
+            // Nested object
+            if (order.address && typeof order.address === 'object') {
+                const parts = [
+                    order.address.line1, order.address.line2,
+                    order.address.street, order.address.city,
+                    order.address.state,
+                    order.address.pincode || order.address.zip
+                ].filter(Boolean);
+                if (parts.length > 0) return `🏠 ${parts.join(', ')}`;
+            }
+
+            return '';
+        }
+
         // ============================================================
         // HELPERS
         // ============================================================
@@ -1475,12 +1538,13 @@
 
                         <div class="order-card-body">
 
-                            <div class="customer-section">
+                                                      <div class="customer-section">
                                 <div class="customer-avatar">${getInitials(customerName)}</div>
                                 <div class="customer-details">
                                     <div class="customer-name">${customerName}</div>
                                     ${customerPhone ? `<div class="customer-contact"><i class="fas fa-phone"></i> ${customerPhone}</div>` : ''}
                                     ${customerEmail ? `<div class="customer-contact"><i class="fas fa-envelope"></i> ${customerEmail}</div>` : ''}
+                                    ${getOrderAddress(order) ? `<div class="customer-contact customer-address"><i class="fas fa-map-marker-alt"></i> ${getOrderAddress(order)}</div>` : ''}
                                 </div>
                             </div>
 
